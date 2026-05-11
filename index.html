@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm Chủ Nghĩa Xã Hội Khoa Học</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #f0f4f8;
+            --white: #ffffff;
+            --primary: #1a6dd4;
+            --primary-dark: #1254a1;
+            --primary-light: #e8f1fb;
+            --accent: #2196F3;
+            --text: #1a1a2e;
+            --text-light: #555;
+            --text-muted: #777;
+            --border: #dde4ed;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.10);
+            --radius: 14px;
+            --radius-sm: 8px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-width: 250px;
+            --header-height: 60px;
+            --font: 'Arial', 'Segoe UI', 'Helvetica Neue', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            line-height: 1.5;
+            letter-spacing: 0.01em;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            box-shadow: var(--shadow);
+            transition: transform var(--transition);
+        }
+        .sidebar-logo {
+            padding: 20px 18px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--primary);
+            letter-spacing: -0.01em;
+        }
+        .sidebar-logo .logo-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+            list-style: none;
+        }
+        .sidebar-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 18px;
+            text-decoration: none;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            transition: all var(--transition);
+            border-left: 3px solid transparent;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .sidebar-nav li a:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+        .sidebar-nav li a.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 700;
+        }
+        .sidebar-nav li a i {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        .sidebar-footer {
+            padding: 12px 18px;
+            border-top: 1px solid var(--border);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* MAIN */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+            padding: 24px 28px;
+            transition: margin var(--transition);
+        }
+        .page-header {
+            margin-bottom: 22px;
+        }
+        .page-header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.02em;
+        }
+        .page-header .subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 2px;
+        }
+
+        /* PANELS */
+        .panel {
+            display: none;
+            animation: fadeSlideIn 0.35s ease;
+        }
+        .panel.active {
+            display: block;
+        }
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 22px 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 18px;
+        }
+        .card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card h3 i {
+            color: var(--primary);
+        }
+
+        /* FORM ELEMENTS */
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text);
+            font-size: 0.85rem;
+        }
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: var(--font);
+            font-size: 0.9rem;
+            transition: all var(--transition);
+            background: #fafbfc;
+            color: var(--text);
+            resize: vertical;
+        }
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 109, 212, 0.08);
+            background: #fff;
+        }
+        textarea {
+            min-height: 120px;
+        }
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%23555'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 32px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition);
+            font-family: var(--font);
+            letter-spacing: 0.01em;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 4px 14px rgba(26, 109, 212, 0.3);
+            transform: translateY(-1px);
+        }
+        .btn-outline {
+            background: #fff;
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+        }
+        .btn-outline:hover {
+            background: var(--primary-light);
+        }
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+        }
+        .btn-success {
+            background: var(--success);
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            border-radius: 6px;
+        }
+        .btn-xs {
+            padding: 4px 10px;
+            font-size: 0.72rem;
+            border-radius: 5px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .form-group {
+            margin-bottom: 14px;
+            flex: 1;
+            min-width: 180px;
+        }
+        .form-group.full {
+            flex: 1 1 100%;
+            min-width: 100%;
+        }
+
+        /* STATS */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+        .stat-icon.blue {
+            background: #e8f1fb;
+            color: var(--primary);
+        }
+        .stat-icon.green {
+            background: #d1fae5;
+            color: var(--success);
+        }
+        .stat-icon.orange {
+            background: #fef3c7;
+            color: var(--warning);
+        }
+        .stat-icon.red {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+        .stat-info .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .stat-info .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* TABLE */
+        .table-wrap {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        table th,
+        table td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        table th {
+            background: #f8fafc;
+            font-weight: 700;
+            color: var(--text);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        table tbody tr:hover {
+            background: #f9fbfd;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.73rem;
+            font-weight: 600;
+        }
+        .badge-blue {
+            background: #e8f1fb;
+            color: var(--primary);
+        }
+        .badge-green {
+            background: #d1fae5;
+            color: #059669;
+        }
+        .badge-red {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* TIMER */
+        .timer-display {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            letter-spacing: 2px;
+            font-variant-numeric: tabular-nums;
+            font-family: 'Courier New', 'Arial', monospace;
+        }
+        .timer-warning {
+            color: var(--danger) !important;
+            animation: pulse 0.8s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        .timer-bar {
+            height: 6px;
+            border-radius: 3px;
+            background: #e5e7eb;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .timer-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: var(--primary);
+            transition: width 1s linear;
+        }
+        .timer-bar-fill.warning {
+            background: var(--danger);
+        }
+
+        /* EXAM */
+        .question-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 12px;
+            transition: all var(--transition);
+        }
+        .question-card.answered {
+            border-left: 4px solid var(--primary);
+        }
+        .question-num {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+        .question-text {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 14px;
+            color: var(--text);
+        }
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            margin: 4px 0;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            border: 1.5px solid var(--border);
+            transition: all var(--transition);
+            font-size: 0.9rem;
+            background: #fafbfc;
+        }
+        .option-item:hover {
+            border-color: var(--primary);
+            background: #f5f9fe;
+        }
+        .option-item.selected {
+            border-color: var(--primary);
+            background: #e8f1fb;
+            font-weight: 600;
+        }
+        .option-item.correct-show {
+            border-color: var(--success) !important;
+            background: #d1fae5 !important;
+            color: #059669 !important;
+        }
+        .option-item.wrong-show {
+            border-color: var(--danger) !important;
+            background: #fee2e2 !important;
+            color: #dc2626 !important;
+        }
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            transition: all var(--transition);
+        }
+        .option-item.selected .option-letter {
+            background: var(--primary);
+            color: #fff;
+        }
+        .option-item.correct-show .option-letter {
+            background: var(--success);
+            color: #fff;
+        }
+        .option-item.wrong-show .option-letter {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        /* TOAST */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .toast {
+            padding: 12px 18px;
+            border-radius: var(--radius-sm);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: var(--shadow-lg);
+            animation: slideInRight 0.3s ease;
+            max-width: 380px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast.success {
+            background: #059669;
+        }
+        .toast.error {
+            background: #dc2626;
+        }
+        .toast.info {
+            background: var(--primary);
+        }
+        @keyframes slideInRight {
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .modal {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 28px 30px;
+            max-width: 700px;
+            width: 95%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+        .modal h2 {
+            margin-bottom: 16px;
+            font-size: 1.3rem;
+        }
+        .modal-close {
+            float: right;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+            transition: color var(--transition);
+        }
+        .modal-close:hover {
+            color: #333;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 16px;
+            }
+            .mobile-toggle {
+                display: flex !important;
+            }
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+            .timer-display {
+                font-size: 1.6rem;
+            }
+        }
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            z-index: 150;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            align-items: center;
+            justify-content: center;
+        }
+        @media (min-width: 769px) {
+            .mobile-toggle {
+                display: none !important;
+            }
+            .sidebar {
+                transform: translateX(0) !important;
+            }
+        }
+
+        /* Highlight for correct answer in results */
+        .result-correct-answer {
+            font-weight: 700;
+            color: #059669;
+            background: #d1fae5;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .chapter-error-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin: 4px 0;
+            background: #f9fafb;
+        }
+        .progress-mini {
+            width: 100px;
+            height: 8px;
+            border-radius: 4px;
+            background: #e5e7eb;
+            overflow: hidden;
+        }
+        .progress-mini-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: var(--danger);
+            transition: width 0.4s;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Mobile Toggle -->
+    <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <span>CNXH Khoa Học</span>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a data-panel="dashboard" class="active"><i class="fa-solid fa-house"></i> Trang chủ</a></li>
+            <li><a data-panel="add-single"><i class="fa-solid fa-plus-circle"></i> Thêm câu hỏi</a></li>
+            <li><a data-panel="add-bulk"><i class="fa-solid fa-layer-group"></i> Thêm nhiều câu hỏi</a></li>
+            <li><a data-panel="import-export"><i class="fa-solid fa-file-import"></i> Nhập / Xuất file</a></li>
+            <li><a data-panel="question-bank"><i class="fa-solid fa-database"></i> Ngân hàng câu hỏi</a></li>
+            <li><a data-panel="practice"><i class="fa-solid fa-pen-to-square"></i> Luyện tập</a></li>
+            <li><a data-panel="exam"><i class="fa-solid fa-clock"></i> Thi</a></li>
+        </ul>
+        <div class="sidebar-footer">© 2025 - Trắc nghiệm CNXHKH</div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content" id="mainContent">
+
+        <!-- DASHBOARD PANEL -->
+        <div class="panel active" id="panel-dashboard">
+            <div class="page-header">
+                <h1>📋 Trang chủ</h1>
+                <p class="subtitle">Tổng quan ngân hàng câu hỏi Chủ nghĩa Xã hội Khoa học</p>
+            </div>
+            <div class="stats-row" id="dashboardStats"></div>
+            <div class="card">
+                <h3><i class="fa-solid fa-chart-bar"></i> Thống kê theo chương</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>Chương</th><th>Số câu hỏi</th><th>Tỉ lệ</th></tr>
+                        </thead>
+                        <tbody id="dashboardChapterTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADD SINGLE QUESTION PANEL -->
+        <div class="panel" id="panel-add-single">
+            <div class="page-header">
+                <h1>✍️ Thêm câu hỏi</h1>
+                <p class="subtitle">Nhập từng câu hỏi vào ngân hàng</p>
+            </div>
+            <div class="card">
+                <h3><i class="fa-solid fa-pencil"></i> Form nhập câu hỏi</h3>
+                <div class="form-group">
+                    <label>Chọn chương</label>
+                    <select id="singleChapter"></select>
+                </div>
+                <div class="form-group">
+                    <label>Câu hỏi</label>
+                    <textarea id="singleQuestion" rows="3" placeholder="Nhập nội dung câu hỏi..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Phương án A</label><input type="text" id="singleA" placeholder="Nhập đáp án A"></div>
+                    <div class="form-group"><label>Phương án B</label><input type="text" id="singleB" placeholder="Nhập đáp án B"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Phương án C</label><input type="text" id="singleC" placeholder="Nhập đáp án C"></div>
+                    <div class="form-group"><label>Phương án D</label><input type="text" id="singleD" placeholder="Nhập đáp án D"></div>
+                </div>
+                <div class="form-group" style="max-width:200px;">
+                    <label>Đáp án đúng</label>
+                    <select id="singleAnswer">
+                        <option value="">-- Chọn --</option>
+                        <option value="A">A</option><option value="B">B</option>
+                        <option value="C">C</option><option value="D">D</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="addSingleQuestion()">
+                    <i class="fa-solid fa-floppy-disk"></i> Lưu câu hỏi
+                </button>
+                <button class="btn btn-outline" style="margin-left:8px;" onclick="clearSingleForm()">
+                    <i class="fa-solid fa-rotate"></i> Xóa form
+                </button>
+            </div>
+        </div>
+
+        <!-- ADD BULK QUESTIONS PANEL -->
+        <div class="panel" id="panel-add-bulk">
+            <div class="page-header">
+                <h1>📝 Thêm nhiều câu hỏi</h1>
+                <p class="subtitle">Dán danh sách câu hỏi theo định dạng cố định</p>
+            </div>
+            <div class="card">
+                <h3><i class="fa-solid fa-paste"></i> Dán câu hỏi hàng loạt</h3>
+                <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px;">
+                    <strong>Định dạng mỗi câu:</strong><br>
+                    <code>Câu X: Nội dung câu hỏi</code><br>
+                    <code>A: Đáp án A</code><br>
+                    <code>B: Đáp án B</code><br>
+                    <code>C: Đáp án C</code><br>
+                    <code>D: Đáp án D</code><br>
+                    <code>Đáp án đúng: X</code><br>
+                    <em>(Các câu cách nhau bởi dòng trống hoặc dòng "Câu" mới)</em>
+                </p>
+                <div class="form-group">
+                    <label>Chọn chương cho các câu hỏi này</label>
+                    <select id="bulkChapter"></select>
+                </div>
+                <div class="form-group">
+                    <label>Dán nội dung nhiều câu hỏi</label>
+                    <textarea id="bulkText" rows="14" placeholder="Dán câu hỏi vào đây..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="addBulkQuestions()">
+                    <i class="fa-solid fa-check-double"></i> Phân tích & Lưu
+                </button>
+                <span id="bulkResult" style="margin-left:12px;font-size:0.85rem;color:var(--text-muted);"></span>
+            </div>
+        </div>
+
+        <!-- IMPORT / EXPORT PANEL -->
+        <div class="panel" id="panel-import-export">
+            <div class="page-header">
+                <h1>📁 Nhập / Xuất file</h1>
+                <p class="subtitle">Xuất ngân hàng câu hỏi ra file TXT hoặc nhập từ file TXT</p>
+            </div>
+            <div class="card">
+                <h3><i class="fa-solid fa-download"></i> Xuất file TXT</h3>
+                <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:10px;">Tải toàn bộ câu hỏi về file .txt</p>
+                <button class="btn btn-success" onclick="exportToFile()">
+                    <i class="fa-solid fa-file-export"></i> Xuất file TXT
+                </button>
+            </div>
+            <div class="card">
+                <h3><i class="fa-solid fa-upload"></i> Nhập file TXT</h3>
+                <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:10px;">
+                    Chọn file .txt có định dạng câu hỏi. Mỗi câu cần có dòng <strong>Chương:</strong> ở đầu.
+                </p>
+                <div class="form-group">
+                    <label>File TXT</label>
+                    <input type="file" id="importFile" accept=".txt">
+                </div>
+                <button class="btn btn-primary" onclick="importFromFile()">
+                    <i class="fa-solid fa-file-import"></i> Nhập file
+                </button>
+                <span id="importResult" style="margin-left:12px;font-size:0.85rem;color:var(--text-muted);"></span>
+            </div>
+        </div>
+
+        <!-- QUESTION BANK PANEL -->
+        <div class="panel" id="panel-question-bank">
+            <div class="page-header">
+                <h1>🗄️ Ngân hàng câu hỏi</h1>
+                <p class="subtitle">Xem và quản lý câu hỏi theo chương</p>
+            </div>
+            <div class="form-group" style="max-width:300px;">
+                <label>Lọc theo chương</label>
+                <select id="bankFilter" onchange="renderQuestionBank()">
+                    <option value="all">Tất cả chương</option>
+                </select>
+            </div>
+            <div id="questionBankContent"></div>
+        </div>
+
+        <!-- PRACTICE PANEL -->
+        <div class="panel" id="panel-practice">
+            <div class="page-header">
+                <h1>📖 Luyện tập</h1>
+                <p class="subtitle">Luyện tập câu hỏi theo từng chương</p>
+            </div>
+            <div id="practiceSetup" class="card">
+                <div class="form-group" style="max-width:300px;">
+                    <label>Chọn chương</label>
+                    <select id="practiceChapter"></select>
+                </div>
+                <button class="btn btn-primary" onclick="startPractice()">
+                    <i class="fa-solid fa-play"></i> Bắt đầu luyện tập
+                </button>
+            </div>
+            <div id="practiceArea" style="display:none;"></div>
+            <div id="practiceResult" style="display:none;"></div>
+        </div>
+
+        <!-- EXAM PANEL -->
+        <div class="panel" id="panel-exam">
+            <div class="page-header">
+                <h1>⏱️ Thi</h1>
+                <p class="subtitle">Làm bài thi với thời gian đếm ngược</p>
+            </div>
+            <div id="examSetup" class="card">
+                <h3><i class="fa-solid fa-gear"></i> Cấu hình đề thi</h3>
+                <div class="form-row" style="align-items:end;">
+                    <div class="form-group" style="max-width:160px;">
+                        <label>Tổng số câu</label>
+                        <input type="number" id="examTotalQuestions" value="80" min="1" max="200">
+                    </div>
+                    <div class="form-group" style="max-width:160px;">
+                        <label>Thời gian (phút)</label>
+                        <input type="number" id="examTime" value="50" min="1" max="180">
+                    </div>
+                </div>
+                <p style="font-weight:600;margin:8px 0;">Số câu bốc ngẫu nhiên từ mỗi chương:</p>
+                <div id="examChapterConfig"></div>
+                <button class="btn btn-primary" onclick="startExam()" style="margin-top:12px;">
+                    <i class="fa-solid fa-rocket"></i> Bắt đầu thi
+                </button>
+            </div>
+            <div id="examArea" style="display:none;"></div>
+            <div id="examResult" style="display:none;"></div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- MODAL OVERLAY (hidden) -->
+    <div id="modalOverlay" class="modal-overlay" style="display:none;"></div>
+
+    <script>
+        (function() {
+            // ============ DATA LAYER ============
+            const STORAGE_KEY = 'cnxhk_question_bank';
+            const CHAPTERS_KEY = 'cnxhk_chapters';
+
+            const defaultChapters = [
+                'Chương 1: Nhập môn Chủ nghĩa xã hội khoa học',
+                'Chương 2: Sứ mệnh lịch sử của giai cấp công nhân',
+                'Chương 3: Chủ nghĩa xã hội và thời kỳ quá độ lên CNXH',
+                'Chương 4: Dân chủ XHCN và nhà nước XHCN',
+                'Chương 5: Cơ cấu xã hội - giai cấp và liên minh giai cấp',
+                'Chương 6: Vấn đề dân tộc và tôn giáo',
+                'Chương 7: Vấn đề gia đình trong thời kỳ quá độ',
+            ];
+
+            function getChapters() {
+                const stored = localStorage.getItem(CHAPTERS_KEY);
+                if (stored) {
+                    try { return JSON.parse(stored); } catch (e) {}
+                }
+                return [...defaultChapters];
+            }
+
+            function saveChapters(chapters) {
+                localStorage.setItem(CHAPTERS_KEY, JSON.stringify(chapters));
+            }
+
+            function getQuestionBank() {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    try { return JSON.parse(stored); } catch (e) {}
+                }
+                return [];
+            }
+
+            function saveQuestionBank(bank) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(bank));
+            }
+
+            function generateId() {
+                return 'q_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+            }
+
+            // ============ TOAST ============
+            function showToast(message, type = 'info') {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                toast.className = 'toast ' + type;
+                const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
+                toast.innerHTML = `<i class="fa-solid ${icons[type] || icons.info}"></i> ${message}`;
+                container.appendChild(toast);
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(120%)';
+                    toast.style.transition = '0.3s';
+                    setTimeout(() => toast.remove(), 300);
+                }, 2800);
+            }
+
+            // ============ NAVIGATION ============
+            function navigateTo(panelName) {
+                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                document.querySelectorAll('.sidebar-nav li a').forEach(a => a.classList.remove('active'));
+                const panel = document.getElementById('panel-' + panelName);
+                if (panel) panel.classList.add('active');
+                const link = document.querySelector(`[data-panel="${panelName}"]`);
+                if (link) link.classList.add('active');
+                // Refresh dynamic panels
+                if (panelName === 'dashboard') refreshDashboard();
+                if (panelName === 'question-bank') renderQuestionBank();
+                if (panelName === 'add-single' || panelName === 'add-bulk') refreshChapterSelects();
+                if (panelName === 'practice') refreshPracticeSetup();
+                if (panelName === 'exam') refreshExamSetup();
+                if (panelName === 'import-export') refreshImportExport();
+                // Close mobile sidebar
+                document.getElementById('sidebar').classList.remove('open');
+            }
+
+            document.querySelectorAll('.sidebar-nav li a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navigateTo(this.dataset.panel);
+                });
+            });
+
+            document.getElementById('mobileToggle').addEventListener('click', () => {
+                document.getElementById('sidebar').classList.toggle('open');
+            });
+
+            // Close sidebar when clicking outside on mobile
+            document.getElementById('mainContent').addEventListener('click', function(e) {
+                if (window.innerWidth <= 768) {
+                    document.getElementById('sidebar').classList.remove('open');
+                }
+            });
+
+            // ============ CHAPTER SELECT HELPERS ============
+            function populateChapterSelect(selectEl, chapters) {
+                selectEl.innerHTML = '';
+                chapters.forEach((ch, i) => {
+                    const opt = document.createElement('option');
+                    opt.value = ch;
+                    opt.textContent = ch;
+                    selectEl.appendChild(opt);
+                });
+            }
+
+            function refreshChapterSelects() {
+                const chapters = getChapters();
+                populateChapterSelect(document.getElementById('singleChapter'), chapters);
+                populateChapterSelect(document.getElementById('bulkChapter'), chapters);
+                const bankFilter = document.getElementById('bankFilter');
+                const currentVal = bankFilter.value;
+                bankFilter.innerHTML = '<option value="all">Tất cả chương</option>';
+                chapters.forEach(ch => {
+                    const opt = document.createElement('option');
+                    opt.value = ch;
+                    opt.textContent = ch;
+                    bankFilter.appendChild(opt);
+                });
+                bankFilter.value = currentVal;
+            }
+
+            function refreshPracticeSetup() {
+                const chapters = getChapters();
+                populateChapterSelect(document.getElementById('practiceChapter'), chapters);
+            }
+
+            function refreshExamSetup() {
+                const chapters = getChapters();
+                const container = document.getElementById('examChapterConfig');
+                container.innerHTML = '';
+                const totalInput = document.getElementById('examTotalQuestions');
+                const totalQ = parseInt(totalInput.value) || 80;
+                const perChapter = Math.max(1, Math.floor(totalQ / chapters.length));
+                let remainder = totalQ - perChapter * chapters.length;
+                chapters.forEach((ch, i) => {
+                    const val = perChapter + (i < remainder ? 1 : 0);
+                    container.innerHTML += `
+                    <div class="form-row" style="margin-bottom:6px;align-items:center;">
+                      <div class="form-group" style="flex:2;min-width:200px;"><label style="font-size:0.8rem;">${ch}</label></div>
+                      <div class="form-group" style="flex:0 0 80px;min-width:60px;">
+                        <input type="number" class="exam-chapter-qty" data-chapter="${ch}" value="${val}" min="0" max="200" style="text-align:center;">
+                      </div>
+                    </div>`;
+                });
+                // Update totals when chapter quantities change
+                container.addEventListener('input', function() {
+                    updateExamTotalFromChapters();
+                });
+                totalInput.addEventListener('input', function() {
+                    redistributeExamChapters();
+                });
+            }
+
+            function updateExamTotalFromChapters() {
+                const inputs = document.querySelectorAll('.exam-chapter-qty');
+                let sum = 0;
+                inputs.forEach(inp => sum += parseInt(inp.value) || 0);
+                document.getElementById('examTotalQuestions').value = sum;
+            }
+
+            function redistributeExamChapters() {
+                const totalQ = parseInt(document.getElementById('examTotalQuestions').value) || 80;
+                const inputs = document.querySelectorAll('.exam-chapter-qty');
+                const chapters = getChapters();
+                const perChapter = Math.max(1, Math.floor(totalQ / chapters.length));
+                let remainder = totalQ - perChapter * chapters.length;
+                inputs.forEach((inp, i) => {
+                    inp.value = perChapter + (i < remainder ? 1 : 0);
+                });
+            }
+
+            function refreshImportExport() {
+                // nothing special, just ensure panels are ready
+            }
+
+            // ============ DASHBOARD ============
+            function refreshDashboard() {
+                const bank = getQuestionBank();
+                const chapters = getChapters();
+                const totalQuestions = bank.length;
+                // Count per chapter
+                const chapterCounts = {};
+                chapters.forEach(ch => { chapterCounts[ch] = 0; });
+                bank.forEach(q => {
+                    if (chapterCounts[q.chapter] !== undefined) chapterCounts[q.chapter]++;
+                    else chapterCounts[q.chapter] = 1;
+                });
+                document.getElementById('dashboardStats').innerHTML = `
+                <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-database"></i></div>
+                  <div class="stat-info"><div class="stat-value">${totalQuestions}</div><div class="stat-label">Tổng câu hỏi</div></div></div>
+                <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-layer-group"></i></div>
+                  <div class="stat-info"><div class="stat-value">${chapters.length}</div><div class="stat-label">Số chương</div></div></div>
+                <div class="stat-card"><div class="stat-icon orange"><i class="fa-solid fa-list-check"></i></div>
+                  <div class="stat-info"><div class="stat-value">${Object.values(chapterCounts).filter(v=>v>0).length}</div><div class="stat-label">Chương có câu hỏi</div></div></div>
+              `;
+                const tbody = document.getElementById('dashboardChapterTable');
+                tbody.innerHTML = '';
+                chapters.forEach(ch => {
+                    const count = chapterCounts[ch] || 0;
+                    const pct = totalQuestions > 0 ? ((count / totalQuestions) * 100).toFixed(1) : '0';
+                    tbody.innerHTML += `
+                  <tr><td>${ch}</td><td><span class="badge badge-blue">${count} câu</span></td><td>${pct}%</td></tr>`;
+                });
+            }
+
+            // ============ ADD SINGLE QUESTION ============
+            function clearSingleForm() {
+                document.getElementById('singleQuestion').value = '';
+                document.getElementById('singleA').value = '';
+                document.getElementById('singleB').value = '';
+                document.getElementById('singleC').value = '';
+                document.getElementById('singleD').value = '';
+                document.getElementById('singleAnswer').value = '';
+            }
+
+            function addSingleQuestion() {
+                const chapter = document.getElementById('singleChapter').value;
+                const question = document.getElementById('singleQuestion').value.trim();
+                const a = document.getElementById('singleA').value.trim();
+                const b = document.getElementById('singleB').value.trim();
+                const c = document.getElementById('singleC').value.trim();
+                const d = document.getElementById('singleD').value.trim();
+                const answer = document.getElementById('singleAnswer').value;
+                if (!chapter || !question || !a || !b || !c || !d || !answer) {
+                    showToast('Vui lòng điền đầy đủ tất cả các trường!', 'error');
+                    return;
+                }
+                const bank = getQuestionBank();
+                bank.push({
+                    id: generateId(),
+                    chapter,
+                    question,
+                    options: { A: a, B: b, C: c, D: d },
+                    correctAnswer: answer.toUpperCase(),
+                });
+                saveQuestionBank(bank);
+                clearSingleForm();
+                showToast('Đã lưu câu hỏi thành công!', 'success');
+                refreshDashboard();
+            }
+
+            // ============ ADD BULK QUESTIONS ============
+            function parseBulkQuestions(text, chapter) {
+                const questions = [];
+                // Split by "Câu" followed by digits
+                const blocks = text.split(/(?=Câu\s+\d+\s*[:.])/i);
+                for (let block of blocks) {
+                    block = block.trim();
+                    if (!block) continue;
+                    // Extract question
+                    const qMatch = block.match(/^Câu\s+\d+\s*[:.]\s*([\s\S]*?)(?=\n\s*A\s*[:.]|\n\s*A\s*\))/i);
+                    const aMatch = block.match(/\n\s*A\s*[:.)]\s*(.*?)(?=\n\s*B\s*[:.)])/is);
+                    const bMatch = block.match(/\n\s*B\s*[:.)]\s*(.*?)(?=\n\s*C\s*[:.)])/is);
+                    const cMatch = block.match(/\n\s*C\s*[:.)]\s*(.*?)(?=\n\s*D\s*[:.)])/is);
+                    const dMatch = block.match(/\n\s*D\s*[:.)]\s*(.*?)(?=\n\s*Đ[aá]p\s*[aá]n\s*[đd]úng\s*[:.)]|\n\s*$)/is);
+                    const ansMatch = block.match(/Đ[aá]p\s*[aá]n\s*[đd]úng\s*[:.)]\s*([A-Da-d])/i);
+
+                    if (!qMatch || !aMatch || !bMatch || !cMatch || !dMatch || !ansMatch) {
+                        // Try alternative regex patterns
+                        const lines = block.split('\n').map(l => l.trim()).filter(l => l);
+                        let qText = '',
+                            optA = '',
+                            optB = '',
+                            optC = '',
+                            optD = '',
+                            correct = '';
+                        for (let line of lines) {
+                            if (/^Câu\s+\d+\s*[:.]/i.test(line)) {
+                                qText = line.replace(/^Câu\s+\d+\s*[:.]\s*/i, '').trim();
+                            } else if (/^A\s*[:.)]/i.test(line)) {
+                                optA = line.replace(/^A\s*[:.)]\s*/i, '').trim();
+                            } else if (/^B\s*[:.)]/i.test(line)) {
+                                optB = line.replace(/^B\s*[:.)]\s*/i, '').trim();
+                            } else if (/^C\s*[:.)]/i.test(line)) {
+                                optC = line.replace(/^C\s*[:.)]\s*/i, '').trim();
+                            } else if (/^D\s*[:.)]/i.test(line)) {
+                                optD = line.replace(/^D\s*[:.)]\s*/i, '').trim();
+                            } else if (/Đ[aá]p\s*[aá]n\s*[đd]úng\s*[:.)]/i.test(line)) {
+                                correct = line.replace(/Đ[aá]p\s*[aá]n\s*[đd]úng\s*[:.)]\s*/i, '').trim().toUpperCase();
+                            }
+                        }
+                        if (qText && optA && optB && optC && optD && correct && ['A', 'B', 'C', 'D'].includes(correct)) {
+                            questions.push({
+                                id: generateId(),
+                                chapter,
+                                question: qText,
+                                options: { A: optA, B: optB, C: optC, D: optD },
+                                correctAnswer: correct,
+                            });
+                        }
+                        continue;
+                    }
+                    const qText = qMatch[1].trim();
+                    const optA = aMatch[1].trim();
+                    const optB = bMatch[1].trim();
+                    const optC = cMatch[1].trim();
+                    const optD = dMatch[1].trim();
+                    const correct = ansMatch[1].trim().toUpperCase();
+                    if (qText && optA && optB && optC && optD && ['A', 'B', 'C', 'D'].includes(correct)) {
+                        questions.push({
+                            id: generateId(),
+                            chapter,
+                            question: qText,
+                            options: { A: optA, B: optB, C: optC, D: optD },
+                            correctAnswer: correct,
+                        });
+                    }
+                }
+                return questions;
+            }
+
+            function addBulkQuestions() {
+                const chapter = document.getElementById('bulkChapter').value;
+                const text = document.getElementById('bulkText').value.trim();
+                if (!chapter || !text) {
+                    showToast('Vui lòng chọn chương và dán nội dung!', 'error');
+                    return;
+                }
+                const parsed = parseBulkQuestions(text, chapter);
+                if (parsed.length === 0) {
+                    document.getElementById('bulkResult').textContent = 'Không phân tích được câu hỏi nào. Kiểm tra định dạng!';
+                    showToast('Không phân tích được câu hỏi nào!', 'error');
+                    return;
+                }
+                const bank = getQuestionBank();
+                bank.push(...parsed);
+                saveQuestionBank(bank);
+                document.getElementById('bulkText').value = '';
+                document.getElementById('bulkResult').textContent = `✅ Đã thêm ${parsed.length} câu hỏi vào "${chapter}"`;
+                showToast(`Đã thêm ${parsed.length} câu hỏi thành công!`, 'success');
+                refreshDashboard();
+            }
+
+            // ============ IMPORT / EXPORT ============
+            function exportToFile() {
+                const bank = getQuestionBank();
+                if (bank.length === 0) {
+                    showToast('Ngân hàng câu hỏi trống, không có gì để xuất!', 'error');
+                    return;
+                }
+                let output = '';
+                bank.forEach((q, idx) => {
+                    output += `Chương: ${q.chapter}\n`;
+                    output += `Câu ${idx + 1}: ${q.question}\n`;
+                    output += `A: ${q.options.A}\n`;
+                    output += `B: ${q.options.B}\n`;
+                    output += `C: ${q.options.C}\n`;
+                    output += `D: ${q.options.D}\n`;
+                    output += `Đáp án đúng: ${q.correctAnswer}\n\n`;
+                });
+                const blob = new Blob(['\uFEFF' + output], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'ngan_hang_cau_hoi_cnxhk.txt';
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('Xuất file thành công!', 'success');
+            }
+
+            function importFromFile() {
+                const fileInput = document.getElementById('importFile');
+                const file = fileInput.files[0];
+                if (!file) {
+                    showToast('Vui lòng chọn file TXT!', 'error');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    // Parse by chapters within the file
+                    const chapterBlocks = content.split(/(?=Chương\s*:)/i);
+                    let allParsed = [];
+                    const chapters = getChapters();
+                    for (let block of chapterBlocks) {
+                        block = block.trim();
+                        if (!block) continue;
+                        const chMatch = block.match(/^Chương\s*:\s*(.*?)(?=\n|$)/i);
+                        let chapterName = chMatch ? chMatch[1].trim() : chapters[0];
+                        // Try to match chapter name
+                        const matchedChapter = chapters.find(c => c.toLowerCase().includes(chapterName.toLowerCase()) ||
+                            chapterName.toLowerCase().includes(c.toLowerCase()));
+                        if (matchedChapter) chapterName = matchedChapter;
+                        const restText = block.replace(/^Chương\s*:.*\n?/i, '').trim();
+                        const parsed = parseBulkQuestions(restText, chapterName);
+                        allParsed.push(...parsed);
+                    }
+                    if (allParsed.length === 0) {
+                        document.getElementById('importResult').textContent =
+                            'Không tìm thấy câu hỏi hợp lệ trong file!';
+                        showToast('Không tìm thấy câu hỏi hợp lệ!', 'error');
+                        return;
+                    }
+                    const bank = getQuestionBank();
+                    bank.push(...allParsed);
+                    saveQuestionBank(bank);
+                    document.getElementById('importResult').textContent =
+                        `✅ Đã nhập ${allParsed.length} câu hỏi từ file`;
+                    showToast(`Nhập thành công ${allParsed.length} câu hỏi!`, 'success');
+                    fileInput.value = '';
+                    refreshDashboard();
+                };
+                reader.readAsText(file, 'UTF-8');
+            }
+
+            // ============ QUESTION BANK DISPLAY ============
+            function renderQuestionBank() {
+                const bank = getQuestionBank();
+                const filter = document.getElementById('bankFilter').value;
+                const chapters = getChapters();
+                const container = document.getElementById('questionBankContent');
+                let filtered = bank;
+                if (filter !== 'all') {
+                    filtered = bank.filter(q => q.chapter === filter);
+                }
+                if (filtered.length === 0) {
+                    container.innerHTML =
+                        '<div class="card"><p style="color:var(--text-muted);text-align:center;">Chưa có câu hỏi nào. Hãy thêm câu hỏi trước!</p></div>';
+                    return;
+                }
+                let html = '<div class="card"><div class="table-wrap"><table><thead><tr><th>#</th><th>Chương</th><th>Câu hỏi</th><th>Đáp án</th><th>Hành động</th></tr></thead><tbody>';
+                filtered.forEach((q, i) => {
+                    html += `
+                  <tr>
+                    <td>${i+1}</td>
+                    <td><span class="badge badge-blue">${q.chapter}</span></td>
+                    <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${q.question}</td>
+                    <td><span class="badge badge-green">${q.correctAnswer}</span></td>
+                    <td><button class="btn btn-danger btn-xs" onclick="deleteQuestion('${q.id}')"><i class="fa-solid fa-trash"></i> Xóa</button></td>
+                  </tr>`;
+                });
+                html += '</tbody></table></div></div>';
+                html +=
+                    `<p style="font-size:0.82rem;color:var(--text-muted);margin-top:8px;">Hiển thị ${filtered.length} / ${bank.length} câu hỏi</p>`;
+                container.innerHTML = html;
+            }
+
+            window.deleteQuestion = function(id) {
+                if (!confirm('Bạn có chắc muốn xóa câu hỏi này?')) return;
+                let bank = getQuestionBank();
+                bank = bank.filter(q => q.id !== id);
+                saveQuestionBank(bank);
+                renderQuestionBank();
+                refreshDashboard();
+                showToast('Đã xóa câu hỏi!', 'success');
+            };
+
+            // ============ PRACTICE ============
+            let practiceQuestions = [];
+            let practiceIndex = 0;
+            let practiceAnswers = {};
+
+            function startPractice() {
+                const chapter = document.getElementById('practiceChapter').value;
+                const bank = getQuestionBank();
+                practiceQuestions = bank.filter(q => q.chapter === chapter);
+                if (practiceQuestions.length === 0) {
+                    showToast('Chương này chưa có câu hỏi nào!', 'error');
+                    return;
+                }
+                // Shuffle
+                practiceQuestions = shuffleArray([...practiceQuestions]);
+                practiceIndex = 0;
+                practiceAnswers = {};
+                document.getElementById('practiceSetup').style.display = 'none';
+                document.getElementById('practiceResult').style.display = 'none';
+                document.getElementById('practiceArea').style.display = 'block';
+                renderPracticeQuestion();
+            }
+
+            function shuffleArray(arr) {
+                const a = [...arr];
+                for (let i = a.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [a[i], a[j]] = [a[j], a[i]];
+                }
+                return a;
+            }
+
+            function renderPracticeQuestion() {
+                const area = document.getElementById('practiceArea');
+                if (practiceIndex >= practiceQuestions.length) {
+                    finishPractice();
+                    return;
+                }
+                const q = practiceQuestions[practiceIndex];
+                const total = practiceQuestions.length;
+                area.innerHTML = `
+              <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                  <span class="badge badge-blue">Câu ${practiceIndex+1} / ${total}</span>
+                  <span class="badge badge-blue">${q.chapter}</span>
+                </div>
+                <div class="question-text">${q.question}</div>
+                <div id="practiceOptions">
+                  ${['A','B','C','D'].map(letter => `
+                    <div class="option-item" data-letter="${letter}" onclick="selectPracticeOption('${letter}')">
+                      <span class="option-letter">${letter}</span>
+                      <span>${q.options[letter]}</span>
+                    </div>`).join('')}
+                </div>
+                <div id="practiceFeedback" style="margin-top:10px;font-weight:600;"></div>
+                <button class="btn btn-primary" id="practiceNextBtn" style="margin-top:14px;display:none;" onclick="nextPracticeQuestion()">
+                  ${practiceIndex < total - 1 ? 'Câu tiếp theo <i class="fa-solid fa-arrow-right"></i>' : 'Xem kết quả <i class="fa-solid fa-flag-checkered"></i>'}
+                </button>
+              </div>`;
+                document.getElementById('practiceNextBtn').style.display = 'none';
+                document.getElementById('practiceFeedback').innerHTML = '';
+            }
+
+            window.selectPracticeOption = function(letter) {
+                if (document.getElementById('practiceNextBtn').style.display !== 'none') return; // already answered
+                const q = practiceQuestions[practiceIndex];
+                practiceAnswers[practiceIndex] = letter;
+                const isCorrect = letter === q.correctAnswer;
+                const feedback = document.getElementById('practiceFeedback');
+                const allOptions = document.querySelectorAll('#practiceOptions .option-item');
+                allOptions.forEach(opt => {
+                    opt.style.pointerEvents = 'none';
+                    const ol = opt.dataset.letter;
+                    if (ol === q.correctAnswer) opt.classList.add('correct-show');
+                    if (ol === letter && !isCorrect) opt.classList.add('wrong-show');
+                    if (ol === letter) opt.classList.add('selected');
+                });
+                if (isCorrect) {
+                    feedback.innerHTML = '<span style="color:#059669;">✅ Chính xác! Rất tốt!</span>';
+                } else {
+                    feedback.innerHTML =
+                        `<span style="color:#dc2626;">❌ Sai! Đáp án đúng là: <span class="result-correct-answer">${q.correctAnswer}</span></span>`;
+                }
+                document.getElementById('practiceNextBtn').style.display = 'inline-flex';
+            };
+
+            function nextPracticeQuestion() {
+                practiceIndex++;
+                if (practiceIndex >= practiceQuestions.length) {
+                    finishPractice();
+                } else {
+                    renderPracticeQuestion();
+                }
+            }
+
+            function finishPractice() {
+                const area = document.getElementById('practiceArea');
+                area.style.display = 'none';
+                const resultDiv = document.getElementById('practiceResult');
+                resultDiv.style.display = 'block';
+                const total = practiceQuestions.length;
+                let correct = 0;
+                for (let i = 0; i < total; i++) {
+                    if (practiceAnswers[i] === practiceQuestions[i].correctAnswer) correct++;
+                }
+                const wrong = total - correct;
+                const pct = total > 0 ? ((correct / total) * 100).toFixed(1) : 0;
+                resultDiv.innerHTML = `
+              <div class="card">
+                <h3><i class="fa-solid fa-chart-pie"></i> Kết quả luyện tập</h3>
+                <div class="stats-row">
+                  <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-check"></i></div>
+                    <div class="stat-info"><div class="stat-value">${correct}</div><div class="stat-label">Đúng</div></div></div>
+                  <div class="stat-card"><div class="stat-icon red"><i class="fa-solid fa-xmark"></i></div>
+                    <div class="stat-info"><div class="stat-value">${wrong}</div><div class="stat-label">Sai</div></div></div>
+                  <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-percent"></i></div>
+                    <div class="stat-info"><div class="stat-value">${pct}%</div><div class="stat-label">Tỉ lệ đúng</div></div></div>
+                </div>
+                <button class="btn btn-outline" onclick="resetPractice()"><i class="fa-solid fa-rotate"></i> Luyện tập lại</button>
+              </div>`;
+                document.getElementById('practiceSetup').style.display = 'block';
+            }
+
+            function resetPractice() {
+                practiceQuestions = [];
+                practiceIndex = 0;
+                practiceAnswers = {};
+                document.getElementById('practiceArea').style.display = 'none';
+                document.getElementById('practiceResult').style.display = 'none';
+                document.getElementById('practiceSetup').style.display = 'block';
+            }
+            window.resetPractice = resetPractice;
+
+            // ============ EXAM ============
+            let examQuestions = [];
+            let examAnswers = {};
+            let examTimer = null;
+            let examTimeLeft = 0;
+            let examTotalTime = 0;
+            let examSubmitted = false;
+
+            function startExam() {
+                const bank = getQuestionBank();
+                if (bank.length === 0) {
+                    showToast('Ngân hàng câu hỏi trống! Hãy thêm câu hỏi trước.', 'error');
+                    return;
+                }
+                const chapters = getChapters();
+                const chapterQtys = {};
+                const inputs = document.querySelectorAll('.exam-chapter-qty');
+                inputs.forEach(inp => {
+                    chapterQtys[inp.dataset.chapter] = parseInt(inp.value) || 0;
+                });
+                examTimeLeft = (parseInt(document.getElementById('examTime').value) || 50) * 60;
+                examTotalTime = examTimeLeft;
+                examSubmitted = false;
+                examAnswers = {};
+                examQuestions = [];
+                // Select random questions from each chapter
+                chapters.forEach(ch => {
+                    const qty = chapterQtys[ch] || 0;
+                    if (qty <= 0) return;
+                    const pool = bank.filter(q => q.chapter === ch);
+                    const selected = shuffleArray(pool).slice(0, Math.min(qty, pool.length));
+                    examQuestions.push(...selected);
+                });
+                if (examQuestions.length === 0) {
+                    showToast('Không có câu hỏi nào được chọn! Kiểm tra cấu hình.', 'error');
+                    return;
+                }
+                // Shuffle overall
+                examQuestions = shuffleArray(examQuestions);
+                document.getElementById('examSetup').style.display = 'none';
+                document.getElementById('examResult').style.display = 'none';
+                document.getElementById('examArea').style.display = 'block';
+                renderExamInterface();
+                startExamTimer();
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            function renderExamInterface() {
+                const area = document.getElementById('examArea');
+                const total = examQuestions.length;
+                let html = `
+              <div class="card" style="position:sticky;top:10px;z-index:10;text-align:center;">
+                <div class="timer-display" id="examTimerDisplay">${formatTime(examTimeLeft)}</div>
+                <div class="timer-bar"><div class="timer-bar-fill" id="examTimerBar" style="width:100%;"></div></div>
+                <p style="margin-top:6px;font-size:0.85rem;color:var(--text-muted);">Tổng: ${total} câu | Đã trả lời: <span id="examAnsweredCount">0</span></p>
+              </div>`;
+                examQuestions.forEach((q, idx) => {
+                    html += `
+                <div class="question-card" id="examQCard${idx}">
+                  <div class="question-num">Câu ${idx+1} / ${total} <span style="font-weight:400;color:var(--text-muted);">- ${q.chapter}</span></div>
+                  <div class="question-text">${q.question}</div>
+                  ${['A','B','C','D'].map(letter => `
+                    <div class="option-item exam-option" data-qidx="${idx}" data-letter="${letter}" onclick="selectExamOption(${idx},'${letter}')">
+                      <span class="option-letter">${letter}</span>
+                      <span>${q.options[letter]}</span>
+                    </div>`).join('')}
+                </div>`;
+                });
+                html += `
+              <div class="card" style="text-align:center;">
+                <button class="btn btn-success" style="font-size:1rem;padding:12px 30px;" onclick="submitExam()">
+                  <i class="fa-solid fa-paper-plane"></i> Nộp bài
+                </button>
+              </div>`;
+                area.innerHTML = html;
+            }
+
+            function formatTime(seconds) {
+                const m = Math.floor(seconds / 60);
+                const s = seconds % 60;
+                return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+            }
+
+            function startExamTimer() {
+                updateExamTimerUI();
+                examTimer = setInterval(() => {
+                    examTimeLeft--;
+                    updateExamTimerUI();
+                    if (examTimeLeft <= 0) {
+                        clearInterval(examTimer);
+                        examTimer = null;
+                        showToast('Hết giờ! Bài thi sẽ được tự động nộp.', 'error');
+                        submitExam();
+                    }
+                }, 1000);
+            }
+
+            function updateExamTimerUI() {
+                const display = document.getElementById('examTimerDisplay');
+                const bar = document.getElementById('examTimerBar');
+                if (display) {
+                    display.textContent = formatTime(examTimeLeft);
+                    if (examTimeLeft < 300) {
+                        display.classList.add('timer-warning');
+                    } else {
+                        display.classList.remove('timer-warning');
+                    }
+                }
+                if (bar) {
+                    const pct = (examTimeLeft / examTotalTime) * 100;
+                    bar.style.width = pct + '%';
+                    if (examTimeLeft < 300) {
+                        bar.classList.add('warning');
+                    } else {
+                        bar.classList.remove('warning');
+                    }
+                }
+            }
+
+            window.selectExamOption = function(qIdx, letter) {
+                if (examSubmitted) return;
+                examAnswers[qIdx] = letter;
+                // Update UI
+                const card = document.getElementById('examQCard' + qIdx);
+                if (card) card.classList.add('answered');
+                const allOptions = document.querySelectorAll(`.exam-option[data-qidx="${qIdx}"]`);
+                allOptions.forEach(opt => {
+                    opt.classList.remove('selected');
+                    if (opt.dataset.letter === letter) opt.classList.add('selected');
+                });
+                updateExamAnsweredCount();
+            };
+
+            function updateExamAnsweredCount() {
+                const count = Object.keys(examAnswers).length;
+                const el = document.getElementById('examAnsweredCount');
+                if (el) el.textContent = count;
+            }
+
+            function submitExam() {
+                if (examSubmitted) return;
+                examSubmitted = true;
+                if (examTimer) {
+                    clearInterval(examTimer);
+                    examTimer = null;
+                }
+                // Calculate results
+                const total = examQuestions.length;
+                let correct = 0;
+                const chapterStats = {}; // {chapter: {total, wrong}}
+                examQuestions.forEach((q, idx) => {
+                    const userAnswer = examAnswers[idx] || null;
+                    const isCorrect = userAnswer === q.correctAnswer;
+                    if (isCorrect) correct++;
+                    if (!chapterStats[q.chapter]) chapterStats[q.chapter] = { total: 0, wrong: 0 };
+                    chapterStats[q.chapter].total++;
+                    if (!isCorrect) chapterStats[q.chapter].wrong++;
+                });
+                const wrong = total - correct;
+                const pct = total > 0 ? ((correct / total) * 100).toFixed(1) : 0;
+
+                // Show results
+                document.getElementById('examArea').style.display = 'none';
+                const resultDiv = document.getElementById('examResult');
+                resultDiv.style.display = 'block';
+                let resultHTML = `
+              <div class="card">
+                <h3><i class="fa-solid fa-trophy"></i> Kết quả bài thi</h3>
+                <div class="stats-row">
+                  <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-check"></i></div>
+                    <div class="stat-info"><div class="stat-value">${correct}</div><div class="stat-label">Đúng</div></div></div>
+                  <div class="stat-card"><div class="stat-icon red"><i class="fa-solid fa-xmark"></i></div>
+                    <div class="stat-info"><div class="stat-value">${wrong}</div><div class="stat-label">Sai</div></div></div>
+                  <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-percent"></i></div>
+                    <div class="stat-info"><div class="stat-value">${pct}%</div><div class="stat-label">Tỉ lệ đúng</div></div></div>
+                  <div class="stat-card"><div class="stat-icon orange"><i class="fa-solid fa-clock"></i></div>
+                    <div class="stat-info"><div class="stat-value">${total}</div><div class="stat-label">Tổng câu</div></div></div>
+                </div>
+                <h4 style="margin-top:16px;">📊 Tỉ lệ làm sai theo chương:</h4>`;
+                for (const [ch, stats] of Object.entries(chapterStats)) {
+                    const errorRate = stats.total > 0 ? ((stats.wrong / stats.total) * 100).toFixed(1) : 0;
+                    resultHTML += `
+                <div class="chapter-error-row">
+                  <span style="flex:1;font-size:0.85rem;">${ch}</span>
+                  <span style="margin:0 10px;font-size:0.8rem;">${stats.wrong}/${stats.total} sai</span>
+                  <div class="progress-mini"><div class="progress-mini-fill" style="width:${errorRate}%;"></div></div>
+                  <span style="margin-left:8px;font-weight:700;font-size:0.85rem;color:var(--danger);">${errorRate}%</span>
+                </div>`;
+                }
+                resultHTML += `
+                <h4 style="margin-top:20px;">📝 Chi tiết câu sai:</h4>`;
+                examQuestions.forEach((q, idx) => {
+                    const userAnswer = examAnswers[idx] || '(Chưa trả lời)';
+                    const isCorrect = userAnswer === q.correctAnswer;
+                    if (!isCorrect) {
+                        resultHTML += `
+                  <div class="question-card" style="border-left:4px solid var(--danger);">
+                    <div class="question-num">Câu ${idx+1} - ${q.chapter}</div>
+                    <div class="question-text">${q.question}</div>
+                    <p style="color:#dc2626;">❌ Bạn chọn: <strong>${userAnswer}</strong></p>
+                    <p style="color:#059669;">✅ Đáp án đúng: <span class="result-correct-answer">${q.correctAnswer}. ${q.options[q.correctAnswer]}</span></p>
+                  </div>`;
+                    }
+                });
+                resultHTML += `
+                <button class="btn btn-primary" onclick="resetExam()" style="margin-top:12px;">
+                  <i class="fa-solid fa-rotate"></i> Thi lại
+                </button>
+              </div>`;
+                resultDiv.innerHTML = resultHTML;
+                document.getElementById('examSetup').style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            window.submitExam = submitExam;
+
+            function resetExam() {
+                examQuestions = [];
+                examAnswers = {};
+                examTimeLeft = 0;
+                examTotalTime = 0;
+                examSubmitted = false;
+                if (examTimer) { clearInterval(examTimer);
+                    examTimer = null; }
+                document.getElementById('examArea').style.display = 'none';
+                document.getElementById('examResult').style.display = 'none';
+                document.getElementById('examSetup').style.display = 'block';
+                refreshExamSetup();
+            }
+            window.resetExam = resetExam;
+
+            // ============ INITIALIZATION ============
+            function init() {
+                // Ensure chapters exist
+                const chapters = getChapters();
+                if (chapters.length === 0) {
+                    saveChapters(defaultChapters);
+                }
+                refreshChapterSelects();
+                refreshDashboard();
+                refreshExamSetup();
+            }
+
+            // ============ GLOBAL KEYDOWN: Prevent accidental refresh ============
+            window.addEventListener('beforeunload', function(e) {
+                if (examTimer && !examSubmitted) {
+                    e.preventDefault();
+                    e.returnValue = 'Bạn đang làm bài thi. Bạn có chắc muốn rời đi?';
+                    return e.returnValue;
+                }
+            });
+
+            // ============ STARTUP ============
+            init();
+            console.log('✅ Website Trắc Nghiệm CNXH Khoa Học đã sẵn sàng!');
+            console.log('📦 Dữ liệu lưu trong localStorage: ' + STORAGE_KEY);
+            console.log('📋 Các chương:', getChapters());
+            console.log('📝 Tổng câu hỏi hiện có:', getQuestionBank().length);
+        })();
+    </script>
+</body>
+</html>
