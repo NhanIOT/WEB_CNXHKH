@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-  <title>Hệ Thống Trắc Nghiệm Đa Môn - Đáp Án Linh Hoạt</title>
+  <title>Hệ Thống Thi Trắc Nghiệm</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     :root {
@@ -72,8 +72,8 @@
 <body>
   <button class="mobile-toggle" id="mobileToggle"><i class="fa-solid fa-bars"></i></button>
   <nav class="sidebar" id="sidebar">
-    <div class="sidebar-logo"><div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>Trắc Nghiệm</div>
-    <div class="subject-selector"><label>📘 Môn học</label><select id="sidebarSubjectSelect"></select></div>
+    <div class="sidebar-logo"><div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>Trắc Nghiệm NhânLoveLinh</div>
+    <div class="subject-selector"><label>Môn học</label><select id="sidebarSubjectSelect"></select></div>
     <ul class="sidebar-nav">
       <li><a data-panel="dashboard" class="active"><i class="fa-solid fa-house"></i> Trang chủ</a></li>
       <li><a data-panel="subjects"><i class="fa-solid fa-book"></i> Quản lý môn</a></li>
@@ -85,31 +85,31 @@
       <li><a data-panel="practice"><i class="fa-solid fa-pen-to-square"></i> Luyện tập</a></li>
       <li><a data-panel="exam"><i class="fa-solid fa-clock"></i> Thi</a></li>
     </ul>
-    <div class="sidebar-footer">© 2025 Hệ thống trắc nghiệm</div>
+    <div class="sidebar-footer">© 2026 Hệ thống trắc nghiệm NEU</div>
   </nav>
 
   <div class="main-content" id="mainContent">
     <!-- DASHBOARD -->
     <div class="panel active" id="panel-dashboard">
-      <div class="page-header"><h1>📋 Trang chủ</h1><div class="subtitle">Tổng quan hệ thống</div></div>
+      <div class="page-header"><h1>Trang chủ</h1><div class="subtitle">Tổng quan hệ thống</div></div>
       <div class="stats-row" id="dashboardStats"></div>
       <div class="card"><h3><i class="fa-solid fa-chart-bar"></i> Chi tiết môn học</h3><div id="dashboardSubjectsDetail"></div></div>
     </div>
     <!-- SUBJECTS -->
     <div class="panel" id="panel-subjects">
-      <div class="page-header"><h1>📚 Quản lý môn học</h1></div>
+      <div class="page-header"><h1>Quản lý môn học</h1></div>
       <div class="card"><h3>Thêm môn</h3><div class="form-row"><div class="form-group" style="flex:3"><input id="newSubjectName" placeholder="Tên môn"></div><div class="form-group" style="flex:1"><button class="btn btn-primary" id="btnAddSubject">Thêm</button></div></div></div>
       <div class="card"><h3>Danh sách môn</h3><div id="subjectListContainer"></div></div>
     </div>
     <!-- CHAPTERS -->
     <div class="panel" id="panel-chapters">
-      <div class="page-header"><h1>📂 Quản lý chương</h1></div>
+      <div class="page-header"><h1>Quản lý chương</h1></div>
       <div class="card"><h3>Thêm chương cho môn: <span id="currentSubjectLabel"></span></h3><div class="form-row"><div class="form-group" style="flex:3"><input id="newChapterNameInput" placeholder="Tên chương"></div><div class="form-group" style="flex:1"><button class="btn btn-primary" id="btnAddChapter">Thêm</button></div></div></div>
       <div class="card"><h3>Danh sách chương</h3><div id="chapterListContainer"></div></div>
     </div>
     <!-- ADD SINGLE -->
     <div class="panel" id="panel-add-single">
-      <div class="page-header"><h1>✍️ Thêm câu hỏi</h1><div class="subtitle">Số lượng đáp án linh hoạt (tối thiểu 2)</div></div>
+      <div class="page-header"><h1>Thêm câu hỏi</h1><div class="subtitle">Số lượng đáp án linh hoạt (tối thiểu 2)</div></div>
       <div class="card">
         <div class="form-group"><label>Chọn chương</label><select id="singleChapterSelect"></select></div>
         <div class="form-group"><label>Câu hỏi</label><textarea id="singleQuestion" rows="3" placeholder="Nội dung câu hỏi..."></textarea></div>
@@ -125,7 +125,7 @@
     </div>
     <!-- ADD BULK -->
     <div class="panel" id="panel-add-bulk">
-      <div class="page-header"><h1>📝 Thêm hàng loạt</h1></div>
+      <div class="page-header"><h1>Thêm hàng loạt</h1></div>
       <div class="card">
         <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px">Định dạng: <code>Câu 1: Nội dung</code> | <code>A: ...</code> <code>B: ...</code> ... (có thể 2,3,4 đáp án) | <code>Đáp án đúng: A</code> | <code>Giải thích: ...</code></p>
         <div class="form-group"><label>Chọn chương</label><select id="bulkChapterSelect"></select></div>
@@ -136,26 +136,26 @@
     </div>
     <!-- IMPORT/EXPORT -->
     <div class="panel" id="panel-import-export">
-      <div class="page-header"><h1>📁 Nhập / Xuất file</h1></div>
-      <div class="card"><h3>📥 Nhập file TXT</h3><input type="file" id="importFile" accept=".txt"><button class="btn btn-primary" style="margin-top:10px" id="btnImportFile">Nhập</button><span id="importResult" style="margin-left:10px"></span></div>
-      <div class="card"><h3>📤 Xuất file TXT</h3><div class="form-group" style="max-width:400px"><label>Chọn chương</label><select id="exportChapterSelect"><option value="all">Tất cả</option></select></div><button class="btn btn-success" id="btnExportFile">Xuất file</button></div>
+      <div class="page-header"><h1>Nhập / Xuất file</h1></div>
+      <div class="card"><h3>Nhập file TXT</h3><input type="file" id="importFile" accept=".txt"><button class="btn btn-primary" style="margin-top:10px" id="btnImportFile">Nhập</button><span id="importResult" style="margin-left:10px"></span></div>
+      <div class="card"><h3>Xuất file TXT</h3><div class="form-group" style="max-width:400px"><label>Chọn chương</label><select id="exportChapterSelect"><option value="all">Tất cả</option></select></div><button class="btn btn-success" id="btnExportFile">Xuất file</button></div>
     </div>
     <!-- QUESTION BANK -->
     <div class="panel" id="panel-question-bank">
-      <div class="page-header"><h1>🗄️ Ngân hàng câu hỏi</h1></div>
+      <div class="page-header"><h1>Ngân hàng câu hỏi</h1></div>
       <div class="form-group" style="max-width:250px"><label>Lọc chương</label><select id="bankChapterFilter"><option value="all">Tất cả</option></select></div>
       <div id="questionBankContent"></div>
     </div>
     <!-- PRACTICE -->
     <div class="panel" id="panel-practice">
-      <div class="page-header"><h1>📖 Luyện tập</h1></div>
+      <div class="page-header"><h1>Luyện tập</h1></div>
       <div id="practiceSetup" class="card"><div class="form-group" style="max-width:350px"><label>Chọn chương</label><select id="practiceChapterSelect"></select></div><button class="btn btn-primary" id="btnStartPractice">Bắt đầu</button></div>
       <div id="practiceArea" style="display:none"></div>
       <div id="practiceResult" style="display:none"></div>
     </div>
     <!-- EXAM -->
     <div class="panel" id="panel-exam">
-      <div class="page-header"><h1>⏱️ Thi</h1></div>
+      <div class="page-header"><h1>Thi</h1></div>
       <div id="examSetup" class="card">
         <div class="form-row"><div class="form-group"><label>Tổng số câu</label><input type="number" id="examTotalQuestions" value="80" min="1"></div><div class="form-group"><label>Thời gian (phút)</label><input type="number" id="examTime" value="50" min="1"></div></div>
         <p><strong>Số câu mỗi chương:</strong></p><div id="examChapterConfig"></div>
