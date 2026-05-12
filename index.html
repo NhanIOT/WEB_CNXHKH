@@ -130,24 +130,8 @@
     <!-- IMPORT/EXPORT -->
     <div class="panel" id="panel-import-export">
       <div class="page-header"><h1>📁 Nhập / Xuất file</h1></div>
-      <div class="card">
-        <h3>📥 Nhập file TXT</h3>
-        <p style="font-size:0.85rem;">File .txt có thể chứa nhiều chương (dòng "Chương:...") và giải thích.</p>
-        <input type="file" id="importFile" accept=".txt">
-        <button class="btn btn-primary" style="margin-top:10px;" id="btnImportFile"><i class="fa-solid fa-upload"></i> Nhập file</button>
-        <span id="importResult" style="margin-left:10px;"></span>
-      </div>
-      <div class="card">
-        <h3>📤 Xuất file TXT</h3>
-        <div class="form-group" style="max-width:400px;">
-          <label>Chọn chương cần xuất</label>
-          <select id="exportChapterSelect">
-            <option value="all">Tất cả chương</option>
-          </select>
-        </div>
-        <button class="btn btn-success" id="btnExportFile"><i class="fa-solid fa-download"></i> Xuất file</button>
-        <span id="exportResult" style="margin-left:10px; font-size:0.85rem;"></span>
-      </div>
+      <div class="card"><h3>📥 Nhập file TXT</h3><p style="font-size:0.85rem;">File .txt có thể chứa nhiều chương (dòng "Chương:...") và giải thích.</p><input type="file" id="importFile" accept=".txt"><button class="btn btn-primary" style="margin-top:10px;" id="btnImportFile"><i class="fa-solid fa-upload"></i> Nhập file</button><span id="importResult" style="margin-left:10px;"></span></div>
+      <div class="card"><h3>📤 Xuất file TXT</h3><button class="btn btn-success" id="btnExportFile"><i class="fa-solid fa-download"></i> Xuất toàn bộ câu hỏi</button></div>
     </div>
     <!-- QUESTION BANK -->
     <div class="panel" id="panel-question-bank">
@@ -178,8 +162,8 @@
 
   <script>
     (function() {
-      const STORAGE_KEY = 'cnxhk_question_bank_v4';
-      const CHAPTERS_KEY = 'cnxhk_chapters_v4';
+      const STORAGE_KEY = 'cnxhk_question_bank_v3';
+      const CHAPTERS_KEY = 'cnxhk_chapters_v3';
       const defaultChapters = [
         'Chương 1: Nhập môn CNXHKH',
         'Chương 2: Sứ mệnh lịch sử của GCCN',
@@ -209,9 +193,9 @@
         setTimeout(()=>{ t.style.opacity='0'; t.style.transition='0.2s'; setTimeout(()=>t.remove(),300); }, 2500);
       }
 
-      function populateSelect(sel, chapters, addAll=false, addAllLabel='Tất cả chương') {
+      function populateSelect(sel, chapters, addAll=false) {
         sel.innerHTML = '';
-        if(addAll) { const o = document.createElement('option'); o.value='all'; o.textContent=addAllLabel; sel.appendChild(o); }
+        if(addAll) { const o = document.createElement('option'); o.value='all'; o.textContent='Tất cả chương'; sel.appendChild(o); }
         chapters.forEach(ch => { const o = document.createElement('option'); o.value=ch; o.textContent=ch; sel.appendChild(o); });
       }
 
@@ -224,11 +208,6 @@
         populateSelect(bankFilter, chapters, true);
         bankFilter.value = (cur && chapters.includes(cur)) ? cur : 'all';
         populateSelect(document.getElementById('practiceChapter'), chapters);
-        // Xuất: select chương
-        const exportSel = document.getElementById('exportChapterSelect');
-        const curExport = exportSel.value;
-        populateSelect(exportSel, chapters, true, 'Tất cả chương');
-        exportSel.value = (curExport && (curExport==='all' || chapters.includes(curExport))) ? curExport : 'all';
         renderExamChapterConfig();
       }
 
@@ -243,7 +222,6 @@
         if(panel==='dashboard') refreshDashboard();
         if(panel==='question-bank') renderQuestionBank();
         if(panel==='add-single'||panel==='add-bulk') refreshAllChapterSelects();
-        if(panel==='import-export') refreshAllChapterSelects();
         if(panel==='practice') refreshAllChapterSelects();
         if(panel==='exam') { refreshAllChapterSelects(); renderExamChapterConfig(); }
       }
@@ -340,32 +318,17 @@
         showToast(`Đã thêm ${parsed.length} câu hỏi!`,'success'); refreshDashboard();
       });
 
-      // IMPORT / EXPORT (with chapter-specific export)
+      // IMPORT / EXPORT (with explanation)
       document.getElementById('btnExportFile').addEventListener('click', ()=>{
-        const bank = getBank();
-        const selectedChapter = document.getElementById('exportChapterSelect').value;
-        let filtered = bank;
-        if (selectedChapter !== 'all') {
-          filtered = bank.filter(q => q.chapter === selectedChapter);
-        }
-        if (!filtered.length) {
-          showToast('Không có câu hỏi nào để xuất!', 'error');
-          document.getElementById('exportResult').textContent = 'Không có câu hỏi.';
-          return;
-        }
-        let out = '';
-        filtered.forEach((q, i) => {
+        const bank = getBank(); if(!bank.length){ showToast('Ngân hàng trống!','error'); return; }
+        let out=''; bank.forEach((q,i)=>{
           out += `Chương: ${q.chapter}\nCâu ${i+1}: ${q.question}\nA: ${q.options.A}\nB: ${q.options.B}\nC: ${q.options.C}\nD: ${q.options.D}\nĐáp án đúng: ${q.correctAnswer}\n`;
-          if (q.explanation) out += `Giải thích: ${q.explanation}\n`;
+          if(q.explanation) out += `Giải thích: ${q.explanation}\n`;
           out += '\n';
         });
-        const blob = new Blob(['\uFEFF' + out], { type: 'text/plain' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = selectedChapter === 'all' ? 'ngan_hang_toan_bo.txt' : `ngan_hang_${selectedChapter.replace(/[^a-zA-Z0-9]/g, '_')}.txt`;
-        a.click();
-        document.getElementById('exportResult').textContent = `✅ Đã xuất ${filtered.length} câu.`;
-        showToast(`Đã xuất ${filtered.length} câu!`, 'success');
+        const blob = new Blob(['\uFEFF'+out],{type:'text/plain'});
+        const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ngan_hang_cnxhk.txt'; a.click();
+        showToast('Xuất file thành công!','success');
       });
 
       document.getElementById('btnImportFile').addEventListener('click', ()=>{
@@ -396,7 +359,7 @@
         reader.readAsText(file, 'UTF-8');
       });
 
-      // QUESTION BANK
+      // QUESTION BANK (show explanation toggle)
       function renderQuestionBank() {
         const bank = getBank(); const filter = document.getElementById('bankFilter').value;
         let filtered = filter==='all'? bank : bank.filter(q=>q.chapter===filter);
