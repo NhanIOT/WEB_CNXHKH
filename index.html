@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-  <title>Hệ Thống Thi Trắc Nghiệm</title>
+  <title>Hệ Thống Trắc Nghiệm</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     :root {
@@ -65,6 +65,7 @@
     .explanation-box { background:#fef9c3; border-left:4px solid #eab308; padding:12px 16px; border-radius:8px; margin-top:8px; font-size:0.9rem; }
     .option-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
     .option-row .option-letter { width:30px; font-weight:700; text-align:center; }
+    .score-highlight { font-size:1.8rem; font-weight:700; color:var(--primary); }
     .mobile-toggle { display:none; position:fixed; top:14px; left:14px; z-index:130; background:var(--primary); color:#fff; border:none; width:40px; height:40px; border-radius:50%; font-size:1.2rem; cursor:pointer; box-shadow:var(--shadow-lg); align-items:center; justify-content:center; }
     @media(max-width:768px){ .sidebar { transform:translateX(-100%); } .sidebar.open { transform:translateX(0); } .main-content { margin-left:0; padding:16px; } .mobile-toggle { display:flex; } .form-row { flex-direction:column; gap:0; } }
   </style>
@@ -85,7 +86,7 @@
       <li><a data-panel="practice"><i class="fa-solid fa-pen-to-square"></i> Luyện tập</a></li>
       <li><a data-panel="exam"><i class="fa-solid fa-clock"></i> Thi</a></li>
     </ul>
-    <div class="sidebar-footer">© 2026 Hệ thống trắc nghiệm NEU</div>
+    <div class="sidebar-footer">© 2026 Hệ thống trắc nghiệm NEU phát triển bởi Nhân và Linh</div>
   </nav>
 
   <div class="main-content" id="mainContent">
@@ -97,7 +98,7 @@
     </div>
     <!-- SUBJECTS -->
     <div class="panel" id="panel-subjects">
-      <div class="page-header"><h1>Quản lý môn học</h1></div>
+      <div class="page-header"><h1>📚 Quản lý môn học</h1></div>
       <div class="card"><h3>Thêm môn</h3><div class="form-row"><div class="form-group" style="flex:3"><input id="newSubjectName" placeholder="Tên môn"></div><div class="form-group" style="flex:1"><button class="btn btn-primary" id="btnAddSubject">Thêm</button></div></div></div>
       <div class="card"><h3>Danh sách môn</h3><div id="subjectListContainer"></div></div>
     </div>
@@ -155,7 +156,7 @@
     </div>
     <!-- EXAM -->
     <div class="panel" id="panel-exam">
-      <div class="page-header"><h1>Thi</h1></div>
+      <div class="page-header"><h1>Thi trắc nghiệm</h1></div>
       <div id="examSetup" class="card">
         <div class="form-row"><div class="form-group"><label>Tổng số câu</label><input type="number" id="examTotalQuestions" value="80" min="1"></div><div class="form-group"><label>Thời gian (phút)</label><input type="number" id="examTime" value="50" min="1"></div></div>
         <p><strong>Số câu mỗi chương:</strong></p><div id="examChapterConfig"></div>
@@ -168,14 +169,13 @@
   <div class="toast-container" id="toastContainer"></div>
   <script>
     (() => {
-      const DB_KEY = 'quiz_flex_v1';
+      const DB_KEY = 'quiz_flex_v2';
       let db = { subjects: [], questions: [] };
 
       function loadDB() {
         try { db = JSON.parse(localStorage.getItem(DB_KEY)) || { subjects: [], questions: [] }; } catch (e) { db = { subjects: [], questions: [] }; }
         if (!db.subjects) db.subjects = [];
         if (!db.questions) db.questions = [];
-        // Migration: convert old options object to array
         db.questions.forEach(q => {
           if (q.options && !Array.isArray(q.options)) {
             const arr = [];
@@ -400,7 +400,6 @@
               options[idx] = text;
             }
           }
-          // filter empty trailing options
           while (options.length && !options[options.length-1]) options.pop();
           if (qText && options.length>=2 && correct && options.every(o=>o)) {
             const chapters = getChapters(subjId);
@@ -494,7 +493,7 @@
       }
       document.getElementById('bankChapterFilter').addEventListener('change', renderQuestionBank);
 
-      // PRACTICE
+      // PRACTICE (with score)
       let practiceQuestions=[], practiceIdx=0, practiceAnswers={};
       document.getElementById('btnStartPractice').addEventListener('click', ()=>{
         const subjId = getCurrentSubjectId(); if(!subjId) return showToast('Chọn môn!','error');
@@ -539,19 +538,20 @@
         document.getElementById('practiceSetup').style.display='block';
         const total = practiceQuestions.length; let correct=0;
         practiceQuestions.forEach((q,i)=>{ if(practiceAnswers[i]===q.correctAnswer) correct++; });
-        document.getElementById('practiceResult').innerHTML = `<div class="card"><h3>Kết quả: ${correct}/${total} (${((correct/total)*100).toFixed(1)}%)</h3></div>`;
+        const score = total ? (correct / total * 10).toFixed(2) : '0.00';
+        document.getElementById('practiceResult').innerHTML = `<div class="card"><h3>Kết quả: ${correct}/${total} (${((correct/total)*100).toFixed(1)}%)</h3><p>Điểm: <span class="score-highlight">${score}</span> / 10</p></div>`;
         document.getElementById('practiceResult').style.display='block';
       }
 
-      // EXAM
+      // EXAM (with score)
       let examQuestions=[], examAnswers={}, examTimer=null, examTimeLeft=0, examSubmitted=false;
       function refreshExamChapterConfig() {
         const subjId = getCurrentSubjectId(); const container = document.getElementById('examChapterConfig');
         if(!subjId) { container.innerHTML='<p>Chọn môn.</p>'; return; }
         const chapters = getChapters(subjId);
         const total = parseInt(document.getElementById('examTotalQuestions').value)||80;
-        const per = Math.max(1, Math.floor(total/chapters.length));
-        let rem = total - per*chapters.length;
+        const per = Math.max(1, Math.floor(total / Math.max(1, chapters.length)));
+        let rem = total - per * chapters.length;
         container.innerHTML = chapters.map((ch,i)=>`<div style="display:flex;gap:10px;align-items:center;margin-bottom:6px;"><span style="width:200px;">${ch.name}</span><input type="number" class="exam-ch-qty" value="${per+(i<rem?1:0)}" min="0" style="width:80px;"></div>`).join('');
       }
       document.getElementById('examTotalQuestions').addEventListener('input', refreshExamChapterConfig);
@@ -599,9 +599,13 @@
           const key=q.chapterName; if(!chapterStats[key]) chapterStats[key]={total:0,wrong:0};
           chapterStats[key].total++; if(examAnswers[i]===q.correctAnswer) correct++; else chapterStats[key].wrong++;
         });
+        const score = (correct / total * 10).toFixed(2);
         document.getElementById('examArea').style.display='none'; const res=document.getElementById('examResult'); res.style.display='block';
-        let html=`<div class="card"><h3>Kết quả: ${correct}/${total} (${((correct/total)*100).toFixed(1)}%)</h3><h4>Tỉ lệ sai theo chương:</h4>`;
-        for(let [ch,st] of Object.entries(chapterStats)) html+=`<div>📂 ${ch}: ${st.wrong}/${st.total} sai (${st.total?((st.wrong/st.total)*100).toFixed(1):0}%)</div>`;
+        let html=`<div class="card"><h3>Kết quả: ${correct}/${total} (${((correct/total)*100).toFixed(1)}%)</h3>
+        <p>Điểm: <span class="score-highlight">${score}</span> / 10</p>
+        <h4>Tỉ lệ sai theo chương:</h4>`;
+        for(let [ch,st] of Object.entries(chapterStats))
+          html+=`<div>${ch}: ${st.wrong}/${st.total} sai (${st.total?((st.wrong/st.total)*100).toFixed(1):0}%)</div>`;
         html+='<h4 style="margin-top:16px;">Câu sai (kèm giải thích):</h4>';
         examQuestions.forEach((q,i)=>{
           if(examAnswers[i]!==q.correctAnswer){
