@@ -3,73 +3,511 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>Trắc Nghiệm Cùng Nhân và Linh</title>
+  <title>Phần mềm luyện thi trắc nghiệm</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --bg: #f0f4f9; --white: #ffffff; --primary: #1a6dd4; --primary-dark: #0e4b9e;
-      --primary-light: #e5f0fc; --accent: #2196F3; --text: #1e293b; --text-light: #475569;
-      --text-muted: #64748b; --border: #e2e8f0; --success: #10b981; --danger: #ef4444;
-      --warning: #f59e0b; --shadow: 0 4px 16px rgba(0,0,0,0.04); --shadow-lg: 0 12px 32px rgba(0,0,0,0.07);
-      --radius: 16px; --radius-sm: 10px; --transition: 0.2s ease; --sidebar-width: 260px;
+      --bg: #f0f4f9;
+      --white: #ffffff;
+      --primary: #1a6dd4;
+      --primary-dark: #0e4b9e;
+      --primary-light: #e5f0fc;
+      --accent: #2196F3;
+      --text: #1e293b;
+      --text-light: #475569;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.07);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --transition: 0.2s ease;
+      --sidebar-width: 270px;
       --font: 'Arial', 'Segoe UI', sans-serif;
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; display: flex; line-height: 1.5; }
-    .sidebar { width: var(--sidebar-width); height: 100vh; position: fixed; left:0; top:0; background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 120; box-shadow: var(--shadow); transition: transform 0.25s ease; }
-    .sidebar-logo { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap:10px; font-weight:700; font-size:1.1rem; color:var(--primary); }
-    .sidebar-logo .logo-icon { width:38px; height:38px; border-radius:10px; background:linear-gradient(135deg,var(--primary),var(--accent)); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.2rem; }
-    .sidebar-nav { flex:1; overflow-y:auto; padding:12px 0; list-style:none; }
-    .sidebar-nav li a { display:flex; align-items:center; gap:10px; padding:12px 20px; text-decoration:none; color:var(--text-light); font-size:0.9rem; font-weight:500; border-left:3px solid transparent; transition:all var(--transition); cursor:pointer; }
-    .sidebar-nav li a:hover { background:var(--primary-light); color:var(--primary); border-left-color:var(--primary); }
-    .sidebar-nav li a.active { background:var(--primary-light); color:var(--primary); border-left-color:var(--primary); font-weight:700; }
-    .sidebar-nav li a i { width:20px; text-align:center; }
-    .sidebar-footer { padding:12px 20px; border-top:1px solid var(--border); font-size:0.7rem; color:var(--text-muted); text-align:center; }
-    .main-content { margin-left:var(--sidebar-width); flex:1; min-height:100vh; padding:24px 28px; transition:margin var(--transition); }
-    .page-header { margin-bottom:20px; } .page-header h1 { font-size:1.6rem; font-weight:700; }
-    .subtitle { color:var(--text-muted); font-size:0.9rem; }
-    .panel { display:none; animation:fadeSlide 0.3s ease; } .panel.active { display:block; }
-    @keyframes fadeSlide { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-    .card { background:var(--white); border-radius:var(--radius); padding:20px 24px; box-shadow:var(--shadow); border:1px solid var(--border); margin-bottom:18px; }
-    .card h3 { font-size:1.1rem; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
-    label { display:block; font-weight:600; margin-bottom:4px; color:var(--text); font-size:0.85rem; }
-    input, textarea, select { width:100%; padding:10px 14px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-family:var(--font); font-size:0.9rem; background:#fafbfc; transition:var(--transition); color:var(--text); }
-    textarea { min-height:100px; resize:vertical; }
-    select { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%23555'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:32px; }
-    input:focus, textarea:focus, select:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(26,109,212,0.1); background:#fff; }
-    .btn { display:inline-flex; align-items:center; gap:6px; padding:10px 18px; border-radius:var(--radius-sm); font-weight:600; font-size:0.88rem; cursor:pointer; border:none; transition:all var(--transition); font-family:var(--font); }
-    .btn-primary { background:var(--primary); color:#fff; } .btn-primary:hover { background:var(--primary-dark); box-shadow:0 6px 18px rgba(26,109,212,0.3); transform:translateY(-1px); }
-    .btn-outline { background:#fff; color:var(--primary); border:1.5px solid var(--primary); } .btn-outline:hover { background:var(--primary-light); }
-    .btn-success { background:var(--success); color:#fff; } .btn-success:hover { background:#059669; }
-    .btn-danger { background:var(--danger); color:#fff; } .btn-danger:hover { background:#dc2626; }
-    .btn-xs { padding:4px 10px; font-size:0.7rem; border-radius:5px; }
-    .form-row { display:flex; gap:14px; flex-wrap:wrap; } .form-group { margin-bottom:14px; flex:1; min-width:160px; }
-    .stats-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:14px; margin-bottom:20px; }
-    .stat-card { background:var(--white); border-radius:var(--radius); padding:16px 18px; box-shadow:var(--shadow); display:flex; align-items:center; gap:12px; }
-    .stat-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; }
-    .stat-icon.blue { background:#e5f0fc; color:var(--primary); } .stat-value { font-size:1.5rem; font-weight:700; }
-    .stat-label { font-size:0.8rem; color:var(--text-muted); }
-    .table-wrap { overflow-x:auto; } table { width:100%; border-collapse:collapse; font-size:0.85rem; }
-    th, td { padding:10px 12px; text-align:left; border-bottom:1px solid var(--border); } th { background:#f8fafc; font-weight:700; }
-    .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.73rem; font-weight:600; }
-    .badge-blue { background:#e5f0fc; color:var(--primary); } .badge-green { background:#d1fae5; color:#059669; }
-    .toast-container { position:fixed; top:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
-    .toast { padding:12px 18px; border-radius:var(--radius-sm); color:#fff; font-weight:600; font-size:0.85rem; box-shadow:var(--shadow-lg); animation:slideRight 0.3s ease; display:flex; align-items:center; gap:8px; max-width:380px; }
-    @keyframes slideRight { from { transform:translateX(120%); opacity:0; } to { transform:translateX(0); opacity:1; } }
-    .timer-display { font-size:2.4rem; font-weight:700; color:var(--primary); text-align:center; font-family:'Courier New', monospace; }
-    .option-item { display:flex; align-items:center; gap:10px; padding:10px 14px; margin:4px 0; border-radius:var(--radius-sm); cursor:pointer; border:1.5px solid var(--border); background:#fafbfc; }
-    .option-item.selected { border-color:var(--primary); background:#e5f0fc; font-weight:600; }
-    .explanation-box { background:#fef9c3; border-left:4px solid #eab308; padding:12px 16px; border-radius:8px; margin-top:8px; font-size:0.9rem; }
-    .mobile-toggle { display:none; position:fixed; top:14px; left:14px; z-index:130; background:var(--primary); color:#fff; border:none; width:40px; height:40px; border-radius:50%; font-size:1.2rem; cursor:pointer; box-shadow:var(--shadow-lg); align-items:center; justify-content:center; }
-    @media(max-width:768px){ .sidebar { transform:translateX(-100%); } .sidebar.open { transform:translateX(0); } .main-content { margin-left:0; padding:16px; } .mobile-toggle { display:flex; } .form-row { flex-direction:column; gap:0; } }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+    }
+    .sidebar {
+      width: var(--sidebar-width);
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 120;
+      box-shadow: var(--shadow);
+      transition: transform 0.25s ease;
+    }
+    .sidebar-logo {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--primary);
+    }
+    .sidebar-logo .logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .subject-selector {
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      background: #f8fafc;
+    }
+    .subject-selector label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      display: block;
+    }
+    .subject-selector select {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      font-weight: 600;
+      font-size: 0.85rem;
+      background: #fff;
+      cursor: pointer;
+    }
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 0;
+      list-style: none;
+    }
+    .sidebar-nav li a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 18px;
+      text-decoration: none;
+      color: var(--text-light);
+      font-size: 0.88rem;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+    .sidebar-nav li a:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-left-color: var(--primary);
+    }
+    .sidebar-nav li a.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-left-color: var(--primary);
+      font-weight: 700;
+    }
+    .sidebar-nav li a i {
+      width: 20px;
+      text-align: center;
+    }
+    .sidebar-footer {
+      padding: 10px 18px;
+      border-top: 1px solid var(--border);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .main-content {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      min-height: 100vh;
+      padding: 24px 28px;
+      transition: margin var(--transition);
+    }
+    .page-header {
+      margin-bottom: 20px;
+    }
+    .page-header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .panel {
+      display: none;
+      animation: fadeSlide 0.3s ease;
+    }
+    .panel.active {
+      display: block;
+    }
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+    .card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--text);
+      font-size: 0.84rem;
+    }
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 0.9rem;
+      background: #fafbfc;
+      transition: var(--transition);
+      color: var(--text);
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%23555'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+      cursor: pointer;
+    }
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26, 109, 212, 0.1);
+      background: #fff;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      border: none;
+      transition: all var(--transition);
+      font-family: var(--font);
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      box-shadow: 0 6px 18px rgba(26, 109, 212, 0.3);
+      transform: translateY(-1px);
+    }
+    .btn-outline {
+      background: #fff;
+      color: var(--primary);
+      border: 1.5px solid var(--primary);
+    }
+    .btn-outline:hover {
+      background: var(--primary-light);
+    }
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+    }
+    .btn-success:hover {
+      background: #059669;
+    }
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+    .btn-xs {
+      padding: 4px 10px;
+      font-size: 0.7rem;
+      border-radius: 5px;
+    }
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: 0.78rem;
+    }
+    .form-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .form-group {
+      margin-bottom: 14px;
+      flex: 1;
+      min-width: 160px;
+    }
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+    .stat-icon.blue {
+      background: #e5f0fc;
+      color: var(--primary);
+    }
+    .stat-icon.green {
+      background: #d1fae5;
+      color: #059669;
+    }
+    .stat-icon.orange {
+      background: #fef3c7;
+      color: #d97706;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .table-wrap {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+    th,
+    td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      background: #f8fafc;
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--text-muted);
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+    .badge-blue {
+      background: #e5f0fc;
+      color: var(--primary);
+    }
+    .badge-green {
+      background: #d1fae5;
+      color: #059669;
+    }
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .toast {
+      padding: 12px 18px;
+      border-radius: var(--radius-sm);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.85rem;
+      box-shadow: var(--shadow-lg);
+      animation: slideRight 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 380px;
+    }
+    @keyframes slideRight {
+      from {
+        transform: translateX(120%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    .timer-display {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-align: center;
+      font-family: 'Courier New', monospace;
+    }
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      margin: 4px 0;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 1.5px solid var(--border);
+      background: #fafbfc;
+      transition: all var(--transition);
+    }
+    .option-item:hover {
+      border-color: var(--accent);
+      background: #f5f9fe;
+    }
+    .option-item.selected {
+      border-color: var(--primary);
+      background: #e5f0fc;
+      font-weight: 600;
+    }
+    .option-item.correct-highlight {
+      border-color: var(--success) !important;
+      background: #d1fae5 !important;
+    }
+    .explanation-box {
+      background: #fef9c3;
+      border-left: 4px solid #eab308;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-top: 8px;
+      font-size: 0.9rem;
+    }
+    .mobile-toggle {
+      display: none;
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 130;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+      align-items: center;
+      justify-content: center;
+    }
+    @media(max-width:768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0;
+        padding: 16px;
+      }
+      .mobile-toggle {
+        display: flex;
+      }
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+    .highlight-current {
+      background: #fffde7;
+      border-left: 3px solid #f59e0b;
+    }
   </style>
 </head>
 <body>
   <button class="mobile-toggle" id="mobileToggle"><i class="fa-solid fa-bars"></i></button>
+
+  <!-- SIDEBAR -->
   <nav class="sidebar" id="sidebar">
-    <div class="sidebar-logo"><div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>Trắc nghiệm Nhân Linh</div>
+    <div class="sidebar-logo">
+      <div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+      <span>Trắc Nghiệm NhânloveLinh</span>
+    </div>
+    <div class="subject-selector">
+      <label>Môn học hiện tại</label>
+      <select id="sidebarSubjectSelect"></select>
+    </div>
     <ul class="sidebar-nav">
       <li><a data-panel="dashboard" class="active"><i class="fa-solid fa-house"></i> Trang chủ</a></li>
+      <li><a data-panel="subjects"><i class="fa-solid fa-book"></i> Quản lý môn học</a></li>
       <li><a data-panel="chapters"><i class="fa-solid fa-folder-plus"></i> Quản lý chương</a></li>
       <li><a data-panel="add-single"><i class="fa-solid fa-plus-circle"></i> Thêm câu hỏi</a></li>
       <li><a data-panel="add-bulk"><i class="fa-solid fa-layer-group"></i> Thêm nhiều câu hỏi</a></li>
@@ -78,298 +516,497 @@
       <li><a data-panel="practice"><i class="fa-solid fa-pen-to-square"></i> Luyện tập</a></li>
       <li><a data-panel="exam"><i class="fa-solid fa-clock"></i> Thi</a></li>
     </ul>
-    <div class="sidebar-footer">© 2026 - Trắc nghiệm NEU</div>
+    <div class="sidebar-footer">© 2026 - Hệ thống trắc nghiệm phát triển bởi Nhân và Linh</div>
   </nav>
 
+  <!-- MAIN CONTENT -->
   <div class="main-content" id="mainContent">
     <!-- DASHBOARD -->
     <div class="panel active" id="panel-dashboard">
-      <div class="page-header"><h1>📋 Trang chủ</h1><div class="subtitle">Tổng quan ngân hàng câu hỏi</div></div>
+      <div class="page-header"><h1>Trang chủ</h1><div class="subtitle">Tổng quan toàn hệ thống</div></div>
       <div class="stats-row" id="dashboardStats"></div>
-      <div class="card"><h3><i class="fa-solid fa-chart-bar"></i> Thống kê theo chương</h3><div class="table-wrap"><table><thead><tr><th>Chương</th><th>Số câu</th><th>Tỉ lệ</th></tr></thead><tbody id="dashboardChapterTable"></tbody></table></div></div>
+      <div class="card"><h3><i class="fa-solid fa-chart-bar"></i> Chi tiết từng môn</h3><div id="dashboardSubjectsDetail"></div></div>
+    </div>
+
+    <!-- SUBJECTS MANAGEMENT -->
+    <div class="panel" id="panel-subjects">
+      <div class="page-header"><h1>Quản lý môn học</h1><div class="subtitle">Thêm, sửa, xóa môn học</div></div>
+      <div class="card">
+        <h3><i class="fa-solid fa-plus"></i> Thêm môn mới</h3>
+        <div class="form-row">
+          <div class="form-group" style="flex:3;"><input id="newSubjectName" placeholder="Tên môn học mới"></div>
+          <div class="form-group" style="flex:1;"><button class="btn btn-primary" id="btnAddSubject"><i class="fa-solid fa-check"></i> Thêm</button></div>
+        </div>
+      </div>
+      <div class="card"><h3><i class="fa-solid fa-list"></i> Danh sách môn học</h3><div id="subjectListContainer"></div></div>
     </div>
 
     <!-- CHAPTERS MANAGEMENT -->
     <div class="panel" id="panel-chapters">
-      <div class="page-header"><h1>📚 Quản lý chương</h1><div class="subtitle">Thêm, sửa tên, xóa chương (dữ liệu được lưu trữ vĩnh viễn)</div></div>
+      <div class="page-header"><h1>Quản lý chương</h1><div class="subtitle">Thêm, sửa, xóa chương cho môn hiện tại</div></div>
       <div class="card">
         <h3><i class="fa-solid fa-plus"></i> Thêm chương mới</h3>
         <div class="form-row">
-          <div class="form-group" style="flex:3;"><input id="newChapterName" placeholder="Nhập tên chương mới"></div>
+          <div class="form-group" style="flex:3;"><input id="newChapterNameInput" placeholder="Tên chương mới"></div>
           <div class="form-group" style="flex:1;"><button class="btn btn-primary" id="btnAddChapter"><i class="fa-solid fa-check"></i> Thêm</button></div>
         </div>
       </div>
-      <div class="card">
-        <h3><i class="fa-solid fa-list"></i> Danh sách chương</h3>
-        <div id="chapterListContainer"></div>
-      </div>
+      <div class="card"><h3><i class="fa-solid fa-list"></i> Danh sách chương của môn: <span id="currentSubjectLabel"></span></h3><div id="chapterListContainer"></div></div>
     </div>
 
     <!-- ADD SINGLE -->
     <div class="panel" id="panel-add-single">
-      <div class="page-header"><h1>✍️ Thêm câu hỏi</h1><div class="subtitle">Nhập từng câu hỏi (có giải thích)</div></div>
+      <div class="page-header"><h1>Thêm câu hỏi</h1><div class="subtitle">Nhập từng câu hỏi (có giải thích)</div></div>
       <div class="card">
-        <div class="form-group"><label>Chọn chương</label><select id="singleChapter"></select></div>
+        <div class="form-group"><label>Chọn chương</label><select id="singleChapterSelect"></select></div>
         <div class="form-group"><label>Câu hỏi</label><textarea id="singleQuestion" rows="3" placeholder="Nội dung câu hỏi..."></textarea></div>
         <div class="form-row">
-          <div class="form-group"><label>Phương án A</label><input id="singleA" placeholder="Đáp án A"></div>
-          <div class="form-group"><label>Phương án B</label><input id="singleB" placeholder="Đáp án B"></div>
+          <div class="form-group"><label>A</label><input id="singleA" placeholder="Đáp án A"></div>
+          <div class="form-group"><label>B</label><input id="singleB" placeholder="Đáp án B"></div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label>Phương án C</label><input id="singleC" placeholder="Đáp án C"></div>
-          <div class="form-group"><label>Phương án D</label><input id="singleD" placeholder="Đáp án D"></div>
+          <div class="form-group"><label>C</label><input id="singleC" placeholder="Đáp án C"></div>
+          <div class="form-group"><label>D</label><input id="singleD" placeholder="Đáp án D"></div>
         </div>
         <div class="form-row">
           <div class="form-group" style="max-width:200px;"><label>Đáp án đúng</label><select id="singleAnswer"><option value="">-- Chọn --</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
-          <div class="form-group" style="flex:2;"><label>Giải thích (nếu có)</label><input id="singleExplanation" placeholder="Giải thích vì sao đáp án này đúng"></div>
+          <div class="form-group" style="flex:2;"><label>Giải thích</label><input id="singleExplanation" placeholder="Giải thích đáp án đúng"></div>
         </div>
-        <button class="btn btn-primary" id="btnAddSingle"><i class="fa-solid fa-floppy-disk"></i> Lưu câu hỏi</button>
+        <button class="btn btn-primary" id="btnAddSingle"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>
         <button class="btn btn-outline" style="margin-left:8px;" id="btnClearSingle"><i class="fa-solid fa-rotate"></i> Xóa form</button>
       </div>
     </div>
+
     <!-- ADD BULK -->
     <div class="panel" id="panel-add-bulk">
-      <div class="page-header"><h1>📝 Thêm nhiều câu hỏi</h1><div class="subtitle">Dán danh sách câu hỏi (có thể kèm giải thích)</div></div>
+      <div class="page-header"><h1>Thêm nhiều câu hỏi</h1></div>
       <div class="card">
         <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px;">
-          <strong>Định dạng mỗi câu (linh hoạt):</strong><br>
-          <code>Câu 1: Nội dung ...</code><br>
-          <code>A: ...</code> / <code>B: ...</code> / <code>C: ...</code> / <code>D: ...</code><br>
-          <code>Đáp án đúng: A</code> (hoặc <code>Đáp án: A</code>)<br>
-          <code>Giải thích: Lý do đáp án đúng</code> (tùy chọn)<br>
+          <strong>Định dạng:</strong> <code>Câu 1: ...</code> | <code>A: ...</code> | <code>B: ...</code> | <code>C: ...</code> | <code>D: ...</code> | <code>Đáp án đúng: A</code> | <code>Giải thích: ...</code>
         </p>
-        <div class="form-group"><label>Chọn chương cho các câu này</label><select id="bulkChapter"></select></div>
-        <div class="form-group"><label>Dán nội dung nhiều câu hỏi</label><textarea id="bulkText" rows="14" placeholder="Dán câu hỏi vào đây..."></textarea></div>
+        <div class="form-group"><label>Chọn chương</label><select id="bulkChapterSelect"></select></div>
+        <div class="form-group"><label>Dán nội dung</label><textarea id="bulkText" rows="14" placeholder="Dán câu hỏi..."></textarea></div>
         <button class="btn btn-primary" id="btnAddBulk"><i class="fa-solid fa-check-double"></i> Phân tích & Lưu</button>
         <span id="bulkResult" style="margin-left:12px;font-size:0.85rem;"></span>
       </div>
     </div>
+
     <!-- IMPORT/EXPORT -->
     <div class="panel" id="panel-import-export">
-      <div class="page-header"><h1>📁 Nhập / Xuất file</h1></div>
+      <div class="page-header"><h1>Nhập / Xuất file</h1></div>
       <div class="card">
-        <h3>📥 Nhập file TXT</h3>
-        <p style="font-size:0.85rem;">File .txt có thể chứa nhiều chương (dòng "Chương:...") và giải thích.</p>
+        <h3>Nhập file TXT</h3>
+        <p style="font-size:0.85rem;">File .txt chứa câu hỏi (dòng <code>Chương:</code> để phân chương)</p>
         <input type="file" id="importFile" accept=".txt">
-        <button class="btn btn-primary" style="margin-top:10px;" id="btnImportFile"><i class="fa-solid fa-upload"></i> Nhập file</button>
+        <button class="btn btn-primary" style="margin-top:10px;" id="btnImportFile"><i class="fa-solid fa-upload"></i> Nhập</button>
         <span id="importResult" style="margin-left:10px;"></span>
       </div>
       <div class="card">
-        <h3>📤 Xuất file TXT</h3>
-        <div class="form-group" style="max-width:400px;">
-          <label>Chọn chương cần xuất</label>
-          <select id="exportChapterSelect"><option value="all">Tất cả chương</option></select>
-        </div>
+        <h3>Xuất file TXT</h3>
+        <div class="form-group" style="max-width:400px;"><label>Chọn chương (để trống = tất cả)</label><select id="exportChapterSelect"><option value="all">Tất cả chương</option></select></div>
         <button class="btn btn-success" id="btnExportFile"><i class="fa-solid fa-download"></i> Xuất file</button>
-        <span id="exportResult" style="margin-left:10px; font-size:0.85rem;"></span>
       </div>
     </div>
+
     <!-- QUESTION BANK -->
     <div class="panel" id="panel-question-bank">
-      <div class="page-header"><h1>🗄️ Ngân hàng câu hỏi</h1></div>
-      <div class="form-group" style="max-width:300px;"><label>Lọc theo chương</label><select id="bankFilter"><option value="all">Tất cả</option></select></div>
+      <div class="page-header"><h1>Ngân hàng câu hỏi</h1></div>
+      <div class="form-row">
+        <div class="form-group" style="max-width:250px;"><label>Lọc chương</label><select id="bankChapterFilter"><option value="all">Tất cả</option></select></div>
+      </div>
       <div id="questionBankContent"></div>
     </div>
+
     <!-- PRACTICE -->
     <div class="panel" id="panel-practice">
-      <div class="page-header"><h1>📖 Luyện tập</h1></div>
-      <div id="practiceSetup" class="card"><div class="form-group"><label>Chọn chương</label><select id="practiceChapter"></select></div><button class="btn btn-primary" id="btnStartPractice">Bắt đầu luyện tập</button></div>
+      <div class="page-header"><h1>Luyện tập</h1></div>
+      <div id="practiceSetup" class="card">
+        <div class="form-group" style="max-width:350px;"><label>Chọn chương</label><select id="practiceChapterSelect"></select></div>
+        <button class="btn btn-primary" id="btnStartPractice"><i class="fa-solid fa-play"></i> Bắt đầu</button>
+      </div>
       <div id="practiceArea" style="display:none;"></div>
       <div id="practiceResult" style="display:none;"></div>
     </div>
+
     <!-- EXAM -->
     <div class="panel" id="panel-exam">
-      <div class="page-header"><h1>⏱️ Thi</h1></div>
+      <div class="page-header"><h1>Thi trắc nghiệm</h1></div>
       <div id="examSetup" class="card">
-        <div class="form-row"><div class="form-group"><label>Tổng số câu</label><input type="number" id="examTotalQuestions" value="80" min="1"></div><div class="form-group"><label>Thời gian (phút)</label><input type="number" id="examTime" value="50" min="1"></div></div>
-        <p><strong>Số câu mỗi chương:</strong></p><div id="examChapterConfig"></div>
-        <button class="btn btn-primary" id="btnStartExam">Bắt đầu thi</button>
+        <div class="form-row">
+          <div class="form-group"><label>Tổng số câu</label><input type="number" id="examTotalQuestions" value="80" min="1"></div>
+          <div class="form-group"><label>Thời gian (phút)</label><input type="number" id="examTime" value="50" min="1"></div>
+        </div>
+        <p><strong>Số câu mỗi chương:</strong></p>
+        <div id="examChapterConfig"></div>
+        <button class="btn btn-primary" id="btnStartExam"><i class="fa-solid fa-rocket"></i> Bắt đầu thi</button>
       </div>
       <div id="examArea" style="display:none;"></div>
       <div id="examResult" style="display:none;"></div>
     </div>
   </div>
+
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
     (function() {
-      const STORAGE_KEY = 'cnxhk_question_bank_v5';
-      const CHAPTERS_KEY = 'cnxhk_chapters_v5';
-      const defaultChapters = [
-        'Chương 1: Nhập môn CNXHKH',
-        'Chương 2: Sứ mệnh lịch sử của GCCN',
-        'Chương 3: CNXH và thời kỳ quá độ',
-        'Chương 4: Dân chủ XHCN',
-        'Chương 5: Cơ cấu xã hội - giai cấp',
-        'Chương 6: Vấn đề dân tộc và tôn giáo',
-        'Chương 7: Vấn đề gia đình'
-      ];
+      // ──────────────────────────────────────
+      // DATA LAYER
+      // ──────────────────────────────────────
+      const DB_KEY = 'quiz_system_db_v1';
+      let db = { subjects: [], questions: [] };
 
-      function getChapters() {
-        try { return JSON.parse(localStorage.getItem(CHAPTERS_KEY)) || [...defaultChapters]; } catch(e) { return [...defaultChapters]; }
+      function loadDB() {
+        try { db = JSON.parse(localStorage.getItem(DB_KEY)) || { subjects: [], questions: [] }; } catch (e) { db = {
+            subjects: [], questions: [] }; }
+        if (!db.subjects) db.subjects = [];
+        if (!db.questions) db.questions = [];
       }
-      function saveChapters(ch) { localStorage.setItem(CHAPTERS_KEY, JSON.stringify(ch)); }
-      function getBank() {
-        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e) { return []; }
-      }
-      function saveBank(b) { localStorage.setItem(STORAGE_KEY, JSON.stringify(b)); }
-      function genId() { return 'q_'+Date.now()+'_'+Math.random().toString(36).substr(2,6); }
 
-      function showToast(msg, type='info') {
+      function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+
+      function genId() { return 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6); }
+
+      function getCurrentSubjectId() {
+        return document.getElementById('sidebarSubjectSelect').value;
+      }
+
+      function getCurrentSubject() {
+        const sid = getCurrentSubjectId();
+        return db.subjects.find(s => s.id === sid) || null;
+      }
+
+      function getChaptersOfSubject(subjectId) {
+        const subj = db.subjects.find(s => s.id === subjectId);
+        return subj ? subj.chapters : [];
+      }
+
+      function getQuestionsOfChapter(subjectId, chapterId) {
+        return db.questions.filter(q => q.subjectId === subjectId && q.chapterId === chapterId);
+      }
+
+      function getQuestionsOfSubject(subjectId) {
+        return db.questions.filter(q => q.subjectId === subjectId);
+      }
+
+      // ──────────────────────────────────────
+      // TOAST
+      // ──────────────────────────────────────
+      function showToast(msg, type = 'info') {
         const c = document.getElementById('toastContainer');
-        const t = document.createElement('div'); t.className='toast '+type;
-        const icons = { success:'fa-check-circle', error:'fa-exclamation-circle', info:'fa-info-circle' };
+        const t = document.createElement('div');
+        t.className = 'toast ' + (type === 'success' ? 'success' : type === 'error' ? 'error' : 'info');
+        t.style.background = type === 'success' ? '#059669' : type === 'error' ? '#dc2626' : '#1a6dd4';
+        const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
         t.innerHTML = `<i class="fa-solid ${icons[type]||icons.info}"></i> ${msg}`;
         c.appendChild(t);
-        setTimeout(()=>{ t.style.opacity='0'; t.style.transition='0.2s'; setTimeout(()=>t.remove(),300); }, 2500);
+        setTimeout(() => { t.style.opacity = '0';
+          t.style.transition = '0.2s';
+          setTimeout(() => t.remove(), 300); }, 2500);
       }
 
-      function populateSelect(sel, chapters, addAll=false, addAllLabel='Tất cả chương') {
-        sel.innerHTML = '';
-        if(addAll) { const o = document.createElement('option'); o.value='all'; o.textContent=addAllLabel; sel.appendChild(o); }
-        chapters.forEach(ch => { const o = document.createElement('option'); o.value=ch; o.textContent=ch; sel.appendChild(o); });
-      }
-
-      function refreshAllChapterSelects() {
-        const chapters = getChapters();
-        populateSelect(document.getElementById('singleChapter'), chapters);
-        populateSelect(document.getElementById('bulkChapter'), chapters);
-        const bankFilter = document.getElementById('bankFilter');
-        const cur = bankFilter.value;
-        populateSelect(bankFilter, chapters, true);
-        bankFilter.value = (cur && chapters.includes(cur)) ? cur : 'all';
-        populateSelect(document.getElementById('practiceChapter'), chapters);
-        const exportSel = document.getElementById('exportChapterSelect');
-        const curExport = exportSel.value;
-        populateSelect(exportSel, chapters, true, 'Tất cả chương');
-        exportSel.value = (curExport && (curExport==='all' || chapters.includes(curExport))) ? curExport : 'all';
-        renderExamChapterConfig();
-        renderChapterList(); // update management table
-      }
-
+      // ──────────────────────────────────────
+      // NAVIGATION
+      // ──────────────────────────────────────
       function navigate(panel) {
-        document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-        document.querySelectorAll('.sidebar-nav li a').forEach(a=>a.classList.remove('active'));
-        const p = document.getElementById('panel-'+panel);
-        if(p) p.classList.add('active');
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.sidebar-nav li a').forEach(a => a.classList.remove('active'));
+        const p = document.getElementById('panel-' + panel);
+        if (p) p.classList.add('active');
         const link = document.querySelector(`[data-panel="${panel}"]`);
-        if(link) link.classList.add('active');
+        if (link) link.classList.add('active');
         document.getElementById('sidebar').classList.remove('open');
-        if(panel==='dashboard') refreshDashboard();
-        if(panel==='chapters') { refreshAllChapterSelects(); }
-        if(panel==='question-bank') renderQuestionBank();
-        if(panel==='add-single'||panel==='add-bulk') refreshAllChapterSelects();
-        if(panel==='import-export') refreshAllChapterSelects();
-        if(panel==='practice') refreshAllChapterSelects();
-        if(panel==='exam') { refreshAllChapterSelects(); renderExamChapterConfig(); }
+        refreshPanel(panel);
       }
 
-      document.querySelectorAll('.sidebar-nav li a').forEach(a=>{
-        a.addEventListener('click', e=>{ e.preventDefault(); navigate(a.dataset.panel); });
+      function refreshPanel(panel) {
+        switch (panel) {
+          case 'dashboard':
+            refreshDashboard();
+            break;
+          case 'subjects':
+            renderSubjectList();
+            break;
+          case 'chapters':
+            refreshChapterPanel();
+            break;
+          case 'add-single':
+            refreshSingleChapterSelect();
+            break;
+          case 'add-bulk':
+            refreshBulkChapterSelect();
+            break;
+          case 'import-export':
+            refreshExportChapterSelect();
+            break;
+          case 'question-bank':
+            refreshBankChapterFilter();
+            renderQuestionBank();
+            break;
+          case 'practice':
+            refreshPracticeChapterSelect();
+            break;
+          case 'exam':
+            refreshExamChapterConfig();
+            break;
+        }
+      }
+
+      document.querySelectorAll('.sidebar-nav li a').forEach(a => {
+        a.addEventListener('click', e => { e.preventDefault();
+          navigate(a.dataset.panel); });
       });
-      document.getElementById('mobileToggle').addEventListener('click', ()=>document.getElementById('sidebar').classList.toggle('open'));
+      document.getElementById('mobileToggle').addEventListener('click', () => document.getElementById('sidebar')
+        .classList.toggle('open'));
 
-      // DASHBOARD
-      function refreshDashboard() {
-        const bank = getBank(); const chapters = getChapters();
-        const counts = {}; chapters.forEach(ch=>counts[ch]=0);
-        bank.forEach(q=>{ if(counts[q.chapter]!==undefined) counts[q.chapter]++; else counts[q.chapter]=1; });
-        document.getElementById('dashboardStats').innerHTML = `
-          <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-database"></i></div><div class="stat-value">${bank.length}</div><div class="stat-label">Tổng câu</div></div>
-          <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-layer-group"></i></div><div class="stat-value">${chapters.length}</div><div class="stat-label">Chương</div></div>
-        `;
-        const tbody = document.getElementById('dashboardChapterTable'); tbody.innerHTML = '';
-        chapters.forEach(ch => {
-          const cnt = counts[ch]||0; const pct = bank.length?((cnt/bank.length)*100).toFixed(1):0;
-          tbody.innerHTML += `<tr><td>${ch}</td><td><span class="badge badge-blue">${cnt} câu</span></td><td>${pct}%</td></tr>`;
+      // ──────────────────────────────────────
+      // SIDEBAR SUBJECT SELECT
+      // ──────────────────────────────────────
+      function populateSidebarSubjectSelect() {
+        const sel = document.getElementById('sidebarSubjectSelect');
+        const curVal = sel.value;
+        sel.innerHTML = '';
+        db.subjects.forEach(s => {
+          const o = document.createElement('option');
+          o.value = s.id;
+          o.textContent = s.name;
+          sel.appendChild(o);
         });
+        if (db.subjects.length === 0) {
+          sel.innerHTML = '<option value="">-- Chưa có môn --</option>';
+        }
+        if (curVal && db.subjects.find(s => s.id === curVal)) sel.value = curVal;
+        else if (db.subjects.length > 0) sel.value = db.subjects[0].id;
+      }
+      document.getElementById('sidebarSubjectSelect').addEventListener('change', () => {
+        refreshAllDynamicSelects();
+        refreshDashboard();
+      });
+
+      function refreshAllDynamicSelects() {
+        refreshSingleChapterSelect();
+        refreshBulkChapterSelect();
+        refreshExportChapterSelect();
+        refreshBankChapterFilter();
+        refreshPracticeChapterSelect();
+        refreshChapterPanel();
+        refreshExamChapterConfig();
+        renderQuestionBank();
       }
 
-      // CHAPTER MANAGEMENT
-      function renderChapterList() {
-        const chapters = getChapters();
-        const container = document.getElementById('chapterListContainer');
-        if (!container) return;
-        let html = '<div class="table-wrap"><table><thead><tr><th>STT</th><th>Tên chương</th><th>Số câu hỏi</th><th>Hành động</th></tr></thead><tbody>';
-        const bank = getBank();
-        const counts = {};
-        chapters.forEach(ch => counts[ch] = bank.filter(q => q.chapter === ch).length);
-        chapters.forEach((ch, idx) => {
+      // ──────────────────────────────────────
+      // DASHBOARD
+      // ──────────────────────────────────────
+      function refreshDashboard() {
+        const totalQ = db.questions.length;
+        const totalSubjects = db.subjects.length;
+        let totalChapters = 0;
+        db.subjects.forEach(s => totalChapters += s.chapters.length);
+        document.getElementById('dashboardStats').innerHTML = `
+          <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-database"></i></div><div class="stat-value">${totalQ}</div><div class="stat-label">Tổng câu hỏi</div></div>
+          <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-book"></i></div><div class="stat-value">${totalSubjects}</div><div class="stat-label">Môn học</div></div>
+          <div class="stat-card"><div class="stat-icon orange"><i class="fa-solid fa-folder"></i></div><div class="stat-value">${totalChapters}</div><div class="stat-label">Chương</div></div>
+        `;
+        let detailHTML = '';
+        db.subjects.forEach(s => {
+          const qCount = db.questions.filter(q => q.subjectId === s.id).length;
+          detailHTML +=
+            `<div style="margin-bottom:8px;"><strong>📘 ${s.name}</strong> — ${s.chapters.length} chương, ${qCount} câu hỏi</div>`;
+        });
+        if (!detailHTML) detailHTML = '<p style="color:var(--text-muted);">Chưa có môn học nào.</p>';
+        document.getElementById('dashboardSubjectsDetail').innerHTML = detailHTML;
+      }
+
+      // ──────────────────────────────────────
+      // SUBJECTS CRUD
+      // ──────────────────────────────────────
+      function renderSubjectList() {
+        const container = document.getElementById('subjectListContainer');
+        if (db.subjects.length === 0) {
+          container.innerHTML = '<p style="color:var(--text-muted);">Chưa có môn học.</p>';
+          return;
+        }
+        let html = '<div class="table-wrap"><table><thead><tr><th>STT</th><th>Tên môn</th><th>Số chương</th><th>Số câu</th><th>Hành động</th></tr></thead><tbody>';
+        db.subjects.forEach((s, i) => {
+          const qCount = db.questions.filter(q => q.subjectId === s.id).length;
           html += `<tr>
-            <td>${idx+1}</td>
-            <td><strong>${ch}</strong></td>
-            <td><span class="badge badge-blue">${counts[ch] || 0} câu</span></td>
+            <td>${i+1}</td><td><strong>${s.name}</strong></td>
+            <td><span class="badge badge-blue">${s.chapters.length}</span></td>
+            <td><span class="badge badge-green">${qCount}</span></td>
             <td>
-              <button class="btn btn-outline btn-xs edit-chapter" data-chapter="${ch}"><i class="fa-solid fa-pen"></i> Sửa</button>
-              <button class="btn btn-danger btn-xs delete-chapter" data-chapter="${ch}"><i class="fa-solid fa-trash"></i> Xóa</button>
-            </td>
-          </tr>`;
+              <button class="btn btn-outline btn-xs edit-subject" data-id="${s.id}"><i class="fa-solid fa-pen"></i> Sửa</button>
+              <button class="btn btn-danger btn-xs delete-subject" data-id="${s.id}"><i class="fa-solid fa-trash"></i> Xóa</button>
+            </td></tr>`;
         });
         html += '</tbody></table></div>';
         container.innerHTML = html;
+        container.querySelectorAll('.edit-subject').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const subj = db.subjects.find(s => s.id === id);
+            if (!subj) return;
+            const newName = prompt('Nhập tên mới:', subj.name);
+            if (!newName || newName.trim() === '' || newName.trim() === subj.name) return;
+            if (db.subjects.some(s => s.name === newName.trim() && s.id !== id)) { showToast(
+                'Tên môn đã tồn tại!', 'error'); return; }
+            subj.name = newName.trim();
+            saveDB();
+            renderSubjectList();
+            populateSidebarSubjectSelect();
+            refreshDashboard();
+            showToast('Đã đổi tên môn!', 'success');
+          });
+        });
+        container.querySelectorAll('.delete-subject').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const subj = db.subjects.find(s => s.id === id);
+            if (!subj) return;
+            const qCount = db.questions.filter(q => q.subjectId === id).length;
+            if (!confirm(`Xóa môn "${subj.name}"? ${qCount>0?`(${qCount} câu hỏi sẽ bị xóa)`:' '}`)) return;
+            db.subjects = db.subjects.filter(s => s.id !== id);
+            db.questions = db.questions.filter(q => q.subjectId !== id);
+            saveDB();
+            renderSubjectList();
+            populateSidebarSubjectSelect();
+            refreshAllDynamicSelects();
+            refreshDashboard();
+            showToast('Đã xóa môn!', 'success');
+          });
+        });
+      }
+      document.getElementById('btnAddSubject').addEventListener('click', () => {
+        const inp = document.getElementById('newSubjectName');
+        const name = inp.value.trim();
+        if (!name) { showToast('Nhập tên môn!', 'error'); return; }
+        if (db.subjects.some(s => s.name === name)) { showToast('Môn đã tồn tại!', 'error'); return; }
+        db.subjects.push({ id: genId(), name, chapters: [] });
+        saveDB();
+        inp.value = '';
+        renderSubjectList();
+        populateSidebarSubjectSelect();
+        refreshAllDynamicSelects();
+        refreshDashboard();
+        showToast('Đã thêm môn học!', 'success');
+      });
 
+      // ──────────────────────────────────────
+      // CHAPTERS CRUD
+      // ──────────────────────────────────────
+      function refreshChapterPanel() {
+        const subj = getCurrentSubject();
+        document.getElementById('currentSubjectLabel').textContent = subj ? subj.name : '(chưa chọn môn)';
+        renderChapterList();
+      }
+
+      function renderChapterList() {
+        const container = document.getElementById('chapterListContainer');
+        const subj = getCurrentSubject();
+        if (!subj) { container.innerHTML = '<p>Vui lòng chọn môn học ở thanh bên.</p>'; return; }
+        if (subj.chapters.length === 0) { container.innerHTML = '<p>Chưa có chương nào.</p>'; return; }
+        let html =
+          '<div class="table-wrap"><table><thead><tr><th>STT</th><th>Tên chương</th><th>Số câu</th><th>Hành động</th></tr></thead><tbody>';
+        subj.chapters.forEach((ch, i) => {
+          const qCount = db.questions.filter(q => q.subjectId === subj.id && q.chapterId === ch.id).length;
+          html += `<tr><td>${i+1}</td><td><strong>${ch.name}</strong></td>
+            <td><span class="badge badge-blue">${qCount}</span></td>
+            <td>
+              <button class="btn btn-outline btn-xs edit-chapter" data-chid="${ch.id}"><i class="fa-solid fa-pen"></i> Sửa</button>
+              <button class="btn btn-danger btn-xs delete-chapter" data-chid="${ch.id}"><i class="fa-solid fa-trash"></i> Xóa</button>
+            </td></tr>`;
+        });
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
         container.querySelectorAll('.edit-chapter').forEach(btn => {
           btn.addEventListener('click', function() {
-            const oldName = this.dataset.chapter;
-            const newName = prompt('Nhập tên mới cho chương:', oldName);
-            if (!newName || newName.trim() === '' || newName.trim() === oldName) return;
-            const trimmed = newName.trim();
-            const chapters = getChapters();
-            if (chapters.includes(trimmed)) {
-              showToast('Tên chương đã tồn tại!', 'error');
-              return;
-            }
-            const bank = getBank();
-            bank.forEach(q => { if (q.chapter === oldName) q.chapter = trimmed; });
-            const updatedChapters = chapters.map(ch => ch === oldName ? trimmed : ch);
-            saveBank(bank);
-            saveChapters(updatedChapters);
-            refreshAllChapterSelects();
+            const chId = this.dataset.chid;
+            const ch = subj.chapters.find(c => c.id === chId);
+            if (!ch) return;
+            const newName = prompt('Nhập tên chương mới:', ch.name);
+            if (!newName || newName.trim() === '' || newName.trim() === ch.name) return;
+            ch.name = newName.trim();
+            saveDB();
+            renderChapterList();
+            refreshAllDynamicSelects();
+            renderQuestionBank();
             showToast('Đã đổi tên chương!', 'success');
           });
         });
-
         container.querySelectorAll('.delete-chapter').forEach(btn => {
           btn.addEventListener('click', function() {
-            const chapterName = this.dataset.chapter;
-            const chapters = getChapters();
-            if (chapters.length <= 1) {
-              showToast('Không thể xóa chương cuối cùng!', 'error');
-              return;
-            }
-            const bank = getBank();
-            const count = bank.filter(q => q.chapter === chapterName).length;
-            if (count > 0) {
-              if (!confirm(`Chương "${chapterName}" có ${count} câu hỏi. Xóa chương sẽ xóa tất cả câu hỏi thuộc chương này. Bạn có chắc?`)) return;
-            } else {
-              if (!confirm(`Xóa chương "${chapterName}"?`)) return;
-            }
-            const newBank = bank.filter(q => q.chapter !== chapterName);
-            const newChapters = chapters.filter(ch => ch !== chapterName);
-            saveBank(newBank);
-            saveChapters(newChapters);
-            refreshAllChapterSelects();
+            const chId = this.dataset.chid;
+            const ch = subj.chapters.find(c => c.id === chId);
+            if (!ch) return;
+            const qCount = db.questions.filter(q => q.subjectId === subj.id && q.chapterId === chId).length;
+            if (!confirm(`Xóa chương "${ch.name}"? ${qCount>0?`(${qCount} câu sẽ bị xóa)`:' '}`)) return;
+            subj.chapters = subj.chapters.filter(c => c.id !== chId);
+            db.questions = db.questions.filter(q => !(q.subjectId === subj.id && q.chapterId === chId));
+            saveDB();
+            renderChapterList();
+            refreshAllDynamicSelects();
+            renderQuestionBank();
+            refreshDashboard();
             showToast('Đã xóa chương!', 'success');
           });
         });
       }
-
       document.getElementById('btnAddChapter').addEventListener('click', () => {
-        const input = document.getElementById('newChapterName');
-        const name = input.value.trim();
-        if (!name) { showToast('Vui lòng nhập tên chương!', 'error'); return; }
-        const chapters = getChapters();
-        if (chapters.includes(name)) { showToast('Chương đã tồn tại!', 'error'); return; }
-        chapters.push(name);
-        saveChapters(chapters);
-        input.value = '';
-        refreshAllChapterSelects();
-        showToast('Đã thêm chương mới!', 'success');
+        const subj = getCurrentSubject();
+        if (!subj) { showToast('Chọn môn học trước!', 'error'); return; }
+        const inp = document.getElementById('newChapterNameInput');
+        const name = inp.value.trim();
+        if (!name) { showToast('Nhập tên chương!', 'error'); return; }
+        if (subj.chapters.some(c => c.name === name)) { showToast('Chương đã tồn tại!', 'error'); return; }
+        subj.chapters.push({ id: genId(), name });
+        saveDB();
+        inp.value = '';
+        renderChapterList();
+        refreshAllDynamicSelects();
+        showToast('Đã thêm chương!', 'success');
       });
 
+      // ──────────────────────────────────────
+      // CHAPTER SELECT HELPERS
+      // ──────────────────────────────────────
+      function populateChapterSelect(sel, subjectId, addAll = false) {
+        sel.innerHTML = '';
+        if (addAll) { const o = document.createElement('option');
+          o.value = 'all';
+          o.textContent = 'Tất cả chương';
+          sel.appendChild(o); }
+        const chapters = getChaptersOfSubject(subjectId);
+        chapters.forEach(ch => { const o = document.createElement('option');
+          o.value = ch.id;
+          o.textContent = ch.name;
+          sel.appendChild(o); });
+      }
+
+      function refreshSingleChapterSelect() {
+        populateChapterSelect(document.getElementById('singleChapterSelect'), getCurrentSubjectId());
+      }
+
+      function refreshBulkChapterSelect() {
+        populateChapterSelect(document.getElementById('bulkChapterSelect'), getCurrentSubjectId());
+      }
+
+      function refreshExportChapterSelect() {
+        populateChapterSelect(document.getElementById('exportChapterSelect'), getCurrentSubjectId(), true);
+      }
+
+      function refreshBankChapterFilter() {
+        populateChapterSelect(document.getElementById('bankChapterFilter'), getCurrentSubjectId(), true);
+      }
+
+      function refreshPracticeChapterSelect() {
+        populateChapterSelect(document.getElementById('practiceChapterSelect'), getCurrentSubjectId(), true);
+      }
+
+      // ──────────────────────────────────────
       // SINGLE ADD
-      document.getElementById('btnAddSingle').addEventListener('click', ()=>{
-        const ch = document.getElementById('singleChapter').value;
+      // ──────────────────────────────────────
+      document.getElementById('btnAddSingle').addEventListener('click', () => {
+        const subjectId = getCurrentSubjectId();
+        if (!subjectId) { showToast('Chọn môn học!', 'error'); return; }
+        const chId = document.getElementById('singleChapterSelect').value;
         const q = document.getElementById('singleQuestion').value.trim();
         const a = document.getElementById('singleA').value.trim();
         const b = document.getElementById('singleB').value.trim();
@@ -377,259 +1014,430 @@
         const d = document.getElementById('singleD').value.trim();
         const ans = document.getElementById('singleAnswer').value;
         const expl = document.getElementById('singleExplanation').value.trim();
-        if(!ch||!q||!a||!b||!c||!d||!ans) { showToast('Vui lòng điền đầy đủ các trường!','error'); return; }
-        const bank = getBank();
-        bank.push({ id:genId(), chapter:ch, question:q, options:{A:a,B:b,C:c,D:d}, correctAnswer:ans.toUpperCase(), explanation:expl });
-        saveBank(bank);
-        document.getElementById('singleQuestion').value=''; document.getElementById('singleA').value='';
-        document.getElementById('singleB').value=''; document.getElementById('singleC').value=''; document.getElementById('singleD').value='';
-        document.getElementById('singleAnswer').value=''; document.getElementById('singleExplanation').value='';
-        showToast('Đã thêm câu hỏi!','success'); refreshDashboard();
+        if (!chId || !q || !a || !b || !c || !d || !ans) { showToast('Điền đầy đủ các trường!', 'error'); return; }
+        const chapters = getChaptersOfSubject(subjectId);
+        const ch = chapters.find(x => x.id === chId);
+        db.questions.push({
+          id: genId(),
+          subjectId,
+          chapterId: chId,
+          chapterName: ch ? ch.name : '',
+          question: q,
+          options: { A: a, B: b, C: c, D: d },
+          correctAnswer: ans.toUpperCase(),
+          explanation: expl
+        });
+        saveDB();
+        document.getElementById('singleQuestion').value = '';
+        document.getElementById('singleA').value = '';
+        document.getElementById('singleB').value = '';
+        document.getElementById('singleC').value = '';
+        document.getElementById('singleD').value = '';
+        document.getElementById('singleAnswer').value = '';
+        document.getElementById('singleExplanation').value = '';
+        showToast('Đã thêm câu hỏi!', 'success');
+        refreshDashboard();
       });
-      document.getElementById('btnClearSingle').addEventListener('click', ()=>{
-        document.getElementById('singleQuestion').value=''; document.getElementById('singleA').value='';
-        document.getElementById('singleB').value=''; document.getElementById('singleC').value=''; document.getElementById('singleD').value='';
-        document.getElementById('singleAnswer').value=''; document.getElementById('singleExplanation').value='';
+      document.getElementById('btnClearSingle').addEventListener('click', () => {
+        document.getElementById('singleQuestion').value = '';
+        document.getElementById('singleA').value = '';
+        document.getElementById('singleB').value = '';
+        document.getElementById('singleC').value = '';
+        document.getElementById('singleD').value = '';
+        document.getElementById('singleAnswer').value = '';
+        document.getElementById('singleExplanation').value = '';
       });
 
-      // BULK
-      function parseBulkQuestions(text, chapter) {
+      // ──────────────────────────────────────
+      // BULK PARSER
+      // ──────────────────────────────────────
+      function parseBulkQuestions(text, subjectId, chapterId) {
         const questions = [];
         const blocks = text.split(/(?=^Câu\s+\d+[:.])/m);
         for (let block of blocks) {
-          block = block.trim(); if(!block) continue;
-          const lines = block.split(/\r?\n/).map(l=>l.trim()).filter(l=>l);
-          let qText='', optA='', optB='', optC='', optD='', correct='', expl='';
+          block = block.trim();
+          if (!block) continue;
+          const lines = block.split(/\r?\n/).map(l => l.trim()).filter(l => l);
+          let qText = '',
+            optA = '',
+            optB = '',
+            optC = '',
+            optD = '',
+            correct = '',
+            expl = '';
           for (let line of lines) {
-            if(/^Câu\s+\d+[:.]/i.test(line)) qText = line.replace(/^Câu\s+\d+[:.]\s*/i,'').trim();
-            else if(/^A[:.)]/i.test(line)) optA = line.replace(/^A[:.)]\s*/i,'').trim();
-            else if(/^B[:.)]/i.test(line)) optB = line.replace(/^B[:.)]\s*/i,'').trim();
-            else if(/^C[:.)]/i.test(line)) optC = line.replace(/^C[:.)]\s*/i,'').trim();
-            else if(/^D[:.)]/i.test(line)) optD = line.replace(/^D[:.)]\s*/i,'').trim();
-            else if(/^Đ[aá]p\s*[aá]n\s*[đd]úng\s*[:.]/i.test(line)) correct = line.replace(/^Đ[aá]p\s*[aá]n\s*[đd]úng\s*[:.]\s*/i,'').trim().toUpperCase();
-            else if(/^Đ[aá]p\s*[aá]n\s*[:.]/i.test(line)) correct = line.replace(/^Đ[aá]p\s*[aá]n\s*[:.]\s*/i,'').trim().toUpperCase();
-            else if(/^Giải thích\s*[:.]/i.test(line)) expl = line.replace(/^Giải thích\s*[:.]\s*/i,'').trim();
+            if (/^Câu\s+\d+[:.]/i.test(line)) qText = line.replace(/^Câu\s+\d+[:.]\s*/i, '').trim();
+            else if (/^A[:.)]/i.test(line)) optA = line.replace(/^A[:.)]\s*/i, '').trim();
+            else if (/^B[:.)]/i.test(line)) optB = line.replace(/^B[:.)]\s*/i, '').trim();
+            else if (/^C[:.)]/i.test(line)) optC = line.replace(/^C[:.)]\s*/i, '').trim();
+            else if (/^D[:.)]/i.test(line)) optD = line.replace(/^D[:.)]\s*/i, '').trim();
+            else if (/^Đ[aá]p\s*[aá]n\s*[đd]úng\s*[:.]/i.test(line)) correct = line.replace(
+              /^Đ[aá]p\s*[aá]n\s*[đd]úng\s*[:.]\s*/i, '').trim().toUpperCase();
+            else if (/^Đ[aá]p\s*[aá]n\s*[:.]/i.test(line)) correct = line.replace(/^Đ[aá]p\s*[aá]n\s*[:.]\s*/i, '')
+              .trim().toUpperCase();
+            else if (/^Giải thích\s*[:.]/i.test(line)) expl = line.replace(/^Giải thích\s*[:.]\s*/i, '').trim();
           }
-          if(qText && optA && optB && optC && optD && ['A','B','C','D'].includes(correct)) {
-            questions.push({ id:genId(), chapter, question:qText, options:{A:optA,B:optB,C:optC,D:optD}, correctAnswer:correct, explanation:expl });
+          if (qText && optA && optB && optC && optD && ['A', 'B', 'C', 'D'].includes(correct)) {
+            const chapters = getChaptersOfSubject(subjectId);
+            const ch = chapters.find(x => x.id === chapterId);
+            questions.push({
+              id: genId(),
+              subjectId,
+              chapterId,
+              chapterName: ch ? ch.name : '',
+              question: qText,
+              options: { A: optA, B: optB, C: optC, D: optD },
+              correctAnswer: correct,
+              explanation: expl
+            });
           }
         }
         return questions;
       }
-      document.getElementById('btnAddBulk').addEventListener('click', ()=>{
-        const chapter = document.getElementById('bulkChapter').value;
+      document.getElementById('btnAddBulk').addEventListener('click', () => {
+        const subjectId = getCurrentSubjectId();
+        if (!subjectId) { showToast('Chọn môn học!', 'error'); return; }
+        const chId = document.getElementById('bulkChapterSelect').value;
         const text = document.getElementById('bulkText').value.trim();
-        if(!chapter||!text){ showToast('Chọn chương và dán nội dung!','error'); return; }
-        const parsed = parseBulkQuestions(text, chapter);
-        if(parsed.length===0){ document.getElementById('bulkResult').textContent='❌ Không tìm thấy câu hỏi hợp lệ.'; return; }
-        const bank = getBank(); bank.push(...parsed); saveBank(bank);
-        document.getElementById('bulkText').value='';
-        document.getElementById('bulkResult').textContent = `✅ Đã thêm ${parsed.length} câu vào "${chapter}"`;
-        showToast(`Đã thêm ${parsed.length} câu!`,'success'); refreshDashboard();
+        if (!chId || !text) { showToast('Chọn chương và dán nội dung!', 'error'); return; }
+        const parsed = parseBulkQuestions(text, subjectId, chId);
+        if (parsed.length === 0) { document.getElementById('bulkResult').textContent =
+            '❌ Không tìm thấy câu hỏi hợp lệ.'; return; }
+        db.questions.push(...parsed);
+        saveDB();
+        document.getElementById('bulkText').value = '';
+        document.getElementById('bulkResult').textContent = `✅ Đã thêm ${parsed.length} câu!`;
+        showToast(`Đã thêm ${parsed.length} câu!`, 'success');
+        refreshDashboard();
       });
 
-      // IMPORT/EXPORT
-      document.getElementById('btnExportFile').addEventListener('click', ()=>{
-        const bank = getBank();
-        const selectedChapter = document.getElementById('exportChapterSelect').value;
-        let filtered = selectedChapter==='all' ? bank : bank.filter(q=>q.chapter===selectedChapter);
-        if(!filtered.length){ showToast('Không có câu hỏi!','error'); return; }
+      // ──────────────────────────────────────
+      // IMPORT / EXPORT
+      // ──────────────────────────────────────
+      document.getElementById('btnExportFile').addEventListener('click', () => {
+        const subjectId = getCurrentSubjectId();
+        if (!subjectId) { showToast('Chọn môn học!', 'error'); return; }
+        const chId = document.getElementById('exportChapterSelect').value;
+        let filtered = chId === 'all' ? getQuestionsOfSubject(subjectId) : getQuestionsOfChapter(
+          subjectId, chId);
+        if (!filtered.length) { showToast('Không có câu hỏi!', 'error'); return; }
         let out = '';
-        filtered.forEach((q,i)=> {
-          out += `Chương: ${q.chapter}\nCâu ${i+1}: ${q.question}\nA: ${q.options.A}\nB: ${q.options.B}\nC: ${q.options.C}\nD: ${q.options.D}\nĐáp án đúng: ${q.correctAnswer}\n`;
-          if(q.explanation) out += `Giải thích: ${q.explanation}\n`;
+        filtered.forEach((q, i) => {
+          out +=
+            `Chương: ${q.chapterName}\nCâu ${i+1}: ${q.question}\nA: ${q.options.A}\nB: ${q.options.B}\nC: ${q.options.C}\nD: ${q.options.D}\nĐáp án đúng: ${q.correctAnswer}\n`;
+          if (q.explanation) out += `Giải thích: ${q.explanation}\n`;
           out += '\n';
         });
-        const blob = new Blob(['\uFEFF'+out],{type:'text/plain'});
+        const blob = new Blob(['\uFEFF' + out], { type: 'text/plain' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = selectedChapter==='all' ? 'toan_bo.txt' : `${selectedChapter.replace(/[^a-zA-Z0-9]/g,'_')}.txt`;
+        const subj = getCurrentSubject();
+        a.download = `cau_hoi_${subj?subj.name.replace(/[^a-zA-Z0-9]/g,'_'):'export'}.txt`;
         a.click();
-        showToast('Xuất file thành công!','success');
+        showToast('Xuất file thành công!', 'success');
       });
-      document.getElementById('btnImportFile').addEventListener('click', ()=>{
+      document.getElementById('btnImportFile').addEventListener('click', () => {
+        const subjectId = getCurrentSubjectId();
+        if (!subjectId) { showToast('Chọn môn học!', 'error'); return; }
         const file = document.getElementById('importFile').files[0];
-        if(!file){ showToast('Chọn file!','error'); return; }
+        if (!file) { showToast('Chọn file!', 'error'); return; }
         const reader = new FileReader();
-        reader.onload = function(e){
+        reader.onload = function(e) {
           const content = e.target.result;
-          const chapters = getChapters();
-          const chapterBlocks = content.split(/(?=^Chương\s*:)/im);
+          const subj = getCurrentSubject();
+          const chapters = subj ? subj.chapters : [];
           let allParsed = [];
+          const chapterBlocks = content.split(/(?=^Chương\s*:)/im);
           chapterBlocks.forEach(block => {
-            block = block.trim(); if(!block) return;
+            block = block.trim();
+            if (!block) return;
             const chMatch = block.match(/^Chương\s*:\s*(.*)$/im);
-            let chName = chMatch ? chMatch[1].trim() : chapters[0];
-            const matched = chapters.find(c=>c.toLowerCase().includes(chName.toLowerCase()) || chName.toLowerCase().includes(c.toLowerCase()));
-            if(matched) chName = matched;
-            const rest = block.replace(/^Chương\s*:.*\r?\n/im,'').trim();
-            allParsed.push(...parseBulkQuestions(rest, chName));
+            let chName = chMatch ? chMatch[1].trim() : (chapters[0] ? chapters[0].name : 'Chương mặc định');
+            let foundCh = chapters.find(c => c.name.toLowerCase().includes(chName.toLowerCase()) || chName
+              .toLowerCase().includes(c.name.toLowerCase()));
+            if (!foundCh && chapters.length > 0) foundCh = chapters[0];
+            let chId = foundCh ? foundCh.id : '';
+            if (!foundCh && chapters.length === 0) {
+              const newCh = { id: genId(), name: chName };
+              subj.chapters.push(newCh);
+              chId = newCh.id;
+            }
+            const rest = block.replace(/^Chương\s*:.*\r?\n/im, '').trim();
+            allParsed.push(...parseBulkQuestions(rest, subjectId, chId));
           });
-          if(!allParsed.length){ showToast('Không có câu hỏi hợp lệ!','error'); return; }
-          const bank = getBank(); bank.push(...allParsed); saveBank(bank);
-          document.getElementById('importFile').value='';
-          showToast(`Đã nhập ${allParsed.length} câu!`,'success');
+          if (allParsed.length === 0) { showToast('Không có câu hỏi hợp lệ!', 'error'); return; }
+          db.questions.push(...allParsed);
+          saveDB();
+          document.getElementById('importFile').value = '';
+          refreshAllDynamicSelects();
           refreshDashboard();
+          showToast(`Đã nhập ${allParsed.length} câu!`, 'success');
         };
-        reader.readAsText(file,'UTF-8');
+        reader.readAsText(file, 'UTF-8');
       });
 
+      // ──────────────────────────────────────
       // QUESTION BANK
+      // ──────────────────────────────────────
       function renderQuestionBank() {
-        const bank = getBank(); const filter = document.getElementById('bankFilter').value;
-        let filtered = filter==='all'? bank : bank.filter(q=>q.chapter===filter);
+        const subjectId = getCurrentSubjectId();
         const container = document.getElementById('questionBankContent');
-        if(!filtered.length){ container.innerHTML='<div class="card"><p>Chưa có câu hỏi.</p></div>'; return; }
-        let html = '<div class="card"><div class="table-wrap"><table><thead><tr><th>#</th><th>Chương</th><th>Câu hỏi</th><th>ĐA</th><th>Giải thích</th><th></th></tr></thead><tbody>';
-        filtered.forEach((q,i)=>{
-          const expl = q.explanation ? q.explanation.substring(0,40)+(q.explanation.length>40?'...':'') : '—';
-          html += `<tr><td>${i+1}</td><td>${q.chapter}</td><td>${q.question.substring(0,60)}</td><td>${q.correctAnswer}</td><td>${expl}</td><td><button class="btn btn-danger btn-xs" data-id="${q.id}">Xóa</button></td></tr>`;
+        if (!subjectId) { container.innerHTML = '<div class="card"><p>Chọn môn học trước.</p></div>'; return; }
+        const chId = document.getElementById('bankChapterFilter').value;
+        let filtered = chId === 'all' ? getQuestionsOfSubject(subjectId) : getQuestionsOfChapter(subjectId,
+          chId);
+        if (!filtered.length) { container.innerHTML =
+          '<div class="card"><p>Chưa có câu hỏi nào.</p></div>'; return; }
+        let html =
+          '<div class="card"><div class="table-wrap"><table><thead><tr><th>#</th><th>Chương</th><th>Câu hỏi</th><th>ĐA</th><th>Giải thích</th><th></th></tr></thead><tbody>';
+        filtered.forEach((q, i) => {
+          const expl = q.explanation ? q.explanation.substring(0, 40) + (q.explanation.length > 40 ? '...' :
+            '') : '—';
+          html +=
+            `<tr><td>${i+1}</td><td>${q.chapterName}</td><td>${q.question.substring(0,60)}</td><td><span class="badge badge-green">${q.correctAnswer}</span></td><td style="font-size:0.78rem;">${expl}</td><td><button class="btn btn-danger btn-xs del-q" data-qid="${q.id}">Xóa</button></td></tr>`;
         });
         html += '</tbody></table></div></div>';
         container.innerHTML = html;
-        container.querySelectorAll('button[data-id]').forEach(btn=>{
-          btn.addEventListener('click', function(){
-            const id = this.dataset.id;
-            if(!confirm('Xóa câu hỏi?')) return;
-            let bank = getBank(); bank = bank.filter(q=>q.id!==id); saveBank(bank);
-            renderQuestionBank(); refreshDashboard();
+        container.querySelectorAll('.del-q').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const qid = this.dataset.qid;
+            if (!confirm('Xóa câu hỏi?')) return;
+            db.questions = db.questions.filter(q => q.id !== qid);
+            saveDB();
+            renderQuestionBank();
+            refreshDashboard();
           });
         });
       }
-      document.getElementById('bankFilter').addEventListener('change', renderQuestionBank);
+      document.getElementById('bankChapterFilter').addEventListener('change', renderQuestionBank);
 
+      // ──────────────────────────────────────
       // PRACTICE
-      let practiceQuestions=[], practiceIdx=0, practiceAnswers={};
-      document.getElementById('btnStartPractice').addEventListener('click', ()=>{
-        const ch = document.getElementById('practiceChapter').value;
-        practiceQuestions = getBank().filter(q=>q.chapter===ch);
-        if(!practiceQuestions.length){ showToast('Chương này chưa có câu hỏi!','error'); return; }
-        practiceQuestions = practiceQuestions.sort(()=>Math.random()-0.5);
-        practiceIdx=0; practiceAnswers={};
-        document.getElementById('practiceSetup').style.display='none';
-        document.getElementById('practiceArea').style.display='block';
-        document.getElementById('practiceResult').style.display='none';
+      // ──────────────────────────────────────
+      let practiceQuestions = [],
+        practiceIdx = 0,
+        practiceAnswers = {};
+      document.getElementById('btnStartPractice').addEventListener('click', () => {
+        const subjectId = getCurrentSubjectId();
+        if (!subjectId) { showToast('Chọn môn học!', 'error'); return; }
+        const chId = document.getElementById('practiceChapterSelect').value;
+        practiceQuestions = chId === 'all' ? getQuestionsOfSubject(subjectId) : getQuestionsOfChapter(
+          subjectId, chId);
+        if (!practiceQuestions.length) { showToast('Chưa có câu hỏi!', 'error'); return; }
+        practiceQuestions = practiceQuestions.sort(() => Math.random() - 0.5);
+        practiceIdx = 0;
+        practiceAnswers = {};
+        document.getElementById('practiceSetup').style.display = 'none';
+        document.getElementById('practiceArea').style.display = 'block';
+        document.getElementById('practiceResult').style.display = 'none';
         renderPracticeQuestion();
       });
-      function renderPracticeQuestion(){
+
+      function renderPracticeQuestion() {
         const area = document.getElementById('practiceArea');
-        if(practiceIdx >= practiceQuestions.length){ finishPractice(); return; }
+        if (practiceIdx >= practiceQuestions.length) { finishPractice(); return; }
         const q = practiceQuestions[practiceIdx];
-        area.innerHTML = `<div class="card"><span class="badge badge-blue">Câu ${practiceIdx+1}/${practiceQuestions.length}</span>
+        area.innerHTML = `
+        <div class="card">
+          <span class="badge badge-blue">Câu ${practiceIdx+1}/${practiceQuestions.length} — ${q.chapterName}</span>
           <div style="font-weight:600; margin:10px 0;">${q.question}</div>
           ${['A','B','C','D'].map(l=>`<div class="option-item" data-letter="${l}">${l}. ${q.options[l]}</div>`).join('')}
           <div id="practiceFeedback" style="margin-top:10px;"></div>
-          <button class="btn btn-primary" id="nextPracticeBtn" style="display:none;">Tiếp</button></div>`;
-        document.querySelectorAll('.option-item').forEach(opt=>{
-          opt.addEventListener('click', function(){
-            if(document.getElementById('nextPracticeBtn').style.display!=='none') return;
-            const letter = this.dataset.letter; practiceAnswers[practiceIdx]=letter;
+          <button class="btn btn-primary" id="nextPracticeBtn" style="display:none;">Tiếp <i class="fa-solid fa-arrow-right"></i></button>
+        </div>`;
+        document.querySelectorAll('.option-item').forEach(opt => {
+          opt.addEventListener('click', function() {
+            if (document.getElementById('nextPracticeBtn').style.display !== 'none') return;
+            const letter = this.dataset.letter;
+            practiceAnswers[practiceIdx] = letter;
             const correct = q.correctAnswer;
-            document.querySelectorAll('.option-item').forEach(o=>{ o.style.pointerEvents='none'; if(o.dataset.letter===correct) o.style.borderColor='var(--success)'; });
+            document.querySelectorAll('.option-item').forEach(o => {
+              o.style.pointerEvents = 'none';
+              if (o.dataset.letter === correct) o.classList.add('correct-highlight');
+            });
             const fb = document.getElementById('practiceFeedback');
-            if(letter===correct){
-              fb.innerHTML='<span style="color:green;">✅ Đúng!</span>';
+            if (letter === correct) {
+              fb.innerHTML = '<span style="color:green;">✅ Chính xác!</span>';
             } else {
-              let wrongHtml = `<span style="color:red;">❌ Sai! Đáp án đúng: ${correct}</span>`;
-              if(q.explanation) wrongHtml += `<div class="explanation-box"><strong>Giải thích:</strong> ${q.explanation}</div>`;
-              fb.innerHTML = wrongHtml;
+              let h = `<span style="color:red;">❌ Sai! Đáp án đúng: <strong>${correct}</strong></span>`;
+              if (q.explanation) h +=
+                `<div class="explanation-box"><strong>Giải thích:</strong> ${q.explanation}</div>`;
+              fb.innerHTML = h;
             }
-            document.getElementById('nextPracticeBtn').style.display='inline-flex';
+            document.getElementById('nextPracticeBtn').style.display = 'inline-flex';
           });
         });
-        document.getElementById('nextPracticeBtn').addEventListener('click', ()=>{ practiceIdx++; renderPracticeQuestion(); });
-      }
-      function finishPractice(){
-        document.getElementById('practiceArea').style.display='none';
-        document.getElementById('practiceSetup').style.display='block';
-        const total = practiceQuestions.length; let correct=0;
-        practiceQuestions.forEach((q,i)=>{ if(practiceAnswers[i]===q.correctAnswer) correct++; });
-        document.getElementById('practiceResult').innerHTML = `<div class="card"><h3>Kết quả: ${correct}/${total} (${((correct/total)*100).toFixed(1)}%)</h3></div>`;
-        document.getElementById('practiceResult').style.display='block';
+        document.getElementById('nextPracticeBtn').addEventListener('click', () => {
+          practiceIdx++;
+          renderPracticeQuestion();
+        });
       }
 
+      function finishPractice() {
+        document.getElementById('practiceArea').style.display = 'none';
+        document.getElementById('practiceSetup').style.display = 'block';
+        const total = practiceQuestions.length;
+        let correct = 0;
+        practiceQuestions.forEach((q, i) => { if (practiceAnswers[i] === q.correctAnswer) correct++; });
+        document.getElementById('practiceResult').innerHTML =
+          `<div class="card"><h3>✅ Kết quả: ${correct}/${total} (${((correct/total)*100).toFixed(1)}%)</h3></div>`;
+        document.getElementById('practiceResult').style.display = 'block';
+      }
+
+      // ──────────────────────────────────────
       // EXAM
-      let examQuestions=[], examAnswers={}, examTimer=null, examTimeLeft=0, examTotalTime=0, examSubmitted=false;
-      function renderExamChapterConfig(){
-        const chapters = getChapters(); const container = document.getElementById('examChapterConfig');
-        const total = parseInt(document.getElementById('examTotalQuestions').value)||80;
-        const per = Math.max(1, Math.floor(total/chapters.length));
-        let rem = total - per*chapters.length;
+      // ──────────────────────────────────────
+      let examQuestions = [],
+        examAnswers = {},
+        examTimer = null,
+        examTimeLeft = 0,
+        examSubmitted = false;
+
+      function refreshExamChapterConfig() {
+        const subjectId = getCurrentSubjectId();
+        const container = document.getElementById('examChapterConfig');
+        if (!subjectId) { container.innerHTML = '<p>Chọn môn học.</p>'; return; }
+        const chapters = getChaptersOfSubject(subjectId);
+        const total = parseInt(document.getElementById('examTotalQuestions').value) || 80;
+        const per = Math.max(1, Math.floor(total / chapters.length));
+        let rem = total - per * chapters.length;
         container.innerHTML = '';
-        chapters.forEach((ch,i)=>{
-          const val = per + (i<rem?1:0);
-          container.innerHTML += `<div style="display:flex; gap:10px; align-items:center; margin-bottom:6px;"><span style="width:200px;">${ch}</span><input type="number" class="exam-ch-qty" value="${val}" min="0" style="width:80px;"></div>`;
+        chapters.forEach((ch, i) => {
+          const val = per + (i < rem ? 1 : 0);
+          container.innerHTML +=
+            `<div style="display:flex;gap:10px;align-items:center;margin-bottom:6px;"><span style="width:200px;">${ch.name}</span><input type="number" class="exam-ch-qty" value="${val}" min="0" style="width:80px;"></div>`;
         });
       }
-      document.getElementById('examTotalQuestions').addEventListener('input', renderExamChapterConfig);
-      document.getElementById('btnStartExam').addEventListener('click', ()=>{
-        const bank = getBank(); if(!bank.length){ showToast('Chưa có câu hỏi!','error'); return; }
+      document.getElementById('examTotalQuestions').addEventListener('input', refreshExamChapterConfig);
+      document.getElementById('btnStartExam').addEventListener('click', () => {
+        const subjectId = getCurrentSubjectId();
+        if (!subjectId) { showToast('Chọn môn học!', 'error'); return; }
         const qtyInputs = document.querySelectorAll('.exam-ch-qty');
-        examQuestions = []; examAnswers = {}; examSubmitted = false;
-        qtyInputs.forEach(inp => {
-          const ch = inp.previousElementSibling.textContent;
-          const num = parseInt(inp.value)||0;
-          const pool = bank.filter(q=>q.chapter===ch);
-          const selected = pool.sort(()=>Math.random()-0.5).slice(0, num);
+        examQuestions = [];
+        examAnswers = {};
+        examSubmitted = false;
+        const chapters = getChaptersOfSubject(subjectId);
+        qtyInputs.forEach((inp, i) => {
+          const num = parseInt(inp.value) || 0;
+          const ch = chapters[i];
+          if (!ch) return;
+          const pool = getQuestionsOfChapter(subjectId, ch.id);
+          const selected = pool.sort(() => Math.random() - 0.5).slice(0, num);
           examQuestions.push(...selected);
         });
-        if(!examQuestions.length){ showToast('Không có câu hỏi nào!','error'); return; }
-        examQuestions = examQuestions.sort(()=>Math.random()-0.5);
-        examTimeLeft = (parseInt(document.getElementById('examTime').value)||50)*60;
-        examTotalTime = examTimeLeft;
-        document.getElementById('examSetup').style.display='none';
-        document.getElementById('examArea').style.display='block';
-        document.getElementById('examResult').style.display='none';
-        renderExamUI(); startTimer();
+        if (!examQuestions.length) { showToast('Không có câu hỏi!', 'error'); return; }
+        examQuestions = examQuestions.sort(() => Math.random() - 0.5);
+        examTimeLeft = (parseInt(document.getElementById('examTime').value) || 50) * 60;
+        document.getElementById('examSetup').style.display = 'none';
+        document.getElementById('examArea').style.display = 'block';
+        document.getElementById('examResult').style.display = 'none';
+        renderExamUI();
+        startExamTimer();
       });
-      function renderExamUI(){
+
+      function renderExamUI() {
         const area = document.getElementById('examArea');
-        area.innerHTML = `<div class="card" style="text-align:center;"><div class="timer-display" id="timerDisplay">${formatTime(examTimeLeft)}</div><span class="badge badge-blue">Đã trả lời: <span id="answeredCount">0</span>/${examQuestions.length}</span></div>`;
-        examQuestions.forEach((q,idx)=>{
-          area.innerHTML += `<div class="card question-card" id="qcard${idx}"><div><strong>Câu ${idx+1}:</strong> ${q.question}</div>
-          ${['A','B','C','D'].map(l=>`<div class="option-item exam-opt" data-qidx="${idx}" data-letter="${l}">${l}. ${q.options[l]}</div>`).join('')}</div>`;
+        area.innerHTML =
+          `<div class="card" style="text-align:center;"><div class="timer-display" id="timerDisplay">${formatTime(examTimeLeft)}</div><span class="badge badge-blue">Đã trả lời: <span id="answeredCount">0</span>/${examQuestions.length}</span></div>`;
+        examQuestions.forEach((q, idx) => {
+          area.innerHTML +=
+            `<div class="card" id="qcard${idx}"><div><strong>Câu ${idx+1}:</strong> <span class="badge badge-blue">${q.chapterName}</span></div><div style="font-weight:600;margin:8px 0;">${q.question}</div>${['A','B','C','D'].map(l=>`<div class="option-item exam-opt" data-qidx="${idx}" data-letter="${l}">${l}. ${q.options[l]}</div>`).join('')}</div>`;
         });
-        area.innerHTML += `<div class="card" style="text-align:center;"><button class="btn btn-success" id="btnSubmitExam">Nộp bài</button></div>`;
-        document.querySelectorAll('.exam-opt').forEach(opt=>{
-          opt.addEventListener('click', function(){
-            if(examSubmitted) return;
-            const qIdx = parseInt(this.dataset.qidx); const letter = this.dataset.letter;
-            examAnswers[qIdx]=letter;
-            const card = document.getElementById('qcard'+qIdx); card.querySelectorAll('.exam-opt').forEach(o=>o.classList.remove('selected'));
+        area.innerHTML +=
+          '<div class="card" style="text-align:center;"><button class="btn btn-success" id="btnSubmitExam">📩 Nộp bài</button></div>';
+        document.querySelectorAll('.exam-opt').forEach(opt => {
+          opt.addEventListener('click', function() {
+            if (examSubmitted) return;
+            const qIdx = parseInt(this.dataset.qidx);
+            const letter = this.dataset.letter;
+            examAnswers[qIdx] = letter;
+            const card = document.getElementById('qcard' + qIdx);
+            card.querySelectorAll('.exam-opt').forEach(o => o.classList.remove('selected'));
             this.classList.add('selected');
             document.getElementById('answeredCount').textContent = Object.keys(examAnswers).length;
           });
         });
         document.getElementById('btnSubmitExam').addEventListener('click', submitExam);
       }
-      function formatTime(s){ const m=Math.floor(s/60), sec=s%60; return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`; }
-      function startTimer(){ updateTimerUI(); examTimer = setInterval(()=>{ examTimeLeft--; updateTimerUI(); if(examTimeLeft<=0){ clearInterval(examTimer); submitExam(); } },1000); }
-      function updateTimerUI(){ const el = document.getElementById('timerDisplay'); if(el) el.textContent=formatTime(examTimeLeft); }
-      function submitExam(){
-        if(examSubmitted) return; examSubmitted=true; if(examTimer) clearInterval(examTimer);
-        const total = examQuestions.length; let correct=0; const chapterStats={};
-        examQuestions.forEach((q,i)=>{ if(!chapterStats[q.chapter]) chapterStats[q.chapter]={total:0,wrong:0}; chapterStats[q.chapter].total++; if(examAnswers[i]===q.correctAnswer) correct++; else chapterStats[q.chapter].wrong++; });
-        document.getElementById('examArea').style.display='none';
-        const res = document.getElementById('examResult'); res.style.display='block';
-        let html = `<div class="card"><h3>Kết quả: ${correct}/${total} (${((correct/total)*100).toFixed(1)}%)</h3><h4>Tỉ lệ sai theo chương:</h4>`;
-        for(let [ch,st] of Object.entries(chapterStats)) html += `<div>${ch}: ${st.wrong}/${st.total} sai (${st.total?((st.wrong/st.total)*100).toFixed(1):0}%)</div>`;
-        html += '<h4 style="margin-top:16px;">Câu sai (kèm giải thích):</h4>';
-        examQuestions.forEach((q,i)=>{
-          if(examAnswers[i]!==q.correctAnswer){
-            html += `<div class="card"><strong>Câu ${i+1}:</strong> ${q.question}<br><span style="color:red;">Bạn chọn: ${examAnswers[i]||'Chưa chọn'}</span> | <span style="color:green;">Đáp án: ${q.correctAnswer}</span>`;
-            if(q.explanation) html += `<div class="explanation-box"><strong>Giải thích:</strong> ${q.explanation}</div>`;
+
+      function formatTime(s) { const m = Math.floor(s / 60),
+          sec = s % 60; return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`; }
+
+      function startExamTimer() {
+        updateTimerUI();
+        examTimer = setInterval(() => {
+          examTimeLeft--;
+          updateTimerUI();
+          if (examTimeLeft <= 0) { clearInterval(examTimer);
+            submitExam(); }
+        }, 1000);
+      }
+
+      function updateTimerUI() { const el = document.getElementById('timerDisplay'); if (el) el.textContent =
+          formatTime(examTimeLeft); }
+
+      function submitExam() {
+        if (examSubmitted) return;
+        examSubmitted = true;
+        if (examTimer) clearInterval(examTimer);
+        const total = examQuestions.length;
+        let correct = 0;
+        const chapterStats = {};
+        examQuestions.forEach((q, i) => {
+          const key = q.chapterName;
+          if (!chapterStats[key]) chapterStats[key] = { total: 0, wrong: 0 };
+          chapterStats[key].total++;
+          if (examAnswers[i] === q.correctAnswer) correct++;
+          else chapterStats[key].wrong++;
+        });
+        document.getElementById('examArea').style.display = 'none';
+        const res = document.getElementById('examResult');
+        res.style.display = 'block';
+        let html =
+          `<div class="card"><h3>Kết quả: ${correct}/${total} (${((correct/total)*100).toFixed(1)}%)</h3>
+        <h4>Tỉ lệ sai theo chương:</h4>`;
+        for (let [ch, st] of Object.entries(chapterStats)) {
+          const rate = st.total ? ((st.wrong / st.total) * 100).toFixed(1) : 0;
+          html += `<div>${ch}: ${st.wrong}/${st.total} sai (${rate}%)</div>`;
+        }
+        html += '<h4 style="margin-top:16px;">❌ Câu sai (kèm giải thích):</h4>';
+        examQuestions.forEach((q, i) => {
+          if (examAnswers[i] !== q.correctAnswer) {
+            html +=
+              `<div class="card"><strong>Câu ${i+1}:</strong> ${q.question}<br><span style="color:red;">Bạn chọn: ${examAnswers[i]||'Chưa chọn'}</span> | <span style="color:green;">Đáp án: ${q.correctAnswer}</span>`;
+            if (q.explanation) html +=
+              `<div class="explanation-box"><strong>Giải thích:</strong> ${q.explanation}</div>`;
             html += `</div>`;
           }
         });
-        html += `<button class="btn btn-primary" onclick="location.reload()">Thi lại</button></div>`;
+        html +=
+          `<button class="btn btn-primary" onclick="document.getElementById('examResult').style.display='none';document.getElementById('examSetup').style.display='block';refreshExamChapterConfig();">🔄 Thi lại</button></div>`;
         res.innerHTML = html;
       }
 
-      function init(){
-        if(!localStorage.getItem(CHAPTERS_KEY)) saveChapters(defaultChapters);
-        refreshAllChapterSelects();
+      // ──────────────────────────────────────
+      // INIT
+      // ──────────────────────────────────────
+      function init() {
+        loadDB();
+        if (db.subjects.length === 0) {
+          db.subjects.push({ id: genId(), name: 'Chủ nghĩa xã hội khoa học', chapters: [] });
+          const subj = db.subjects[0];
+          const defaultChapters = [
+            'Chương 1: Nhập môn CNXHKH',
+            'Chương 2: Sứ mệnh lịch sử của GCCN',
+            'Chương 3: CNXH và thời kỳ quá độ',
+            'Chương 4: Dân chủ XHCN',
+            'Chương 5: Cơ cấu xã hội - giai cấp',
+            'Chương 6: Vấn đề dân tộc và tôn giáo',
+            'Chương 7: Vấn đề gia đình'
+          ];
+          defaultChapters.forEach(chName => subj.chapters.push({ id: genId(), name: chName }));
+          saveDB();
+        }
+        populateSidebarSubjectSelect();
+        refreshAllDynamicSelects();
         refreshDashboard();
-        renderChapterList();
       }
       init();
     })();
