@@ -70,6 +70,7 @@
     <div class="sidebar-logo"><div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div> CNXH Khoa Học</div>
     <ul class="sidebar-nav">
       <li><a data-panel="dashboard" class="active"><i class="fa-solid fa-house"></i> Trang chủ</a></li>
+      <li><a data-panel="chapters"><i class="fa-solid fa-folder-plus"></i> Quản lý chương</a></li>
       <li><a data-panel="add-single"><i class="fa-solid fa-plus-circle"></i> Thêm câu hỏi</a></li>
       <li><a data-panel="add-bulk"><i class="fa-solid fa-layer-group"></i> Thêm nhiều câu hỏi</a></li>
       <li><a data-panel="import-export"><i class="fa-solid fa-file-import"></i> Nhập / Xuất file</a></li>
@@ -87,6 +88,23 @@
       <div class="stats-row" id="dashboardStats"></div>
       <div class="card"><h3><i class="fa-solid fa-chart-bar"></i> Thống kê theo chương</h3><div class="table-wrap"><table><thead><tr><th>Chương</th><th>Số câu</th><th>Tỉ lệ</th></tr></thead><tbody id="dashboardChapterTable"></tbody></table></div></div>
     </div>
+
+    <!-- CHAPTERS MANAGEMENT -->
+    <div class="panel" id="panel-chapters">
+      <div class="page-header"><h1>📚 Quản lý chương</h1><div class="subtitle">Thêm, sửa tên, xóa chương (dữ liệu được lưu trữ vĩnh viễn)</div></div>
+      <div class="card">
+        <h3><i class="fa-solid fa-plus"></i> Thêm chương mới</h3>
+        <div class="form-row">
+          <div class="form-group" style="flex:3;"><input id="newChapterName" placeholder="Nhập tên chương mới"></div>
+          <div class="form-group" style="flex:1;"><button class="btn btn-primary" id="btnAddChapter"><i class="fa-solid fa-check"></i> Thêm</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3><i class="fa-solid fa-list"></i> Danh sách chương</h3>
+        <div id="chapterListContainer"></div>
+      </div>
+    </div>
+
     <!-- ADD SINGLE -->
     <div class="panel" id="panel-add-single">
       <div class="page-header"><h1>✍️ Thêm câu hỏi</h1><div class="subtitle">Nhập từng câu hỏi (có giải thích)</div></div>
@@ -119,7 +137,6 @@
           <code>A: ...</code> / <code>B: ...</code> / <code>C: ...</code> / <code>D: ...</code><br>
           <code>Đáp án đúng: A</code> (hoặc <code>Đáp án: A</code>)<br>
           <code>Giải thích: Lý do đáp án đúng</code> (tùy chọn)<br>
-          <em>Các câu cách nhau bởi dòng trống hoặc bắt đầu "Câu"</em>
         </p>
         <div class="form-group"><label>Chọn chương cho các câu này</label><select id="bulkChapter"></select></div>
         <div class="form-group"><label>Dán nội dung nhiều câu hỏi</label><textarea id="bulkText" rows="14" placeholder="Dán câu hỏi vào đây..."></textarea></div>
@@ -130,8 +147,22 @@
     <!-- IMPORT/EXPORT -->
     <div class="panel" id="panel-import-export">
       <div class="page-header"><h1>📁 Nhập / Xuất file</h1></div>
-      <div class="card"><h3>📥 Nhập file TXT</h3><p style="font-size:0.85rem;">File .txt có thể chứa nhiều chương (dòng "Chương:...") và giải thích.</p><input type="file" id="importFile" accept=".txt"><button class="btn btn-primary" style="margin-top:10px;" id="btnImportFile"><i class="fa-solid fa-upload"></i> Nhập file</button><span id="importResult" style="margin-left:10px;"></span></div>
-      <div class="card"><h3>📤 Xuất file TXT</h3><button class="btn btn-success" id="btnExportFile"><i class="fa-solid fa-download"></i> Xuất toàn bộ câu hỏi</button></div>
+      <div class="card">
+        <h3>📥 Nhập file TXT</h3>
+        <p style="font-size:0.85rem;">File .txt có thể chứa nhiều chương (dòng "Chương:...") và giải thích.</p>
+        <input type="file" id="importFile" accept=".txt">
+        <button class="btn btn-primary" style="margin-top:10px;" id="btnImportFile"><i class="fa-solid fa-upload"></i> Nhập file</button>
+        <span id="importResult" style="margin-left:10px;"></span>
+      </div>
+      <div class="card">
+        <h3>📤 Xuất file TXT</h3>
+        <div class="form-group" style="max-width:400px;">
+          <label>Chọn chương cần xuất</label>
+          <select id="exportChapterSelect"><option value="all">Tất cả chương</option></select>
+        </div>
+        <button class="btn btn-success" id="btnExportFile"><i class="fa-solid fa-download"></i> Xuất file</button>
+        <span id="exportResult" style="margin-left:10px; font-size:0.85rem;"></span>
+      </div>
     </div>
     <!-- QUESTION BANK -->
     <div class="panel" id="panel-question-bank">
@@ -162,8 +193,8 @@
 
   <script>
     (function() {
-      const STORAGE_KEY = 'cnxhk_question_bank_v3';
-      const CHAPTERS_KEY = 'cnxhk_chapters_v3';
+      const STORAGE_KEY = 'cnxhk_question_bank_v5';
+      const CHAPTERS_KEY = 'cnxhk_chapters_v5';
       const defaultChapters = [
         'Chương 1: Nhập môn CNXHKH',
         'Chương 2: Sứ mệnh lịch sử của GCCN',
@@ -193,9 +224,9 @@
         setTimeout(()=>{ t.style.opacity='0'; t.style.transition='0.2s'; setTimeout(()=>t.remove(),300); }, 2500);
       }
 
-      function populateSelect(sel, chapters, addAll=false) {
+      function populateSelect(sel, chapters, addAll=false, addAllLabel='Tất cả chương') {
         sel.innerHTML = '';
-        if(addAll) { const o = document.createElement('option'); o.value='all'; o.textContent='Tất cả chương'; sel.appendChild(o); }
+        if(addAll) { const o = document.createElement('option'); o.value='all'; o.textContent=addAllLabel; sel.appendChild(o); }
         chapters.forEach(ch => { const o = document.createElement('option'); o.value=ch; o.textContent=ch; sel.appendChild(o); });
       }
 
@@ -208,7 +239,12 @@
         populateSelect(bankFilter, chapters, true);
         bankFilter.value = (cur && chapters.includes(cur)) ? cur : 'all';
         populateSelect(document.getElementById('practiceChapter'), chapters);
+        const exportSel = document.getElementById('exportChapterSelect');
+        const curExport = exportSel.value;
+        populateSelect(exportSel, chapters, true, 'Tất cả chương');
+        exportSel.value = (curExport && (curExport==='all' || chapters.includes(curExport))) ? curExport : 'all';
         renderExamChapterConfig();
+        renderChapterList(); // update management table
       }
 
       function navigate(panel) {
@@ -220,8 +256,10 @@
         if(link) link.classList.add('active');
         document.getElementById('sidebar').classList.remove('open');
         if(panel==='dashboard') refreshDashboard();
+        if(panel==='chapters') { refreshAllChapterSelects(); }
         if(panel==='question-bank') renderQuestionBank();
         if(panel==='add-single'||panel==='add-bulk') refreshAllChapterSelects();
+        if(panel==='import-export') refreshAllChapterSelects();
         if(panel==='practice') refreshAllChapterSelects();
         if(panel==='exam') { refreshAllChapterSelects(); renderExamChapterConfig(); }
       }
@@ -247,7 +285,89 @@
         });
       }
 
-      // SINGLE ADD (with explanation)
+      // CHAPTER MANAGEMENT
+      function renderChapterList() {
+        const chapters = getChapters();
+        const container = document.getElementById('chapterListContainer');
+        if (!container) return;
+        let html = '<div class="table-wrap"><table><thead><tr><th>STT</th><th>Tên chương</th><th>Số câu hỏi</th><th>Hành động</th></tr></thead><tbody>';
+        const bank = getBank();
+        const counts = {};
+        chapters.forEach(ch => counts[ch] = bank.filter(q => q.chapter === ch).length);
+        chapters.forEach((ch, idx) => {
+          html += `<tr>
+            <td>${idx+1}</td>
+            <td><strong>${ch}</strong></td>
+            <td><span class="badge badge-blue">${counts[ch] || 0} câu</span></td>
+            <td>
+              <button class="btn btn-outline btn-xs edit-chapter" data-chapter="${ch}"><i class="fa-solid fa-pen"></i> Sửa</button>
+              <button class="btn btn-danger btn-xs delete-chapter" data-chapter="${ch}"><i class="fa-solid fa-trash"></i> Xóa</button>
+            </td>
+          </tr>`;
+        });
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+
+        container.querySelectorAll('.edit-chapter').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const oldName = this.dataset.chapter;
+            const newName = prompt('Nhập tên mới cho chương:', oldName);
+            if (!newName || newName.trim() === '' || newName.trim() === oldName) return;
+            const trimmed = newName.trim();
+            const chapters = getChapters();
+            if (chapters.includes(trimmed)) {
+              showToast('Tên chương đã tồn tại!', 'error');
+              return;
+            }
+            const bank = getBank();
+            bank.forEach(q => { if (q.chapter === oldName) q.chapter = trimmed; });
+            const updatedChapters = chapters.map(ch => ch === oldName ? trimmed : ch);
+            saveBank(bank);
+            saveChapters(updatedChapters);
+            refreshAllChapterSelects();
+            showToast('Đã đổi tên chương!', 'success');
+          });
+        });
+
+        container.querySelectorAll('.delete-chapter').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const chapterName = this.dataset.chapter;
+            const chapters = getChapters();
+            if (chapters.length <= 1) {
+              showToast('Không thể xóa chương cuối cùng!', 'error');
+              return;
+            }
+            const bank = getBank();
+            const count = bank.filter(q => q.chapter === chapterName).length;
+            if (count > 0) {
+              if (!confirm(`Chương "${chapterName}" có ${count} câu hỏi. Xóa chương sẽ xóa tất cả câu hỏi thuộc chương này. Bạn có chắc?`)) return;
+            } else {
+              if (!confirm(`Xóa chương "${chapterName}"?`)) return;
+            }
+            const newBank = bank.filter(q => q.chapter !== chapterName);
+            const newChapters = chapters.filter(ch => ch !== chapterName);
+            saveBank(newBank);
+            saveChapters(newChapters);
+            refreshAllChapterSelects();
+            showToast('Đã xóa chương!', 'success');
+          });
+        });
+      }
+
+      document.getElementById('btnAddChapter').addEventListener('click', () => {
+        const input = document.getElementById('newChapterName');
+        const name = input.value.trim();
+        if (!name) { showToast('Vui lòng nhập tên chương!', 'error'); return; }
+        const chapters = getChapters();
+        if (chapters.includes(name)) { showToast('Chương đã tồn tại!', 'error'); return; }
+        chapters.push(name);
+        saveChapters(chapters);
+        input.value = '';
+        refreshAllChapterSelects();
+        showToast('Đã thêm chương mới!', 'success');
+      });
+
+      // SINGLE ADD
       document.getElementById('btnAddSingle').addEventListener('click', ()=>{
         const ch = document.getElementById('singleChapter').value;
         const q = document.getElementById('singleQuestion').value.trim();
@@ -272,7 +392,7 @@
         document.getElementById('singleAnswer').value=''; document.getElementById('singleExplanation').value='';
       });
 
-      // BULK PARSER (improved, includes explanation)
+      // BULK
       function parseBulkQuestions(text, chapter) {
         const questions = [];
         const blocks = text.split(/(?=^Câu\s+\d+[:.])/m);
@@ -281,23 +401,14 @@
           const lines = block.split(/\r?\n/).map(l=>l.trim()).filter(l=>l);
           let qText='', optA='', optB='', optC='', optD='', correct='', expl='';
           for (let line of lines) {
-            if(/^Câu\s+\d+[:.]/i.test(line)) {
-              qText = line.replace(/^Câu\s+\d+[:.]\s*/i,'').trim();
-            } else if(/^A[:.)]/i.test(line)) {
-              optA = line.replace(/^A[:.)]\s*/i,'').trim();
-            } else if(/^B[:.)]/i.test(line)) {
-              optB = line.replace(/^B[:.)]\s*/i,'').trim();
-            } else if(/^C[:.)]/i.test(line)) {
-              optC = line.replace(/^C[:.)]\s*/i,'').trim();
-            } else if(/^D[:.)]/i.test(line)) {
-              optD = line.replace(/^D[:.)]\s*/i,'').trim();
-            } else if(/^Đ[aá]p\s*[aá]n\s*[đd]úng\s*[:.]/i.test(line)) {
-              correct = line.replace(/^Đ[aá]p\s*[aá]n\s*[đd]úng\s*[:.]\s*/i,'').trim().toUpperCase();
-            } else if(/^Đ[aá]p\s*[aá]n\s*[:.]/i.test(line)) {
-              correct = line.replace(/^Đ[aá]p\s*[aá]n\s*[:.]\s*/i,'').trim().toUpperCase();
-            } else if(/^Giải thích\s*[:.]/i.test(line)) {
-              expl = line.replace(/^Giải thích\s*[:.]\s*/i,'').trim();
-            }
+            if(/^Câu\s+\d+[:.]/i.test(line)) qText = line.replace(/^Câu\s+\d+[:.]\s*/i,'').trim();
+            else if(/^A[:.)]/i.test(line)) optA = line.replace(/^A[:.)]\s*/i,'').trim();
+            else if(/^B[:.)]/i.test(line)) optB = line.replace(/^B[:.)]\s*/i,'').trim();
+            else if(/^C[:.)]/i.test(line)) optC = line.replace(/^C[:.)]\s*/i,'').trim();
+            else if(/^D[:.)]/i.test(line)) optD = line.replace(/^D[:.)]\s*/i,'').trim();
+            else if(/^Đ[aá]p\s*[aá]n\s*[đd]úng\s*[:.]/i.test(line)) correct = line.replace(/^Đ[aá]p\s*[aá]n\s*[đd]úng\s*[:.]\s*/i,'').trim().toUpperCase();
+            else if(/^Đ[aá]p\s*[aá]n\s*[:.]/i.test(line)) correct = line.replace(/^Đ[aá]p\s*[aá]n\s*[:.]\s*/i,'').trim().toUpperCase();
+            else if(/^Giải thích\s*[:.]/i.test(line)) expl = line.replace(/^Giải thích\s*[:.]\s*/i,'').trim();
           }
           if(qText && optA && optB && optC && optD && ['A','B','C','D'].includes(correct)) {
             questions.push({ id:genId(), chapter, question:qText, options:{A:optA,B:optB,C:optC,D:optD}, correctAnswer:correct, explanation:expl });
@@ -305,35 +416,40 @@
         }
         return questions;
       }
-
       document.getElementById('btnAddBulk').addEventListener('click', ()=>{
         const chapter = document.getElementById('bulkChapter').value;
         const text = document.getElementById('bulkText').value.trim();
         if(!chapter||!text){ showToast('Chọn chương và dán nội dung!','error'); return; }
         const parsed = parseBulkQuestions(text, chapter);
-        if(parsed.length===0){ document.getElementById('bulkResult').textContent='❌ Không tìm thấy câu hỏi hợp lệ.'; showToast('Không phân tích được câu hỏi!','error'); return; }
+        if(parsed.length===0){ document.getElementById('bulkResult').textContent='❌ Không tìm thấy câu hỏi hợp lệ.'; return; }
         const bank = getBank(); bank.push(...parsed); saveBank(bank);
         document.getElementById('bulkText').value='';
-        document.getElementById('bulkResult').textContent = `✅ Đã thêm ${parsed.length} câu hỏi vào "${chapter}"`;
-        showToast(`Đã thêm ${parsed.length} câu hỏi!`,'success'); refreshDashboard();
+        document.getElementById('bulkResult').textContent = `✅ Đã thêm ${parsed.length} câu vào "${chapter}"`;
+        showToast(`Đã thêm ${parsed.length} câu!`,'success'); refreshDashboard();
       });
 
-      // IMPORT / EXPORT (with explanation)
+      // IMPORT/EXPORT
       document.getElementById('btnExportFile').addEventListener('click', ()=>{
-        const bank = getBank(); if(!bank.length){ showToast('Ngân hàng trống!','error'); return; }
-        let out=''; bank.forEach((q,i)=>{
+        const bank = getBank();
+        const selectedChapter = document.getElementById('exportChapterSelect').value;
+        let filtered = selectedChapter==='all' ? bank : bank.filter(q=>q.chapter===selectedChapter);
+        if(!filtered.length){ showToast('Không có câu hỏi!','error'); return; }
+        let out = '';
+        filtered.forEach((q,i)=> {
           out += `Chương: ${q.chapter}\nCâu ${i+1}: ${q.question}\nA: ${q.options.A}\nB: ${q.options.B}\nC: ${q.options.C}\nD: ${q.options.D}\nĐáp án đúng: ${q.correctAnswer}\n`;
           if(q.explanation) out += `Giải thích: ${q.explanation}\n`;
           out += '\n';
         });
         const blob = new Blob(['\uFEFF'+out],{type:'text/plain'});
-        const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ngan_hang_cnxhk.txt'; a.click();
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = selectedChapter==='all' ? 'toan_bo.txt' : `${selectedChapter.replace(/[^a-zA-Z0-9]/g,'_')}.txt`;
+        a.click();
         showToast('Xuất file thành công!','success');
       });
-
       document.getElementById('btnImportFile').addEventListener('click', ()=>{
         const file = document.getElementById('importFile').files[0];
-        if(!file){ showToast('Chọn file .txt!','error'); return; }
+        if(!file){ showToast('Chọn file!','error'); return; }
         const reader = new FileReader();
         reader.onload = function(e){
           const content = e.target.result;
@@ -349,41 +465,40 @@
             const rest = block.replace(/^Chương\s*:.*\r?\n/im,'').trim();
             allParsed.push(...parseBulkQuestions(rest, chName));
           });
-          if(allParsed.length===0){ document.getElementById('importResult').textContent='❌ Không có câu hỏi hợp lệ.'; showToast('Không đọc được câu hỏi!','error'); return; }
+          if(!allParsed.length){ showToast('Không có câu hỏi hợp lệ!','error'); return; }
           const bank = getBank(); bank.push(...allParsed); saveBank(bank);
-          document.getElementById('importResult').textContent = `✅ Đã nhập ${allParsed.length} câu.`;
-          showToast(`Nhập thành công ${allParsed.length} câu!`,'success');
           document.getElementById('importFile').value='';
+          showToast(`Đã nhập ${allParsed.length} câu!`,'success');
           refreshDashboard();
         };
-        reader.readAsText(file, 'UTF-8');
+        reader.readAsText(file,'UTF-8');
       });
 
-      // QUESTION BANK (show explanation toggle)
+      // QUESTION BANK
       function renderQuestionBank() {
         const bank = getBank(); const filter = document.getElementById('bankFilter').value;
         let filtered = filter==='all'? bank : bank.filter(q=>q.chapter===filter);
         const container = document.getElementById('questionBankContent');
         if(!filtered.length){ container.innerHTML='<div class="card"><p>Chưa có câu hỏi.</p></div>'; return; }
-        let html = '<div class="card"><div class="table-wrap"><table><thead><tr><th>#</th><th>Chương</th><th>Câu hỏi</th><th>Đáp án</th><th>Giải thích</th><th></th></tr></thead><tbody>';
+        let html = '<div class="card"><div class="table-wrap"><table><thead><tr><th>#</th><th>Chương</th><th>Câu hỏi</th><th>ĐA</th><th>Giải thích</th><th></th></tr></thead><tbody>';
         filtered.forEach((q,i)=>{
-          const expl = q.explanation ? q.explanation.substring(0,50)+(q.explanation.length>50?'...':'') : '—';
-          html += `<tr><td>${i+1}</td><td><span class="badge badge-blue">${q.chapter}</span></td><td>${q.question.substring(0,70)}</td><td><span class="badge badge-green">${q.correctAnswer}</span></td><td style="font-size:0.8rem;">${expl}</td><td><button class="btn btn-danger btn-xs" data-id="${q.id}">Xóa</button></td></tr>`;
+          const expl = q.explanation ? q.explanation.substring(0,40)+(q.explanation.length>40?'...':'') : '—';
+          html += `<tr><td>${i+1}</td><td>${q.chapter}</td><td>${q.question.substring(0,60)}</td><td>${q.correctAnswer}</td><td>${expl}</td><td><button class="btn btn-danger btn-xs" data-id="${q.id}">Xóa</button></td></tr>`;
         });
         html += '</tbody></table></div></div>';
         container.innerHTML = html;
         container.querySelectorAll('button[data-id]').forEach(btn=>{
           btn.addEventListener('click', function(){
             const id = this.dataset.id;
-            if(!confirm('Xóa câu hỏi này?')) return;
+            if(!confirm('Xóa câu hỏi?')) return;
             let bank = getBank(); bank = bank.filter(q=>q.id!==id); saveBank(bank);
-            renderQuestionBank(); refreshDashboard(); showToast('Đã xóa!','success');
+            renderQuestionBank(); refreshDashboard();
           });
         });
       }
       document.getElementById('bankFilter').addEventListener('change', renderQuestionBank);
 
-      // PRACTICE (with explanation on wrong)
+      // PRACTICE
       let practiceQuestions=[], practiceIdx=0, practiceAnswers={};
       document.getElementById('btnStartPractice').addEventListener('click', ()=>{
         const ch = document.getElementById('practiceChapter').value;
@@ -433,7 +548,7 @@
         document.getElementById('practiceResult').style.display='block';
       }
 
-      // EXAM (with explanation in result)
+      // EXAM
       let examQuestions=[], examAnswers={}, examTimer=null, examTimeLeft=0, examTotalTime=0, examSubmitted=false;
       function renderExamChapterConfig(){
         const chapters = getChapters(); const container = document.getElementById('examChapterConfig');
@@ -449,10 +564,11 @@
       document.getElementById('examTotalQuestions').addEventListener('input', renderExamChapterConfig);
       document.getElementById('btnStartExam').addEventListener('click', ()=>{
         const bank = getBank(); if(!bank.length){ showToast('Chưa có câu hỏi!','error'); return; }
-        const chapters = getChapters(); const qtyInputs = document.querySelectorAll('.exam-ch-qty');
+        const qtyInputs = document.querySelectorAll('.exam-ch-qty');
         examQuestions = []; examAnswers = {}; examSubmitted = false;
         qtyInputs.forEach(inp => {
-          const ch = inp.previousElementSibling.textContent; const num = parseInt(inp.value)||0;
+          const ch = inp.previousElementSibling.textContent;
+          const num = parseInt(inp.value)||0;
           const pool = bank.filter(q=>q.chapter===ch);
           const selected = pool.sort(()=>Math.random()-0.5).slice(0, num);
           examQuestions.push(...selected);
@@ -468,7 +584,7 @@
       });
       function renderExamUI(){
         const area = document.getElementById('examArea');
-        area.innerHTML = `<div class="card" style="text-align:center;"><div class="timer-display" id="timerDisplay">${formatTime(examTimeLeft)}</div><div class="badge badge-blue">Đã trả lời: <span id="answeredCount">0</span>/${examQuestions.length}</div></div>`;
+        area.innerHTML = `<div class="card" style="text-align:center;"><div class="timer-display" id="timerDisplay">${formatTime(examTimeLeft)}</div><span class="badge badge-blue">Đã trả lời: <span id="answeredCount">0</span>/${examQuestions.length}</span></div>`;
         examQuestions.forEach((q,idx)=>{
           area.innerHTML += `<div class="card question-card" id="qcard${idx}"><div><strong>Câu ${idx+1}:</strong> ${q.question}</div>
           ${['A','B','C','D'].map(l=>`<div class="option-item exam-opt" data-qidx="${idx}" data-letter="${l}">${l}. ${q.options[l]}</div>`).join('')}</div>`;
@@ -487,46 +603,33 @@
         document.getElementById('btnSubmitExam').addEventListener('click', submitExam);
       }
       function formatTime(s){ const m=Math.floor(s/60), sec=s%60; return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`; }
-      function startTimer(){
-        updateTimerUI(); examTimer = setInterval(()=>{
-          examTimeLeft--; updateTimerUI();
-          if(examTimeLeft<=0){ clearInterval(examTimer); submitExam(); }
-        },1000);
-      }
-      function updateTimerUI(){
-        const el = document.getElementById('timerDisplay'); if(el) el.textContent=formatTime(examTimeLeft);
-      }
+      function startTimer(){ updateTimerUI(); examTimer = setInterval(()=>{ examTimeLeft--; updateTimerUI(); if(examTimeLeft<=0){ clearInterval(examTimer); submitExam(); } },1000); }
+      function updateTimerUI(){ const el = document.getElementById('timerDisplay'); if(el) el.textContent=formatTime(examTimeLeft); }
       function submitExam(){
         if(examSubmitted) return; examSubmitted=true; if(examTimer) clearInterval(examTimer);
         const total = examQuestions.length; let correct=0; const chapterStats={};
         examQuestions.forEach((q,i)=>{ if(!chapterStats[q.chapter]) chapterStats[q.chapter]={total:0,wrong:0}; chapterStats[q.chapter].total++; if(examAnswers[i]===q.correctAnswer) correct++; else chapterStats[q.chapter].wrong++; });
         document.getElementById('examArea').style.display='none';
         const res = document.getElementById('examResult'); res.style.display='block';
-        let html = `<div class="card"><h3>Kết quả: ${correct}/${total} (${((correct/total)*100).toFixed(1)}%)</h3>`;
-        html += '<h4>Tỉ lệ sai theo chương:</h4>';
-        for(let [ch,st] of Object.entries(chapterStats)){
-          const rate = st.total?((st.wrong/st.total)*100).toFixed(1):0;
-          html += `<div>${ch}: ${st.wrong}/${st.total} sai (${rate}%)</div>`;
-        }
-        html += '<h4 style="margin-top:16px;">Câu sai (kèm giải thích nếu có):</h4>';
+        let html = `<div class="card"><h3>Kết quả: ${correct}/${total} (${((correct/total)*100).toFixed(1)}%)</h3><h4>Tỉ lệ sai theo chương:</h4>`;
+        for(let [ch,st] of Object.entries(chapterStats)) html += `<div>${ch}: ${st.wrong}/${st.total} sai (${st.total?((st.wrong/st.total)*100).toFixed(1):0}%)</div>`;
+        html += '<h4 style="margin-top:16px;">Câu sai (kèm giải thích):</h4>';
         examQuestions.forEach((q,i)=>{
           if(examAnswers[i]!==q.correctAnswer){
-            let wrongHtml = `<div class="card"><strong>Câu ${i+1}:</strong> ${q.question}<br><span style="color:red;">Bạn chọn: ${examAnswers[i]||'Chưa chọn'}</span> | <span style="color:green;">Đáp án: ${q.correctAnswer}</span>`;
-            if(q.explanation) wrongHtml += `<div class="explanation-box"><strong>Giải thích:</strong> ${q.explanation}</div>`;
-            wrongHtml += `</div>`;
-            html += wrongHtml;
+            html += `<div class="card"><strong>Câu ${i+1}:</strong> ${q.question}<br><span style="color:red;">Bạn chọn: ${examAnswers[i]||'Chưa chọn'}</span> | <span style="color:green;">Đáp án: ${q.correctAnswer}</span>`;
+            if(q.explanation) html += `<div class="explanation-box"><strong>Giải thích:</strong> ${q.explanation}</div>`;
+            html += `</div>`;
           }
         });
         html += `<button class="btn btn-primary" onclick="location.reload()">Thi lại</button></div>`;
         res.innerHTML = html;
       }
 
-      // INIT
       function init(){
         if(!localStorage.getItem(CHAPTERS_KEY)) saveChapters(defaultChapters);
         refreshAllChapterSelects();
         refreshDashboard();
-        renderExamChapterConfig();
+        renderChapterList();
       }
       init();
     })();
