@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-  <title>Hệ Thống Trắc Nghiệm</title>
+  <title>Hệ Thống Trắc Nghiệm của Nhân và Linh</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     :root {
@@ -73,7 +73,7 @@
 <body>
   <button class="mobile-toggle" id="mobileToggle"><i class="fa-solid fa-bars"></i></button>
   <nav class="sidebar" id="sidebar">
-    <div class="sidebar-logo"><div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>Trắc Nghiệm NhânLoveLinh</div>
+    <div class="sidebar-logo"><div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>Trắc Nghiệm NhânloveLinh</div>
     <div class="subject-selector"><label>Môn học</label><select id="sidebarSubjectSelect"></select></div>
     <ul class="sidebar-nav">
       <li><a data-panel="dashboard" class="active"><i class="fa-solid fa-house"></i> Trang chủ</a></li>
@@ -86,7 +86,7 @@
       <li><a data-panel="practice"><i class="fa-solid fa-pen-to-square"></i> Luyện tập</a></li>
       <li><a data-panel="exam"><i class="fa-solid fa-clock"></i> Thi</a></li>
     </ul>
-    <div class="sidebar-footer">© 2026 Hệ thống trắc nghiệm NEU phát triển bởi Nhân và Linh</div>
+    <div class="sidebar-footer">© 2026 Trắc Nghiệm NEU </div>
   </nav>
 
   <div class="main-content" id="mainContent">
@@ -138,8 +138,21 @@
     <!-- IMPORT/EXPORT -->
     <div class="panel" id="panel-import-export">
       <div class="page-header"><h1>Nhập / Xuất file</h1></div>
-      <div class="card"><h3>Nhập file TXT</h3><input type="file" id="importFile" accept=".txt"><button class="btn btn-primary" style="margin-top:10px" id="btnImportFile">Nhập</button><span id="importResult" style="margin-left:10px"></span></div>
-      <div class="card"><h3>Xuất file TXT</h3><div class="form-group" style="max-width:400px"><label>Chọn chương</label><select id="exportChapterSelect"><option value="all">Tất cả</option></select></div><button class="btn btn-success" id="btnExportFile">Xuất file</button></div>
+      <div class="card">
+        <h3>Nhập file TXT</h3>
+        <div class="form-group" style="max-width:400px">
+          <label>Chương đích (nếu muốn gán tất cả vào một chương)</label>
+          <select id="importChapterSelect"><option value="auto">Tự động</option></select>
+        </div>
+        <input type="file" id="importFile" accept=".txt" style="margin-top:6px;">
+        <button class="btn btn-primary" style="margin-top:10px" id="btnImportFile">Nhập</button>
+        <span id="importResult" style="margin-left:10px"></span>
+      </div>
+      <div class="card">
+        <h3>Xuất file TXT</h3>
+        <div class="form-group" style="max-width:400px"><label>Chọn chương</label><select id="exportChapterSelect"><option value="all">Tất cả</option></select></div>
+        <button class="btn btn-success" id="btnExportFile">Xuất file</button>
+      </div>
     </div>
     <!-- QUESTION BANK -->
     <div class="panel" id="panel-question-bank">
@@ -156,7 +169,7 @@
     </div>
     <!-- EXAM -->
     <div class="panel" id="panel-exam">
-      <div class="page-header"><h1>Thi trắc nghiệm</h1></div>
+      <div class="page-header"><h1>Thi</h1></div>
       <div id="examSetup" class="card">
         <div class="form-row"><div class="form-group"><label>Tổng số câu</label><input type="number" id="examTotalQuestions" value="80" min="1"></div><div class="form-group"><label>Thời gian (phút)</label><input type="number" id="examTime" value="50" min="1"></div></div>
         <p><strong>Số câu mỗi chương:</strong></p><div id="examChapterConfig"></div>
@@ -169,7 +182,7 @@
   <div class="toast-container" id="toastContainer"></div>
   <script>
     (() => {
-      const DB_KEY = 'quiz_flex_v2';
+      const DB_KEY = 'quiz_flex_v3';
       let db = { subjects: [], questions: [] };
 
       function loadDB() {
@@ -213,7 +226,7 @@
         if (panel==='chapters') { document.getElementById('currentSubjectLabel').textContent = getCurrentSubject()?.name||'(chưa chọn)'; renderChapterList(); }
         if (panel==='add-single') { refreshSingleChapterSelect(); buildOptionsUI(4); }
         if (panel==='add-bulk') refreshBulkChapterSelect();
-        if (panel==='import-export') refreshExportChapterSelect();
+        if (panel==='import-export') { refreshImportChapterSelect(); refreshExportChapterSelect(); }
         if (panel==='question-bank') { refreshBankChapterFilter(); renderQuestionBank(); }
         if (panel==='practice') refreshPracticeChapterSelect();
         if (panel==='exam') refreshExamChapterConfig();
@@ -232,8 +245,8 @@
         refreshAllDynamicSelects(); refreshDashboard();
       });
       function refreshAllDynamicSelects() {
-        refreshSingleChapterSelect(); refreshBulkChapterSelect(); refreshExportChapterSelect();
-        refreshBankChapterFilter(); refreshPracticeChapterSelect();
+        refreshSingleChapterSelect(); refreshBulkChapterSelect(); refreshImportChapterSelect();
+        refreshExportChapterSelect(); refreshBankChapterFilter(); refreshPracticeChapterSelect();
         document.getElementById('currentSubjectLabel').textContent = getCurrentSubject()?.name||'';
         renderChapterList(); renderQuestionBank(); refreshExamChapterConfig();
       }
@@ -323,12 +336,15 @@
       });
 
       // CHAPTER SELECTS
-      function populateChapterSelect(sel, subjId, all=false) {
-        sel.innerHTML = all ? '<option value="all">Tất cả</option>' : '';
+      function populateChapterSelect(sel, subjId, all=false, autoOption=false) {
+        sel.innerHTML = '';
+        if (autoOption) sel.innerHTML = '<option value="auto">Tự động (theo dòng Chương:)</option>';
+        if (all) sel.innerHTML += '<option value="all">Tất cả</option>';
         getChapters(subjId).forEach(ch => sel.innerHTML += `<option value="${ch.id}">${ch.name}</option>`);
       }
       function refreshSingleChapterSelect() { populateChapterSelect(document.getElementById('singleChapterSelect'), getCurrentSubjectId()); }
       function refreshBulkChapterSelect() { populateChapterSelect(document.getElementById('bulkChapterSelect'), getCurrentSubjectId()); }
+      function refreshImportChapterSelect() { populateChapterSelect(document.getElementById('importChapterSelect'), getCurrentSubjectId(), false, true); }
       function refreshExportChapterSelect() { populateChapterSelect(document.getElementById('exportChapterSelect'), getCurrentSubjectId(), true); }
       function refreshBankChapterFilter() { populateChapterSelect(document.getElementById('bankChapterFilter'), getCurrentSubjectId(), true); }
       function refreshPracticeChapterSelect() { populateChapterSelect(document.getElementById('practiceChapterSelect'), getCurrentSubjectId(), true); }
@@ -415,14 +431,14 @@
         const text = document.getElementById('bulkText').value.trim();
         if(!chId||!text) return showToast('Thiếu thông tin!','error');
         const parsed = parseBulkQuestions(text, subjId, chId);
-        if(!parsed.length) { document.getElementById('bulkResult').textContent='❌ Không có câu hợp lệ.'; return; }
+        if(!parsed.length) { document.getElementById('bulkResult').textContent='Không có câu hợp lệ.'; return; }
         db.questions.push(...parsed); saveDB();
         document.getElementById('bulkText').value='';
-        document.getElementById('bulkResult').textContent = `✅ Đã thêm ${parsed.length} câu.`;
+        document.getElementById('bulkResult').textContent = `Đã thêm ${parsed.length} câu.`;
         showToast(`Thêm ${parsed.length} câu!`,'success'); refreshDashboard();
       });
 
-      // IMPORT/EXPORT
+      // IMPORT/EXPORT with target chapter selection
       document.getElementById('btnExportFile').addEventListener('click', ()=>{
         const subjId = getCurrentSubjectId(); if(!subjId) return showToast('Chọn môn!','error');
         const chId = document.getElementById('exportChapterSelect').value;
@@ -443,29 +459,41 @@
       });
       document.getElementById('btnImportFile').addEventListener('click', ()=>{
         const subjId = getCurrentSubjectId(); if(!subjId) return showToast('Chọn môn!','error');
-        const file = document.getElementById('importFile').files[0]; if(!file) return;
+        const file = document.getElementById('importFile').files[0]; if(!file) return showToast('Chọn file!','error');
+        const targetChapterId = document.getElementById('importChapterSelect').value;
         const reader = new FileReader();
         reader.onload = function(e){
           const content = e.target.result;
           const subj = getCurrentSubject();
-          const chapters = subj?.chapters||[];
-          let allParsed = [];
-          const chapterBlocks = content.split(/(?=^Chương\s*:)/im);
-          chapterBlocks.forEach(block => {
-            block=block.trim(); if(!block) return;
-            const chMatch = block.match(/^Chương\s*:\s*(.*)$/im);
-            let chName = chMatch?chMatch[1].trim():'';
-            let ch = chapters.find(c=>c.name.toLowerCase().includes(chName.toLowerCase())||chName.toLowerCase().includes(c.name.toLowerCase()));
-            if(!ch && chapters.length) ch = chapters[0];
-            if(!ch) { ch = { id:genId(), name:chName||'Chương mới' }; subj.chapters.push(ch); }
-            const rest = block.replace(/^Chương\s*:.*\r?\n/im,'').trim();
-            allParsed.push(...parseBulkQuestions(rest, subjId, ch.id));
-          });
-          if(!allParsed.length) return showToast('Không có câu hợp lệ!','error');
-          db.questions.push(...allParsed); saveDB();
-          document.getElementById('importFile').value='';
-          refreshAllDynamicSelects(); refreshDashboard();
-          showToast(`Đã nhập ${allParsed.length} câu!`,'success');
+          if (targetChapterId !== 'auto') {
+            const ch = getChapters(subjId).find(c => c.id === targetChapterId);
+            if (!ch) return showToast('Chương không hợp lệ!','error');
+            const parsed = parseBulkQuestions(content, subjId, targetChapterId);
+            if (!parsed.length) return showToast('Không có câu hợp lệ!','error');
+            db.questions.push(...parsed); saveDB();
+            document.getElementById('importFile').value='';
+            refreshAllDynamicSelects(); refreshDashboard();
+            showToast(`Đã nhập ${parsed.length} câu vào "${ch.name}"!`,'success');
+          } else {
+            const chapters = subj?.chapters||[];
+            let allParsed = [];
+            const chapterBlocks = content.split(/(?=^Chương\s*:)/im);
+            chapterBlocks.forEach(block => {
+              block=block.trim(); if(!block) return;
+              const chMatch = block.match(/^Chương\s*:\s*(.*)$/im);
+              let chName = chMatch?chMatch[1].trim():'';
+              let ch = chapters.find(c=>c.name.toLowerCase().includes(chName.toLowerCase())||chName.toLowerCase().includes(c.name.toLowerCase()));
+              if(!ch && chapters.length) ch = chapters[0];
+              if(!ch) { ch = { id:genId(), name:chName||'Chương mới' }; subj.chapters.push(ch); }
+              const rest = block.replace(/^Chương\s*:.*\r?\n/im,'').trim();
+              allParsed.push(...parseBulkQuestions(rest, subjId, ch.id));
+            });
+            if(!allParsed.length) return showToast('Không có câu hợp lệ!','error');
+            db.questions.push(...allParsed); saveDB();
+            document.getElementById('importFile').value='';
+            refreshAllDynamicSelects(); refreshDashboard();
+            showToast(`Đã nhập ${allParsed.length} câu!`,'success');
+          }
         };
         reader.readAsText(file,'UTF-8');
       });
@@ -522,9 +550,9 @@
             const letter = this.dataset.letter; practiceAnswers[practiceIdx]=letter;
             document.querySelectorAll('.option-item').forEach(o=>{ o.style.pointerEvents='none'; if(o.dataset.letter===q.correctAnswer) o.classList.add('correct-highlight'); });
             const fb = document.getElementById('practiceFeedback');
-            if(letter===q.correctAnswer) fb.innerHTML='<span style="color:green;">✅ Đúng!</span>';
+            if(letter===q.correctAnswer) fb.innerHTML='<span style="color:green;">Đúng!</span>';
             else {
-              let h = `<span style="color:red;">❌ Sai! Đáp án đúng: ${q.correctAnswer}</span>`;
+              let h = `<span style="color:red;">Sai! Đáp án đúng: ${q.correctAnswer}</span>`;
               if(q.explanation) h += `<div class="explanation-box"><strong>Giải thích:</strong> ${q.explanation}</div>`;
               fb.innerHTML = h;
             }
@@ -605,7 +633,7 @@
         <p>Điểm: <span class="score-highlight">${score}</span> / 10</p>
         <h4>Tỉ lệ sai theo chương:</h4>`;
         for(let [ch,st] of Object.entries(chapterStats))
-          html+=`<div>${ch}: ${st.wrong}/${st.total} sai (${st.total?((st.wrong/st.total)*100).toFixed(1):0}%)</div>`;
+          html+=`<div>📂 ${ch}: ${st.wrong}/${st.total} sai (${st.total?((st.wrong/st.total)*100).toFixed(1):0}%)</div>`;
         html+='<h4 style="margin-top:16px;">Câu sai (kèm giải thích):</h4>';
         examQuestions.forEach((q,i)=>{
           if(examAnswers[i]!==q.correctAnswer){
