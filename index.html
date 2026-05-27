@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-  <title>Hệ Thống Trắc Nghiệm của Nhân và Linh</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Hệ thống trắc nghiệm NhânLinh</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
       --bg: #f0f4f9; --white: #ffffff; --primary: #1a6dd4; --primary-dark: #0e4b9e;
@@ -58,14 +58,17 @@
     .toast { padding:12px 18px; border-radius:var(--radius-sm); color:#fff; font-weight:600; font-size:0.85rem; box-shadow:var(--shadow-lg); animation:slideRight 0.3s ease; display:flex; align-items:center; gap:8px; max-width:380px; }
     @keyframes slideRight { from { transform:translateX(120%); opacity:0; } to { transform:translateX(0); opacity:1; } }
     .timer-display { font-size:2.4rem; font-weight:700; color:var(--primary); text-align:center; font-family:'Courier New', monospace; }
-    .option-item { display:flex; align-items:center; gap:10px; padding:10px 14px; margin:4px 0; border-radius:var(--radius-sm); cursor:pointer; border:1.5px solid var(--border); background:#fafbfc; transition:all var(--transition); }
-    .option-item:hover { border-color:var(--accent); background:#f5f9fe; }
+    .option-item { display:flex; align-items:center; gap:10px; padding:10px 14px; margin:4px 0; border-radius:var(--radius-sm); cursor:pointer; border:1.5px solid var(--border); background:#fafbfc; }
     .option-item.selected { border-color:var(--primary); background:#e5f0fc; font-weight:600; }
-    .option-item.correct-highlight { border-color:var(--success); background:#d1fae5; }
-    .explanation-box { background:#fef9c3; border-left:4px solid #eab308; padding:12px 16px; border-radius:8px; margin-top:8px; font-size:0.9rem; }
-    .option-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
-    .option-row .option-letter { width:30px; font-weight:700; text-align:center; }
-    .score-highlight { font-size:1.8rem; font-weight:700; color:var(--primary); }
+    .correct-highlight { border-color:var(--success)!important; background:#d1fae5!important; }
+    .explanation-box { background:#fef9c3; border-left:4px solid #eab308; padding:12px 16px; border-radius:8px; margin-top:8px; }
+    .question-image { max-width:100%; max-height:300px; border-radius:8px; margin-bottom:10px; }
+    .tf-row { display:flex; align-items:center; gap:12px; margin-bottom:6px; }
+    .tf-row span { flex:1; }
+    .score-box { background: var(--primary-light); border-radius: 12px; padding: 16px; text-align: center; margin: 12px 0; }
+    .score-number { font-size: 3rem; font-weight: 700; color: var(--primary); }
+    .paste-area { border: 2px dashed var(--border); border-radius: 12px; padding: 24px; text-align: center; cursor: pointer; transition: var(--transition); background: #fafbfc; min-height: 100px; display: flex; align-items: center; justify-content: center; }
+    .paste-area:hover { border-color: var(--primary); background: var(--primary-light); }
     .mobile-toggle { display:none; position:fixed; top:14px; left:14px; z-index:130; background:var(--primary); color:#fff; border:none; width:40px; height:40px; border-radius:50%; font-size:1.2rem; cursor:pointer; box-shadow:var(--shadow-lg); align-items:center; justify-content:center; }
     @media(max-width:768px){ .sidebar { transform:translateX(-100%); } .sidebar.open { transform:translateX(0); } .main-content { margin-left:0; padding:16px; } .mobile-toggle { display:flex; } .form-row { flex-direction:column; gap:0; } }
   </style>
@@ -73,7 +76,7 @@
 <body>
   <button class="mobile-toggle" id="mobileToggle"><i class="fa-solid fa-bars"></i></button>
   <nav class="sidebar" id="sidebar">
-    <div class="sidebar-logo"><div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>Trắc Nghiệm NhânloveLinh</div>
+    <div class="sidebar-logo"><div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>Trắc Nghiệm NhanLinh</div>
     <div class="subject-selector"><label>Môn học</label><select id="sidebarSubjectSelect"></select></div>
     <ul class="sidebar-nav">
       <li><a data-panel="dashboard" class="active"><i class="fa-solid fa-house"></i> Trang chủ</a></li>
@@ -86,64 +89,62 @@
       <li><a data-panel="practice"><i class="fa-solid fa-pen-to-square"></i> Luyện tập</a></li>
       <li><a data-panel="exam"><i class="fa-solid fa-clock"></i> Thi</a></li>
     </ul>
-    <div class="sidebar-footer">© 2026 Trắc Nghiệm NEU </div>
+    <div class="sidebar-footer">© 2026 Hệ thống trắc nghiệm được phát triển bởi Nhân và Linh</div>
   </nav>
 
   <div class="main-content" id="mainContent">
-    <!-- DASHBOARD -->
     <div class="panel active" id="panel-dashboard">
       <div class="page-header"><h1>Trang chủ</h1><div class="subtitle">Tổng quan hệ thống</div></div>
       <div class="stats-row" id="dashboardStats"></div>
       <div class="card"><h3><i class="fa-solid fa-chart-bar"></i> Chi tiết môn học</h3><div id="dashboardSubjectsDetail"></div></div>
     </div>
-    <!-- SUBJECTS -->
     <div class="panel" id="panel-subjects">
       <div class="page-header"><h1>Quản lý môn học</h1></div>
       <div class="card"><h3>Thêm môn</h3><div class="form-row"><div class="form-group" style="flex:3"><input id="newSubjectName" placeholder="Tên môn"></div><div class="form-group" style="flex:1"><button class="btn btn-primary" id="btnAddSubject">Thêm</button></div></div></div>
       <div class="card"><h3>Danh sách môn</h3><div id="subjectListContainer"></div></div>
     </div>
-    <!-- CHAPTERS -->
     <div class="panel" id="panel-chapters">
       <div class="page-header"><h1>Quản lý chương</h1></div>
       <div class="card"><h3>Thêm chương cho môn: <span id="currentSubjectLabel"></span></h3><div class="form-row"><div class="form-group" style="flex:3"><input id="newChapterNameInput" placeholder="Tên chương"></div><div class="form-group" style="flex:1"><button class="btn btn-primary" id="btnAddChapter">Thêm</button></div></div></div>
       <div class="card"><h3>Danh sách chương</h3><div id="chapterListContainer"></div></div>
     </div>
-    <!-- ADD SINGLE -->
     <div class="panel" id="panel-add-single">
-      <div class="page-header"><h1>Thêm câu hỏi</h1><div class="subtitle">Số lượng đáp án linh hoạt (tối thiểu 2)</div></div>
+      <div class="page-header"><h1>Thêm câu hỏi</h1><div class="subtitle">Hỗ trợ paste ảnh từ clipboard (Ctrl+V)</div></div>
       <div class="card">
-        <div class="form-group"><label>Chọn chương</label><select id="singleChapterSelect"></select></div>
-        <div class="form-group"><label>Câu hỏi</label><textarea id="singleQuestion" rows="3" placeholder="Nội dung câu hỏi..."></textarea></div>
-        <div id="singleOptionsContainer"></div>
-        <div style="margin:8px 0;"><button class="btn btn-outline btn-sm" id="btnAddOption"><i class="fa-solid fa-plus"></i> Thêm đáp án</button></div>
         <div class="form-row">
-          <div class="form-group" style="max-width:200px"><label>Đáp án đúng</label><select id="singleAnswer"></select></div>
-          <div class="form-group" style="flex:2"><label>Giải thích</label><input id="singleExplanation" placeholder="Giải thích đáp án đúng"></div>
+          <div class="form-group"><label>Kiểu câu hỏi</label><select id="questionType"><option value="multiple-choice">Trắc nghiệm nhiều lựa chọn</option><option value="true-false">Trắc nghiệm Đúng/Sai</option><option value="short-answer">Trắc nghiệm trả lời ngắn</option></select></div>
+          <div class="form-group"><label>Chương</label><select id="singleChapterSelect"></select></div>
         </div>
+        <div class="form-group"><label>Nhập file hình ảnh</label><input id="singleImageUrl" placeholder="https://example.com/image.jpg"></div>
+        <div class="form-group">
+          <label>Hoặc paste ảnh từ clipboard</label>
+          <div class="paste-area" id="imagePasteArea" tabindex="0">
+            <span><i class="fa-solid fa-image"></i>Dán hình ảnh</span>
+          </div>
+          <img id="imagePreview" style="max-width:200px; max-height:150px; margin-top:8px; display:none;">
+          <button class="btn btn-xs btn-danger" id="removePastedImage" style="margin-top:4px; display:none;">Xoá ảnh</button>
+        </div>
+        <div class="form-group"><label>Câu hỏi</label><textarea id="singleQuestion" rows="3" placeholder="Nội dung câu hỏi..."></textarea></div>
+        <div id="dynamicQuestionForm"></div>
+        <div class="form-group" style="margin-top:8px;"><label>Giải thích (nếu có)</label><input id="singleExplanation" placeholder="Giải thích đáp án đúng"></div>
         <button class="btn btn-primary" id="btnAddSingle"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>
-        <button class="btn btn-outline" style="margin-left:8px" id="btnClearSingle"><i class="fa-solid fa-rotate"></i> Mặc định 4 đáp án</button>
       </div>
     </div>
-    <!-- ADD BULK -->
     <div class="panel" id="panel-add-bulk">
-      <div class="page-header"><h1>Thêm hàng loạt</h1></div>
+      <div class="page-header"><h1>Thêm hàng loạt (nhiều lựa chọn)</h1></div>
       <div class="card">
-        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px">Định dạng: <code>Câu 1: Nội dung</code> | <code>A: ...</code> <code>B: ...</code> ... (có thể 2,3,4 đáp án) | <code>Đáp án đúng: A</code> | <code>Giải thích: ...</code></p>
-        <div class="form-group"><label>Chọn chương</label><select id="bulkChapterSelect"></select></div>
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px">Định dạng: <code>Câu 1: Nội dung</code> | <code>A: ...</code> ... | <code>Đáp án đúng: A</code> | <code>Giải thích: ...</code></p>
+        <div class="form-group"><label>Chương</label><select id="bulkChapterSelect"></select></div>
         <div class="form-group"><label>Dán nội dung</label><textarea id="bulkText" rows="14" placeholder="Dán câu hỏi..."></textarea></div>
         <button class="btn btn-primary" id="btnAddBulk">Phân tích & Lưu</button>
         <span id="bulkResult" style="margin-left:12px;"></span>
       </div>
     </div>
-    <!-- IMPORT/EXPORT -->
     <div class="panel" id="panel-import-export">
       <div class="page-header"><h1>Nhập / Xuất file</h1></div>
       <div class="card">
         <h3>Nhập file TXT</h3>
-        <div class="form-group" style="max-width:400px">
-          <label>Chương đích (nếu muốn gán tất cả vào một chương)</label>
-          <select id="importChapterSelect"><option value="auto">Tự động</option></select>
-        </div>
+        <div class="form-group" style="max-width:400px"><label>Chương đích</label><select id="importChapterSelect"><option value="auto">Tự động (theo dòng Chương:)</option></select></div>
         <input type="file" id="importFile" accept=".txt" style="margin-top:6px;">
         <button class="btn btn-primary" style="margin-top:10px" id="btnImportFile">Nhập</button>
         <span id="importResult" style="margin-left:10px"></span>
@@ -154,20 +155,17 @@
         <button class="btn btn-success" id="btnExportFile">Xuất file</button>
       </div>
     </div>
-    <!-- QUESTION BANK -->
     <div class="panel" id="panel-question-bank">
       <div class="page-header"><h1>Ngân hàng câu hỏi</h1></div>
       <div class="form-group" style="max-width:250px"><label>Lọc chương</label><select id="bankChapterFilter"><option value="all">Tất cả</option></select></div>
       <div id="questionBankContent"></div>
     </div>
-    <!-- PRACTICE -->
     <div class="panel" id="panel-practice">
       <div class="page-header"><h1>Luyện tập</h1></div>
       <div id="practiceSetup" class="card"><div class="form-group" style="max-width:350px"><label>Chọn chương</label><select id="practiceChapterSelect"></select></div><button class="btn btn-primary" id="btnStartPractice">Bắt đầu</button></div>
       <div id="practiceArea" style="display:none"></div>
       <div id="practiceResult" style="display:none"></div>
     </div>
-    <!-- EXAM -->
     <div class="panel" id="panel-exam">
       <div class="page-header"><h1>Thi</h1></div>
       <div id="examSetup" class="card">
@@ -182,26 +180,34 @@
   <div class="toast-container" id="toastContainer"></div>
   <script>
     (() => {
-      const DB_KEY = 'quiz_flex_v3';
+      const DB_KEY = 'quiz_flex_v8';
       let db = { subjects: [], questions: [] };
+      let pastedImageData = null;
 
       function loadDB() {
         try { db = JSON.parse(localStorage.getItem(DB_KEY)) || { subjects: [], questions: [] }; } catch (e) { db = { subjects: [], questions: [] }; }
         if (!db.subjects) db.subjects = [];
         if (!db.questions) db.questions = [];
         db.questions.forEach(q => {
-          if (q.options && !Array.isArray(q.options)) {
-            const arr = [];
-            for (let letter of ['A','B','C','D']) if (q.options[letter]) arr.push(q.options[letter]);
-            q.options = arr.length ? arr : ['A','B','C','D'].map(l => q.options[l] || '');
+          if (!q.type) q.type = 'multiple-choice';
+          if (q.type === 'multiple-choice') {
+            if (q.options && !Array.isArray(q.options)) {
+              const arr = [];
+              for (let l of ['A','B','C','D']) if (q.options[l]) arr.push(q.options[l]);
+              q.options = arr.length ? arr : ['A','B','C','D'];
+            }
+            if (!q.options || q.options.length === 0) q.options = ['A','B','C','D'];
+            if (!q.correctAnswer || !q.options.includes(q.correctAnswer)) q.correctAnswer = 'A';
           }
+          if (q.type === 'true-false' && !q.statements) q.statements = [];
+          if (q.type === 'short-answer' && !q.correctAnswer) q.correctAnswer = '';
         });
       }
       function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
       function genId() { return 'id_'+Date.now()+'_'+Math.random().toString(36).substr(2,6); }
       function getCurrentSubjectId() { return document.getElementById('sidebarSubjectSelect').value; }
       function getCurrentSubject() { return db.subjects.find(s => s.id === getCurrentSubjectId()) || null; }
-      function getChapters(subjectId) { const s = db.subjects.find(s=>s.id===subjectId); return s ? s.chapters : []; }
+      function getChapters(subjId) { const s = db.subjects.find(s=>s.id===subjId); return s ? s.chapters : []; }
 
       function showToast(msg, type='info') {
         const c = document.getElementById('toastContainer');
@@ -224,7 +230,7 @@
         if (panel==='dashboard') refreshDashboard();
         if (panel==='subjects') renderSubjectList();
         if (panel==='chapters') { document.getElementById('currentSubjectLabel').textContent = getCurrentSubject()?.name||'(chưa chọn)'; renderChapterList(); }
-        if (panel==='add-single') { refreshSingleChapterSelect(); buildOptionsUI(4); }
+        if (panel==='add-single') { refreshSingleChapterSelect(); renderDynamicForm(); resetPasteImage(); }
         if (panel==='add-bulk') refreshBulkChapterSelect();
         if (panel==='import-export') { refreshImportChapterSelect(); refreshExportChapterSelect(); }
         if (panel==='question-bank') { refreshBankChapterFilter(); renderQuestionBank(); }
@@ -241,9 +247,7 @@
         if (cur && db.subjects.some(s=>s.id===cur)) sel.value = cur;
         else if (db.subjects.length) sel.value = db.subjects[0].id;
       }
-      document.getElementById('sidebarSubjectSelect').addEventListener('change', ()=>{
-        refreshAllDynamicSelects(); refreshDashboard();
-      });
+      document.getElementById('sidebarSubjectSelect').addEventListener('change', ()=>{ refreshAllDynamicSelects(); refreshDashboard(); });
       function refreshAllDynamicSelects() {
         refreshSingleChapterSelect(); refreshBulkChapterSelect(); refreshImportChapterSelect();
         refreshExportChapterSelect(); refreshBankChapterFilter(); refreshPracticeChapterSelect();
@@ -251,11 +255,8 @@
         renderChapterList(); renderQuestionBank(); refreshExamChapterConfig();
       }
 
-      // DASHBOARD
       function refreshDashboard() {
-        const totalQ = db.questions.length;
-        const totalS = db.subjects.length;
-        let totalC = 0; db.subjects.forEach(s=>totalC+=s.chapters.length);
+        const totalQ = db.questions.length; const totalS = db.subjects.length;
         document.getElementById('dashboardStats').innerHTML = `
           <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-database"></i></div><div class="stat-value">${totalQ}</div><div class="stat-label">Câu hỏi</div></div>
           <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-book"></i></div><div class="stat-value">${totalS}</div><div class="stat-label">Môn</div></div>
@@ -265,26 +266,19 @@
         document.getElementById('dashboardSubjectsDetail').innerHTML = detail || '<p>Chưa có môn.</p>';
       }
 
-      // SUBJECTS
       function renderSubjectList() {
         const c = document.getElementById('subjectListContainer');
         if (!db.subjects.length) { c.innerHTML='<p>Chưa có môn.</p>'; return; }
         let h = '<div class="table-wrap"><table><thead><tr><th>STT</th><th>Tên môn</th><th>Chương</th><th>Câu</th><th></th></tr></thead><tbody>';
-        db.subjects.forEach((s,i)=>{
-          const qc = db.questions.filter(q=>q.subjectId===s.id).length;
-          h += `<tr><td>${i+1}</td><td><strong>${s.name}</strong></td><td>${s.chapters.length}</td><td>${qc}</td><td><button class="btn btn-outline btn-xs edit-subj" data-id="${s.id}">Sửa</button> <button class="btn btn-danger btn-xs del-subj" data-id="${s.id}">Xóa</button></td></tr>`;
-        });
-        h += '</tbody></table></div>';
-        c.innerHTML = h;
+        db.subjects.forEach((s,i)=>{ const qc = db.questions.filter(q=>q.subjectId===s.id).length; h += `<tr><td>${i+1}</td><td><strong>${s.name}</strong></td><td>${s.chapters.length}</td><td>${qc}</td><td><button class="btn btn-outline btn-xs edit-subj" data-id="${s.id}">Sửa</button> <button class="btn btn-danger btn-xs del-subj" data-id="${s.id}">Xóa</button></td></tr>`; });
+        h += '</tbody></table></div>'; c.innerHTML = h;
         c.querySelectorAll('.edit-subj').forEach(b=>b.addEventListener('click', function(){
           const s = db.subjects.find(x=>x.id===this.dataset.id); if(!s) return;
           const n = prompt('Tên mới:', s.name); if(!n||!n.trim()||n.trim()===s.name) return;
-          if(db.subjects.some(x=>x.name===n.trim()&&x.id!==s.id)){ showToast('Trùng tên!','error'); return; }
           s.name=n.trim(); saveDB(); renderSubjectList(); populateSidebarSubjectSelect(); refreshDashboard();
         }));
         c.querySelectorAll('.del-subj').forEach(b=>b.addEventListener('click', function(){
-          const id=this.dataset.id; const s=db.subjects.find(x=>x.id===id); if(!s) return;
-          if(!confirm(`Xóa môn "${s.name}" và ${db.questions.filter(q=>q.subjectId===id).length} câu?`)) return;
+          const id=this.dataset.id; if(!confirm(`Xóa môn "${db.subjects.find(x=>x.id===id)?.name}"?`)) return;
           db.subjects=db.subjects.filter(x=>x.id!==id); db.questions=db.questions.filter(q=>q.subjectId!==id);
           saveDB(); renderSubjectList(); populateSidebarSubjectSelect(); refreshAllDynamicSelects(); refreshDashboard();
         }));
@@ -292,53 +286,43 @@
       document.getElementById('btnAddSubject').addEventListener('click', ()=>{
         const n = document.getElementById('newSubjectName').value.trim();
         if(!n) return showToast('Nhập tên!','error');
-        if(db.subjects.some(s=>s.name===n)) return showToast('Đã tồn tại!','error');
         db.subjects.push({ id:genId(), name:n, chapters:[] }); saveDB();
         document.getElementById('newSubjectName').value='';
         renderSubjectList(); populateSidebarSubjectSelect(); refreshAllDynamicSelects(); refreshDashboard();
         showToast('Đã thêm môn!','success');
       });
 
-      // CHAPTERS
       function renderChapterList() {
         const subj = getCurrentSubject(); const c = document.getElementById('chapterListContainer');
         if(!subj) { c.innerHTML='<p>Chọn môn.</p>'; return; }
         if(!subj.chapters.length) { c.innerHTML='<p>Chưa có chương.</p>'; return; }
         let h = '<div class="table-wrap"><table><thead><tr><th>STT</th><th>Tên chương</th><th>Số câu</th><th></th></tr></thead><tbody>';
-        subj.chapters.forEach((ch,i)=>{
-          const cnt = db.questions.filter(q=>q.subjectId===subj.id && q.chapterId===ch.id).length;
-          h += `<tr><td>${i+1}</td><td>${ch.name}</td><td>${cnt}</td><td><button class="btn btn-outline btn-xs edit-ch" data-id="${ch.id}">Sửa</button> <button class="btn btn-danger btn-xs del-ch" data-id="${ch.id}">Xóa</button></td></tr>`;
-        });
-        h += '</tbody></table></div>';
-        c.innerHTML = h;
+        subj.chapters.forEach((ch,i)=>{ const cnt = db.questions.filter(q=>q.subjectId===subj.id && q.chapterId===ch.id).length; h += `<tr><td>${i+1}</td><td>${ch.name}</td><td>${cnt}</td><td><button class="btn btn-outline btn-xs edit-ch" data-id="${ch.id}">Sửa</button> <button class="btn btn-danger btn-xs del-ch" data-id="${ch.id}">Xóa</button></td></tr>`; });
+        h += '</tbody></table></div>'; c.innerHTML = h;
         c.querySelectorAll('.edit-ch').forEach(b=>b.addEventListener('click', function(){
           const ch = subj.chapters.find(x=>x.id===this.dataset.id); if(!ch) return;
           const n = prompt('Tên mới:', ch.name); if(!n||!n.trim()||n.trim()===ch.name) return;
-          if(subj.chapters.some(x=>x.name===n.trim()&&x.id!==ch.id)){ showToast('Trùng!','error'); return; }
-          ch.name=n.trim(); saveDB(); renderChapterList(); refreshAllDynamicSelects(); renderQuestionBank();
+          ch.name=n.trim(); saveDB(); renderChapterList(); refreshAllDynamicSelects();
         }));
         c.querySelectorAll('.del-ch').forEach(b=>b.addEventListener('click', function(){
           const ch = subj.chapters.find(x=>x.id===this.dataset.id); if(!ch) return;
           if(!confirm(`Xóa chương "${ch.name}"?`)) return;
           subj.chapters = subj.chapters.filter(x=>x.id!==ch.id);
           db.questions = db.questions.filter(q=>!(q.subjectId===subj.id && q.chapterId===ch.id));
-          saveDB(); renderChapterList(); refreshAllDynamicSelects(); renderQuestionBank(); refreshDashboard();
+          saveDB(); renderChapterList(); refreshAllDynamicSelects(); refreshDashboard();
         }));
       }
       document.getElementById('btnAddChapter').addEventListener('click', ()=>{
-        const subj = getCurrentSubject(); if(!subj) return showToast('Chọn môn!','error');
+        const subj = getCurrentSubject(); if(!subj) return;
         const n = document.getElementById('newChapterNameInput').value.trim();
         if(!n) return showToast('Nhập tên!','error');
-        if(subj.chapters.some(c=>c.name===n)) return showToast('Đã tồn tại!','error');
         subj.chapters.push({ id:genId(), name:n }); saveDB();
         document.getElementById('newChapterNameInput').value='';
-        renderChapterList(); refreshAllDynamicSelects(); showToast('Đã thêm!','success');
+        renderChapterList(); refreshAllDynamicSelects();
       });
 
-      // CHAPTER SELECTS
-      function populateChapterSelect(sel, subjId, all=false, autoOption=false) {
-        sel.innerHTML = '';
-        if (autoOption) sel.innerHTML = '<option value="auto">Tự động (theo dòng Chương:)</option>';
+      function populateChapterSelect(sel, subjId, all=false, auto=false) {
+        sel.innerHTML = auto ? '<option value="auto">Tự động</option>' : '';
         if (all) sel.innerHTML += '<option value="all">Tất cả</option>';
         getChapters(subjId).forEach(ch => sel.innerHTML += `<option value="${ch.id}">${ch.name}</option>`);
       }
@@ -349,242 +333,298 @@
       function refreshBankChapterFilter() { populateChapterSelect(document.getElementById('bankChapterFilter'), getCurrentSubjectId(), true); }
       function refreshPracticeChapterSelect() { populateChapterSelect(document.getElementById('practiceChapterSelect'), getCurrentSubjectId(), true); }
 
-      // SINGLE ADD with dynamic options
-      let currentOptionCount = 4;
-      function buildOptionsUI(count) {
-        count = Math.max(2, Math.min(count, 10));
-        currentOptionCount = count;
-        const container = document.getElementById('singleOptionsContainer');
-        let html = '';
-        for (let i=0; i<count; i++) {
-          const letter = String.fromCharCode(65+i);
-          html += `<div class="option-row"><span class="option-letter">${letter}</span><input class="single-option-input" data-index="${i}" placeholder="Đáp án ${letter}" style="flex:1"><button class="btn btn-danger btn-xs remove-option-btn" style="display:${count<=2?'none':'inline-flex'}" data-index="${i}"><i class="fa-solid fa-xmark"></i></button></div>`;
+      function resetPasteImage() {
+        pastedImageData = null;
+        document.getElementById('imagePreview').src = '';
+        document.getElementById('imagePreview').style.display = 'none';
+        document.getElementById('removePastedImage').style.display = 'none';
+        document.querySelector('#imagePasteArea span').style.display = '';
+      }
+      document.getElementById('imagePasteArea').addEventListener('paste', (e) => {
+        e.preventDefault();
+        const items = e.clipboardData.items;
+        for (let item of items) {
+          if (item.type.startsWith('image/')) {
+            const blob = item.getAsFile();
+            if (blob.size > 500 * 1024) { showToast('Ảnh quá lớn (tối đa 500KB)', 'error'); return; }
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              pastedImageData = ev.target.result;
+              const preview = document.getElementById('imagePreview');
+              preview.src = pastedImageData;
+              preview.style.display = 'block';
+              document.getElementById('removePastedImage').style.display = 'inline-block';
+              document.querySelector('#imagePasteArea span').style.display = 'none';
+            };
+            reader.readAsDataURL(blob);
+            break;
+          }
         }
-        container.innerHTML = html;
-        updateAnswerSelect();
-        container.querySelectorAll('.remove-option-btn').forEach(b=>b.addEventListener('click', function(){
-          if (currentOptionCount <= 2) return;
-          buildOptionsUI(currentOptionCount - 1);
-        }));
-      }
-      function updateAnswerSelect() {
-        const sel = document.getElementById('singleAnswer');
-        sel.innerHTML = '<option value="">-- Chọn --</option>';
-        for (let i=0; i<currentOptionCount; i++) sel.innerHTML += `<option>${String.fromCharCode(65+i)}</option>`;
-      }
-      document.getElementById('btnAddOption').addEventListener('click', ()=> {
-        if (currentOptionCount >= 10) return showToast('Tối đa 10 đáp án!','error');
-        buildOptionsUI(currentOptionCount + 1);
       });
-      document.getElementById('btnClearSingle').addEventListener('click', ()=> buildOptionsUI(4));
+      document.getElementById('removePastedImage').addEventListener('click', resetPasteImage);
+
+      function renderDynamicForm() {
+        const type = document.getElementById('questionType').value;
+        const container = document.getElementById('dynamicQuestionForm');
+        if (type === 'multiple-choice') {
+          container.innerHTML = `<div id="mcOptions">${[...Array(4)].map((_,i)=>`<div class="option-row"><span>${String.fromCharCode(65+i)}</span><input class="mc-option" placeholder="Đáp án ${String.fromCharCode(65+i)}" style="flex:1"></div>`).join('')}</div><div class="form-group" style="max-width:200px;"><label>Đáp án đúng</label><select id="mcAnswer"><option>A</option><option>B</option><option>C</option><option>D</option></select></div>`;
+        } else if (type === 'true-false') {
+          container.innerHTML = `<div id="tfStatements"><div class="tf-row"><input class="tf-text" placeholder="Phát biểu 1" style="flex:1"><select class="tf-answer"><option value="true">Đúng</option><option value="false">Sai</option></select><button class="btn btn-danger btn-xs remove-tf" style="display:none">X</button></div></div><button class="btn btn-outline btn-sm" id="addTfStatement">+ Thêm phát biểu</button>`;
+          document.getElementById('addTfStatement').addEventListener('click', ()=>{
+            const row = document.createElement('div'); row.className='tf-row';
+            row.innerHTML = `<input class="tf-text" placeholder="Phát biểu mới" style="flex:1"><select class="tf-answer"><option value="true">Đúng</option><option value="false">Sai</option></select><button class="btn btn-danger btn-xs remove-tf">X</button>`;
+            document.getElementById('tfStatements').appendChild(row);
+            row.querySelector('.remove-tf').addEventListener('click', ()=>row.remove());
+          });
+        } else if (type === 'short-answer') {
+          container.innerHTML = `<div class="form-group"><label>Đáp án đúng</label><input id="shortAnswer" placeholder="Nhập đáp án đúng"></div>`;
+        }
+      }
+      document.getElementById('questionType').addEventListener('change', renderDynamicForm);
 
       document.getElementById('btnAddSingle').addEventListener('click', ()=>{
         const subjId = getCurrentSubjectId(); if(!subjId) return showToast('Chọn môn!','error');
         const chId = document.getElementById('singleChapterSelect').value;
-        const q = document.getElementById('singleQuestion').value.trim();
-        const options = [...document.querySelectorAll('.single-option-input')].map(inp => inp.value.trim());
-        const ans = document.getElementById('singleAnswer').value;
+        const question = document.getElementById('singleQuestion').value.trim();
+        const imageUrl = document.getElementById('singleImageUrl').value.trim();
+        const finalImage = pastedImageData || imageUrl;
         const expl = document.getElementById('singleExplanation').value.trim();
-        if(!chId || !q || options.some(o=>!o) || !ans) return showToast('Điền đầy đủ!','error');
-        const chapters = getChapters(subjId);
-        const ch = chapters.find(x=>x.id===chId);
-        db.questions.push({ id:genId(), subjectId:subjId, chapterId:chId, chapterName:ch?.name||'', question:q, options, correctAnswer:ans, explanation:expl });
-        saveDB();
-        document.getElementById('singleQuestion').value=''; document.getElementById('singleExplanation').value='';
-        buildOptionsUI(4); showToast('Đã thêm!','success'); refreshDashboard();
+        const type = document.getElementById('questionType').value;
+        if(!chId || !question) return showToast('Thiếu thông tin!','error');
+        const chapters = getChapters(subjId); const ch = chapters.find(x=>x.id===chId);
+        let qData = { id:genId(), subjectId:subjId, chapterId:chId, chapterName:ch?.name||'', type, question, image: finalImage, explanation:expl };
+        if (type === 'multiple-choice') {
+          const opts = [...document.querySelectorAll('.mc-option')].map(inp=>inp.value.trim());
+          if (opts.some(o=>!o)) return showToast('Điền đủ 4 đáp án!','error');
+          qData.options = opts;
+          qData.correctAnswer = document.getElementById('mcAnswer').value;
+        } else if (type === 'true-false') {
+          const texts = [...document.querySelectorAll('.tf-text')].map(inp=>inp.value.trim());
+          const answers = [...document.querySelectorAll('.tf-answer')].map(sel=>sel.value);
+          if (texts.some(t=>!t) || texts.length===0) return showToast('Thêm ít nhất 1 phát biểu!','error');
+          qData.statements = texts.map((t,i)=>({ text: t, isTrue: answers[i]==='true' }));
+          qData.correctAnswer = null;
+        } else if (type === 'short-answer') {
+          qData.correctAnswer = document.getElementById('shortAnswer').value.trim();
+          if (!qData.correctAnswer) return showToast('Nhập đáp án!','error');
+        }
+        db.questions.push(qData); saveDB();
+        document.getElementById('singleQuestion').value=''; document.getElementById('singleImageUrl').value='';
+        document.getElementById('singleExplanation').value='';
+        resetPasteImage();
+        renderDynamicForm();
+        showToast('Đã thêm câu hỏi!','success'); refreshDashboard();
       });
 
-      // BULK PARSER (flexible options)
+      // === IMPROVED BULK PARSER (fixes dot at end of answer) ===
       function parseBulkQuestions(text, subjId, chId) {
         const questions = [];
         const blocks = text.split(/(?=^Câu\s+\d+[:.])/m);
         for (let block of blocks) {
           block = block.trim(); if(!block) continue;
           const lines = block.split(/\r?\n/).map(l=>l.trim()).filter(l=>l);
-          let qText='', correct='', expl='';
+          let qText='', correct='', expl='', image='';
           const options = [];
           for (let line of lines) {
             if (/^Câu\s+\d+[:.]/i.test(line)) qText = line.replace(/^Câu\s+\d+[:.]\s*/i,'').trim();
-            else if (/^Đ[aá]p\s*[aá]n\s*[đd]úng\s*[:.]/i.test(line)) correct = line.replace(/^Đ[aá]p\s*[aá]n\s*[đd]úng\s*[:.]\s*/i,'').trim().toUpperCase();
-            else if (/^Đ[aá]p\s*[aá]n\s*[:.]/i.test(line)) correct = line.replace(/^Đ[aá]p\s*[aá]n\s*[:.]\s*/i,'').trim().toUpperCase();
+            else if (/^Đ[aá]p\s*[aá]n\s*[đd]úng\s*[:.]/i.test(line)) {
+              const raw = line.replace(/^Đ[aá]p\s*[aá]n\s*[đd]úng\s*[:.]\s*/i,'').trim();
+              const match = raw.match(/[A-Da-d]/);
+              correct = match ? match[0].toUpperCase() : '';
+            }
             else if (/^Giải thích\s*[:.]/i.test(line)) expl = line.replace(/^Giải thích\s*[:.]\s*/i,'').trim();
+            else if (/^Hình ảnh\s*[:.]/i.test(line)) image = line.replace(/^Hình ảnh\s*[:.]\s*/i,'').trim();
             else if (/^[A-Z][:.)]/i.test(line)) {
               const letter = line.charAt(0).toUpperCase();
-              const text = line.replace(/^[A-Z][:.)]\s*/i,'').trim();
-              const idx = letter.charCodeAt(0) - 65;
-              while (options.length <= idx) options.push('');
-              options[idx] = text;
+              const txt = line.replace(/^[A-Z][:.)]\s*/i,'').trim();
+              const idx = letter.charCodeAt(0)-65;
+              while(options.length <= idx) options.push('');
+              options[idx] = txt;
             }
           }
-          while (options.length && !options[options.length-1]) options.pop();
-          if (qText && options.length>=2 && correct && options.every(o=>o)) {
-            const chapters = getChapters(subjId);
-            const ch = chapters.find(x=>x.id===chId);
-            questions.push({ id:genId(), subjectId:subjId, chapterId:chId, chapterName:ch?.name||'', question:qText, options, correctAnswer:correct, explanation:expl });
+          while(options.length && !options[options.length-1]) options.pop();
+          if (qText && options.length>=2 && correct) {
+            const chapters = getChapters(subjId); const ch = chapters.find(x=>x.id===chId);
+            questions.push({ id:genId(), subjectId:subjId, chapterId:chId, chapterName:ch?.name||'', type:'multiple-choice', question:qText, options, correctAnswer:correct, image, explanation:expl });
           }
         }
         return questions;
       }
+
       document.getElementById('btnAddBulk').addEventListener('click', ()=>{
-        const subjId = getCurrentSubjectId(); if(!subjId) return showToast('Chọn môn!','error');
+        const subjId = getCurrentSubjectId(); if(!subjId) return;
         const chId = document.getElementById('bulkChapterSelect').value;
         const text = document.getElementById('bulkText').value.trim();
-        if(!chId||!text) return showToast('Thiếu thông tin!','error');
+        if(!chId||!text) return;
         const parsed = parseBulkQuestions(text, subjId, chId);
-        if(!parsed.length) { document.getElementById('bulkResult').textContent='Không có câu hợp lệ.'; return; }
+        if(!parsed.length) { document.getElementById('bulkResult').textContent='Không hợp lệ'; return; }
         db.questions.push(...parsed); saveDB();
         document.getElementById('bulkText').value='';
-        document.getElementById('bulkResult').textContent = `Đã thêm ${parsed.length} câu.`;
-        showToast(`Thêm ${parsed.length} câu!`,'success'); refreshDashboard();
+        document.getElementById('bulkResult').textContent = `Đã thêm ${parsed.length} câu`;
       });
 
-      // IMPORT/EXPORT with target chapter selection
+      // Export / Import
       document.getElementById('btnExportFile').addEventListener('click', ()=>{
-        const subjId = getCurrentSubjectId(); if(!subjId) return showToast('Chọn môn!','error');
+        const subjId = getCurrentSubjectId(); if(!subjId) return;
         const chId = document.getElementById('exportChapterSelect').value;
-        let filtered = chId==='all' ? db.questions.filter(q=>q.subjectId===subjId) : db.questions.filter(q=>q.subjectId===subjId && q.chapterId===chId);
-        if(!filtered.length) return showToast('Không có câu!','error');
+        let filtered = chId==='all'? db.questions.filter(q=>q.subjectId===subjId) : db.questions.filter(q=>q.subjectId===subjId && q.chapterId===chId);
         let out = '';
         filtered.forEach((q,i)=>{
-          out += `Chương: ${q.chapterName}\nCâu ${i+1}: ${q.question}\n`;
-          q.options.forEach((opt,idx) => out += `${String.fromCharCode(65+idx)}: ${opt}\n`);
-          out += `Đáp án đúng: ${q.correctAnswer}\n`;
+          out += `Chương: ${q.chapterName}\nLoại: ${q.type}\nCâu ${i+1}: ${q.question}\n`;
+          if(q.image) out += `Hình ảnh: ${q.image.startsWith('data:') ? '[base64]' : q.image}\n`;
+          if(q.type==='multiple-choice') { q.options.forEach((opt,idx)=> out += `${String.fromCharCode(65+idx)}: ${opt}\n`); out += `Đáp án đúng: ${q.correctAnswer}\n`; }
+          else if(q.type==='true-false') { q.statements.forEach((st,idx)=> out += `Phát biểu ${idx+1}: ${st.text} (${st.isTrue?'Đúng':'Sai'})\n`); }
+          else if(q.type==='short-answer') out += `Đáp án đúng: ${q.correctAnswer}\n`;
           if(q.explanation) out += `Giải thích: ${q.explanation}\n`;
           out += '\n';
         });
         const blob = new Blob(['\uFEFF'+out],{type:'text/plain'});
-        const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
-        a.download = `cauhoi_${getCurrentSubject()?.name||'mon'}.txt`; a.click();
-        showToast('Đã xuất!','success');
+        const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='cauhoi.txt'; a.click();
       });
+
       document.getElementById('btnImportFile').addEventListener('click', ()=>{
-        const subjId = getCurrentSubjectId(); if(!subjId) return showToast('Chọn môn!','error');
-        const file = document.getElementById('importFile').files[0]; if(!file) return showToast('Chọn file!','error');
+        const subjId = getCurrentSubjectId(); if(!subjId) return;
+        const file = document.getElementById('importFile').files[0]; if(!file) return;
         const targetChapterId = document.getElementById('importChapterSelect').value;
         const reader = new FileReader();
         reader.onload = function(e){
           const content = e.target.result;
           const subj = getCurrentSubject();
           if (targetChapterId !== 'auto') {
-            const ch = getChapters(subjId).find(c => c.id === targetChapterId);
-            if (!ch) return showToast('Chương không hợp lệ!','error');
+            const ch = getChapters(subjId).find(c=>c.id===targetChapterId); if(!ch) return;
             const parsed = parseBulkQuestions(content, subjId, targetChapterId);
-            if (!parsed.length) return showToast('Không có câu hợp lệ!','error');
             db.questions.push(...parsed); saveDB();
-            document.getElementById('importFile').value='';
-            refreshAllDynamicSelects(); refreshDashboard();
-            showToast(`Đã nhập ${parsed.length} câu vào "${ch.name}"!`,'success');
+            document.getElementById('importFile').value=''; refreshAllDynamicSelects();
+            showToast(`Đã nhập ${parsed.length} câu vào "${ch.name}"`,'success');
           } else {
-            const chapters = subj?.chapters||[];
             let allParsed = [];
-            const chapterBlocks = content.split(/(?=^Chương\s*:)/im);
-            chapterBlocks.forEach(block => {
+            const blocks = content.split(/(?=^Chương\s*:)/im);
+            blocks.forEach(block => {
               block=block.trim(); if(!block) return;
               const chMatch = block.match(/^Chương\s*:\s*(.*)$/im);
               let chName = chMatch?chMatch[1].trim():'';
-              let ch = chapters.find(c=>c.name.toLowerCase().includes(chName.toLowerCase())||chName.toLowerCase().includes(c.name.toLowerCase()));
-              if(!ch && chapters.length) ch = chapters[0];
+              let ch = subj.chapters.find(c=>c.name.includes(chName)||chName.includes(c.name));
+              if(!ch && subj.chapters.length) ch = subj.chapters[0];
               if(!ch) { ch = { id:genId(), name:chName||'Chương mới' }; subj.chapters.push(ch); }
               const rest = block.replace(/^Chương\s*:.*\r?\n/im,'').trim();
               allParsed.push(...parseBulkQuestions(rest, subjId, ch.id));
             });
-            if(!allParsed.length) return showToast('Không có câu hợp lệ!','error');
-            db.questions.push(...allParsed); saveDB();
-            document.getElementById('importFile').value='';
-            refreshAllDynamicSelects(); refreshDashboard();
-            showToast(`Đã nhập ${allParsed.length} câu!`,'success');
+            if(allParsed.length) { db.questions.push(...allParsed); saveDB(); }
+            document.getElementById('importFile').value=''; refreshAllDynamicSelects();
+            showToast(`Đã nhập ${allParsed.length} câu`,'success');
           }
         };
         reader.readAsText(file,'UTF-8');
       });
 
-      // QUESTION BANK
       function renderQuestionBank() {
         const subjId = getCurrentSubjectId(); const container = document.getElementById('questionBankContent');
         if(!subjId) { container.innerHTML='<div class="card"><p>Chọn môn.</p></div>'; return; }
         const chId = document.getElementById('bankChapterFilter').value;
-        let filtered = chId==='all' ? db.questions.filter(q=>q.subjectId===subjId) : db.questions.filter(q=>q.subjectId===subjId && q.chapterId===chId);
+        let filtered = chId==='all'? db.questions.filter(q=>q.subjectId===subjId) : db.questions.filter(q=>q.subjectId===subjId && q.chapterId===chId);
         if(!filtered.length) { container.innerHTML='<div class="card"><p>Chưa có câu.</p></div>'; return; }
-        let h = '<div class="card"><div class="table-wrap"><table><thead><tr><th>#</th><th>Chương</th><th>Câu hỏi</th><th>Đáp án</th><th>Giải thích</th><th></th></tr></thead><tbody>';
-        filtered.forEach((q,i)=>{
-          const optLabels = q.options.map((_,idx)=>String.fromCharCode(65+idx)).join(', ');
-          const expl = q.explanation ? q.explanation.substring(0,30)+(q.explanation.length>30?'...':'') : '—';
-          h += `<tr><td>${i+1}</td><td>${q.chapterName}</td><td>${q.question.substring(0,50)}</td><td>${optLabels} (ĐA: ${q.correctAnswer})</td><td>${expl}</td><td><button class="btn btn-danger btn-xs del-q" data-id="${q.id}">Xóa</button></td></tr>`;
-        });
-        h += '</tbody></table></div></div>';
-        container.innerHTML = h;
+        let h = '<div class="card"><table><tr><th>#</th><th>Chương</th><th>Loại</th><th>Câu hỏi</th><th></th></tr>';
+        filtered.forEach((q,i)=>{ h += `<tr><td>${i+1}</td><td>${q.chapterName}</td><td>${q.type}</td><td>${q.question.substring(0,60)}</td><td><button class="btn btn-danger btn-xs del-q" data-id="${q.id}">Xóa</button></td></tr>`; });
+        h += '</table></div>'; container.innerHTML = h;
         container.querySelectorAll('.del-q').forEach(b=>b.addEventListener('click', function(){
-          if(!confirm('Xóa?')) return;
-          db.questions = db.questions.filter(q=>q.id!==this.dataset.id); saveDB();
-          renderQuestionBank(); refreshDashboard();
+          db.questions = db.questions.filter(q=>q.id!==this.dataset.id); saveDB(); renderQuestionBank(); refreshDashboard();
         }));
       }
       document.getElementById('bankChapterFilter').addEventListener('change', renderQuestionBank);
 
-      // PRACTICE (with score)
       let practiceQuestions=[], practiceIdx=0, practiceAnswers={};
       document.getElementById('btnStartPractice').addEventListener('click', ()=>{
-        const subjId = getCurrentSubjectId(); if(!subjId) return showToast('Chọn môn!','error');
+        const subjId = getCurrentSubjectId(); if(!subjId) return;
         const chId = document.getElementById('practiceChapterSelect').value;
-        practiceQuestions = chId==='all' ? db.questions.filter(q=>q.subjectId===subjId) : db.questions.filter(q=>q.subjectId===subjId && q.chapterId===chId);
-        if(!practiceQuestions.length) return showToast('Chưa có câu!','error');
+        practiceQuestions = chId==='all'? db.questions.filter(q=>q.subjectId===subjId) : db.questions.filter(q=>q.subjectId===subjId && q.chapterId===chId);
+        if(!practiceQuestions.length) return showToast('Không có câu!','error');
         practiceQuestions = practiceQuestions.sort(()=>Math.random()-0.5);
         practiceIdx=0; practiceAnswers={};
         document.getElementById('practiceSetup').style.display='none';
         document.getElementById('practiceArea').style.display='block';
-        document.getElementById('practiceResult').style.display='none';
         renderPracticeQuestion();
       });
       function renderPracticeQuestion() {
         const area = document.getElementById('practiceArea');
         if (practiceIdx >= practiceQuestions.length) { finishPractice(); return; }
         const q = practiceQuestions[practiceIdx];
-        area.innerHTML = `<div class="card"><span class="badge badge-blue">Câu ${practiceIdx+1}/${practiceQuestions.length} — ${q.chapterName}</span>
-          <div style="font-weight:600;margin:10px 0;">${q.question}</div>
-          ${q.options.map((opt,idx)=>`<div class="option-item" data-letter="${String.fromCharCode(65+idx)}">${String.fromCharCode(65+idx)}. ${opt}</div>`).join('')}
-          <div id="practiceFeedback" style="margin-top:10px;"></div>
-          <button class="btn btn-primary" id="nextPracticeBtn" style="display:none;">Tiếp</button></div>`;
-        document.querySelectorAll('.option-item').forEach(opt=>{
-          opt.addEventListener('click', function(){
+        let html = `<div class="card"><span class="badge badge-blue">Câu ${practiceIdx+1}/${practiceQuestions.length} – ${q.chapterName}</span>`;
+        if (q.image) html += `<img src="${q.image}" class="question-image" onerror="this.style.display='none'">`;
+        html += `<div style="font-weight:600;margin:10px 0;">${q.question}</div>`;
+        if (q.type === 'multiple-choice') {
+          html += q.options.map((opt,idx)=>`<div class="option-item" data-letter="${String.fromCharCode(65+idx)}">${String.fromCharCode(65+idx)}. ${opt}</div>`).join('');
+        } else if (q.type === 'true-false') {
+          html += q.statements.map((st,idx)=>`<div class="tf-row"><span>${st.text}</span> <label><input type="radio" name="tf${idx}" value="true"> Đúng</label> <label><input type="radio" name="tf${idx}" value="false"> Sai</label></div>`).join('');
+        } else if (q.type === 'short-answer') {
+          html += `<input type="text" id="shortAnswerInput" placeholder="Nhập đáp án" style="width:100%">`;
+        }
+        html += `<div id="practiceFeedback" style="margin-top:10px;"></div><button class="btn btn-primary" id="nextPracticeBtn" style="display:none;">Tiếp</button></div>`;
+        area.innerHTML = html;
+
+        if (q.type === 'multiple-choice') {
+          document.querySelectorAll('.option-item').forEach(opt=>opt.addEventListener('click', function(){
             if(document.getElementById('nextPracticeBtn').style.display!=='none') return;
             const letter = this.dataset.letter; practiceAnswers[practiceIdx]=letter;
             document.querySelectorAll('.option-item').forEach(o=>{ o.style.pointerEvents='none'; if(o.dataset.letter===q.correctAnswer) o.classList.add('correct-highlight'); });
             const fb = document.getElementById('practiceFeedback');
             if(letter===q.correctAnswer) fb.innerHTML='<span style="color:green;">Đúng!</span>';
+            else fb.innerHTML = `<span style="color:red;">Sai! Đáp án đúng: ${q.correctAnswer}</span>`;
+            document.getElementById('nextPracticeBtn').style.display='inline-flex';
+          }));
+        } else {
+          document.getElementById('nextPracticeBtn').addEventListener('click', ()=>{
+            let userAnswer;
+            if (q.type === 'true-false') {
+              userAnswer = q.statements.map((_,idx)=>{
+                const radios = document.getElementsByName(`tf${idx}`);
+                for (let r of radios) if (r.checked) return r.value === 'true';
+                return null;
+              });
+            } else if (q.type === 'short-answer') {
+              userAnswer = document.getElementById('shortAnswerInput')?.value.trim();
+            }
+            practiceAnswers[practiceIdx] = userAnswer;
+            const fb = document.getElementById('practiceFeedback');
+            let correct = false;
+            if (q.type === 'true-false') correct = q.statements.every((st,i)=>st.isTrue===userAnswer[i]);
+            else if (q.type === 'short-answer') correct = (q.correctAnswer?.toLowerCase()===userAnswer?.toLowerCase());
+            if (correct) fb.innerHTML='<span style="color:green;">Đúng!</span>';
             else {
-              let h = `<span style="color:red;">Sai! Đáp án đúng: ${q.correctAnswer}</span>`;
-              if(q.explanation) h += `<div class="explanation-box"><strong>Giải thích:</strong> ${q.explanation}</div>`;
-              fb.innerHTML = h;
+              let msg = 'Sai!';
+              if (q.type === 'true-false') msg += ' Đáp án đúng: '+q.statements.map(st=>st.isTrue?'Đ':'S').join(', ');
+              else if (q.type === 'short-answer') msg += ` Đáp án đúng: ${q.correctAnswer}`;
+              fb.innerHTML = msg;
             }
             document.getElementById('nextPracticeBtn').style.display='inline-flex';
           });
-        });
+        }
         document.getElementById('nextPracticeBtn').addEventListener('click', ()=>{ practiceIdx++; renderPracticeQuestion(); });
       }
       function finishPractice(){
         document.getElementById('practiceArea').style.display='none';
         document.getElementById('practiceSetup').style.display='block';
-        const total = practiceQuestions.length; let correct=0;
-        practiceQuestions.forEach((q,i)=>{ if(practiceAnswers[i]===q.correctAnswer) correct++; });
-        const score = total ? (correct / total * 10).toFixed(2) : '0.00';
-        document.getElementById('practiceResult').innerHTML = `<div class="card"><h3>Kết quả: ${correct}/${total} (${((correct/total)*100).toFixed(1)}%)</h3><p>Điểm: <span class="score-highlight">${score}</span> / 10</p></div>`;
+        let correct=0;
+        practiceQuestions.forEach((q,i)=>{
+          if (q.type==='multiple-choice') { if(practiceAnswers[i]===q.correctAnswer) correct++; }
+          else if (q.type==='true-false') { if(q.statements.every((st,j)=>st.isTrue===practiceAnswers[i][j])) correct++; }
+          else if (q.type==='short-answer') { if(practiceAnswers[i]?.toLowerCase()===q.correctAnswer?.toLowerCase()) correct++; }
+        });
+        const score = (correct/practiceQuestions.length*10).toFixed(2);
+        document.getElementById('practiceResult').innerHTML = `<div class="card"><h3>Kết quả: ${correct}/${practiceQuestions.length} (${(correct/practiceQuestions.length*100).toFixed(1)}%)</h3><p>Điểm: ${score}/10</p></div>`;
         document.getElementById('practiceResult').style.display='block';
       }
 
-      // EXAM (with score)
-      let examQuestions=[], examAnswers={}, examTimer=null, examTimeLeft=0, examSubmitted=false;
+      let examQuestions=[], examAnswers={}, examTimer, examTimeLeft, examSubmitted;
       function refreshExamChapterConfig() {
-        const subjId = getCurrentSubjectId(); const container = document.getElementById('examChapterConfig');
-        if(!subjId) { container.innerHTML='<p>Chọn môn.</p>'; return; }
-        const chapters = getChapters(subjId);
+        const subjId = getCurrentSubjectId(); const chapters = getChapters(subjId);
         const total = parseInt(document.getElementById('examTotalQuestions').value)||80;
-        const per = Math.max(1, Math.floor(total / Math.max(1, chapters.length)));
-        let rem = total - per * chapters.length;
-        container.innerHTML = chapters.map((ch,i)=>`<div style="display:flex;gap:10px;align-items:center;margin-bottom:6px;"><span style="width:200px;">${ch.name}</span><input type="number" class="exam-ch-qty" value="${per+(i<rem?1:0)}" min="0" style="width:80px;"></div>`).join('');
+        const per = Math.max(1, Math.floor(total/Math.max(1,chapters.length)));
+        let rem = total - per*chapters.length;
+        document.getElementById('examChapterConfig').innerHTML = chapters.map((ch,i)=>`<div style="display:flex;gap:10px"><span style="width:200px">${ch.name}</span><input type="number" class="exam-ch-qty" value="${per+(i<rem?1:0)}" min="0" style="width:80px"></div>`).join('');
       }
       document.getElementById('examTotalQuestions').addEventListener('input', refreshExamChapterConfig);
       document.getElementById('btnStartExam').addEventListener('click', ()=>{
-        const subjId = getCurrentSubjectId(); if(!subjId) return showToast('Chọn môn!','error');
+        const subjId = getCurrentSubjectId(); if(!subjId) return;
         const qtyInputs = document.querySelectorAll('.exam-ch-qty'); const chapters = getChapters(subjId);
         examQuestions=[]; examAnswers={}; examSubmitted=false;
         qtyInputs.forEach((inp,i)=>{
@@ -595,23 +635,24 @@
         if(!examQuestions.length) return showToast('Không có câu!','error');
         examQuestions = examQuestions.sort(()=>Math.random()-0.5);
         examTimeLeft = (parseInt(document.getElementById('examTime').value)||50)*60;
-        document.getElementById('examSetup').style.display='none';
-        document.getElementById('examArea').style.display='block';
-        document.getElementById('examResult').style.display='none';
+        document.getElementById('examSetup').style.display='none'; document.getElementById('examArea').style.display='block';
         renderExamUI(); startExamTimer();
       });
       function renderExamUI() {
         const area = document.getElementById('examArea');
-        area.innerHTML = `<div class="card" style="text-align:center;"><div class="timer-display" id="timerDisplay">${formatTime(examTimeLeft)}</div><span class="badge badge-blue">Đã trả lời: <span id="answeredCount">0</span>/${examQuestions.length}</span></div>`;
+        area.innerHTML = `<div class="card" style="text-align:center"><div class="timer-display" id="timerDisplay">${formatTime(examTimeLeft)}</div><span class="badge badge-blue">Đã trả lời: <span id="answeredCount">0</span>/${examQuestions.length}</span></div>`;
         examQuestions.forEach((q,idx)=>{
-          area.innerHTML += `<div class="card" id="qcard${idx}"><div><strong>Câu ${idx+1}:</strong> <span class="badge badge-blue">${q.chapterName}</span></div><div style="font-weight:600;margin:8px 0;">${q.question}</div>${q.options.map((opt,i)=>`<div class="option-item exam-opt" data-qidx="${idx}" data-letter="${String.fromCharCode(65+i)}">${String.fromCharCode(65+i)}. ${opt}</div>`).join('')}</div>`;
+          let optHtml = '';
+          if (q.type==='multiple-choice') optHtml = q.options.map((o,i)=>`<div class="option-item exam-opt" data-qidx="${idx}" data-letter="${String.fromCharCode(65+i)}">${String.fromCharCode(65+i)}. ${o}</div>`).join('');
+          else if (q.type==='true-false') optHtml = q.statements.map((st,i)=>`<div class="tf-row"><span>${st.text}</span> <label><input type="radio" name="tf${idx}_${i}" value="true"> Đúng</label> <label><input type="radio" name="tf${idx}_${i}" value="false"> Sai</label></div>`).join('');
+          else if (q.type==='short-answer') optHtml = `<input type="text" class="short-answer-input" data-qidx="${idx}" placeholder="Nhập đáp án" style="width:100%">`;
+          area.innerHTML += `<div class="card"><div><strong>Câu ${idx+1}:</strong> ${q.chapterName}</div>${q.image?`<img src="${q.image}" class="question-image" onerror="this.style.display='none'">`:''}<div style="font-weight:600;margin:8px 0">${q.question}</div>${optHtml}</div>`;
         });
-        area.innerHTML += '<div class="card" style="text-align:center;"><button class="btn btn-success" id="btnSubmitExam">Nộp bài</button></div>';
+        area.innerHTML += '<div class="card" style="text-align:center"><button class="btn btn-success" id="btnSubmitExam">Nộp bài</button></div>';
         document.querySelectorAll('.exam-opt').forEach(opt=>opt.addEventListener('click', function(){
           if(examSubmitted) return;
-          const qIdx = parseInt(this.dataset.qidx); const letter = this.dataset.letter;
-          examAnswers[qIdx]=letter;
-          const card = document.getElementById('qcard'+qIdx); card.querySelectorAll('.exam-opt').forEach(o=>o.classList.remove('selected'));
+          const qIdx=+this.dataset.qidx, letter=this.dataset.letter; examAnswers[qIdx]=letter;
+          this.parentElement.querySelectorAll('.exam-opt').forEach(o=>o.classList.remove('selected'));
           this.classList.add('selected');
           document.getElementById('answeredCount').textContent = Object.keys(examAnswers).length;
         }));
@@ -624,39 +665,52 @@
         if(examSubmitted) return; examSubmitted=true; if(examTimer) clearInterval(examTimer);
         const total=examQuestions.length; let correct=0; const chapterStats={};
         examQuestions.forEach((q,i)=>{
-          const key=q.chapterName; if(!chapterStats[key]) chapterStats[key]={total:0,wrong:0};
-          chapterStats[key].total++; if(examAnswers[i]===q.correctAnswer) correct++; else chapterStats[key].wrong++;
+          const key=q.chapterName; if(!chapterStats[key]) chapterStats[key]={total:0,wrong:0}; chapterStats[key].total++;
+          let userAnswer = examAnswers[i];
+          if (q.type==='true-false') {
+            userAnswer = q.statements.map((_,j)=>{ const radios = document.getElementsByName(`tf${i}_${j}`); for(let r of radios) if(r.checked) return r.value==='true'; return null; });
+            examAnswers[i] = userAnswer;
+          } else if (q.type==='short-answer') {
+            userAnswer = document.querySelector(`.short-answer-input[data-qidx="${i}"]`)?.value.trim();
+            examAnswers[i] = userAnswer;
+          }
+          let isCorrect = false;
+          if (q.type==='multiple-choice') isCorrect = userAnswer === q.correctAnswer;
+          else if (q.type==='true-false') isCorrect = q.statements.every((st,j)=>st.isTrue===userAnswer[j]);
+          else if (q.type==='short-answer') isCorrect = (q.correctAnswer?.toLowerCase() === userAnswer?.toLowerCase());
+          if (isCorrect) correct++; else chapterStats[key].wrong++;
         });
-        const score = (correct / total * 10).toFixed(2);
-        document.getElementById('examArea').style.display='none'; const res=document.getElementById('examResult'); res.style.display='block';
-        let html=`<div class="card"><h3>Kết quả: ${correct}/${total} (${((correct/total)*100).toFixed(1)}%)</h3>
-        <p>Điểm: <span class="score-highlight">${score}</span> / 10</p>
+        const score = (correct/total*10).toFixed(2);
+        document.getElementById('examArea').style.display='none'; document.getElementById('examResult').style.display='block';
+        let html = `<div class="card"><h3>Kết quả: ${correct}/${total} (${(correct/total*100).toFixed(1)}%)</h3>
+        <div class="score-box"><span class="score-number">${score}</span><span style="font-size:1.2rem"> / 10</span></div>
         <h4>Tỉ lệ sai theo chương:</h4>`;
-        for(let [ch,st] of Object.entries(chapterStats))
-          html+=`<div>📂 ${ch}: ${st.wrong}/${st.total} sai (${st.total?((st.wrong/st.total)*100).toFixed(1):0}%)</div>`;
-        html+='<h4 style="margin-top:16px;">Câu sai (kèm giải thích):</h4>';
+        for(let [ch,st] of Object.entries(chapterStats)) html += `<div>${ch}: ${st.wrong}/${st.total} sai (${(st.total?((st.wrong/st.total)*100).toFixed(1):0)}%)</div>`;
+        html += '<h4 style="margin-top:16px;">Câu sai (kèm giải thích):</h4>';
         examQuestions.forEach((q,i)=>{
-          if(examAnswers[i]!==q.correctAnswer){
-            html+=`<div class="card"><strong>Câu ${i+1}:</strong> ${q.question}<br><span style="color:red;">Bạn chọn: ${examAnswers[i]||'Chưa chọn'}</span> | <span style="color:green;">Đáp án: ${q.correctAnswer}</span>`;
-            if(q.explanation) html+=`<div class="explanation-box"><strong>Giải thích:</strong> ${q.explanation}</div>`;
-            html+=`</div>`;
+          if (!isQuestionCorrect(q, examAnswers[i])) {
+            html += `<div class="card"><strong>Câu ${i+1}:</strong> ${q.question}<br>`;
+            if (q.type==='multiple-choice') html += `Bạn chọn: ${examAnswers[i]||'--'} | Đáp án: ${q.correctAnswer}`;
+            else if (q.type==='true-false') html += `Đáp án đúng: ${q.statements.map(st=>st.isTrue?'Đ':'S').join(', ')}`;
+            else if (q.type==='short-answer') html += `Đáp án đúng: ${q.correctAnswer}`;
+            if(q.explanation) html += `<div class="explanation-box">${q.explanation}</div>`;
+            html += `</div>`;
           }
         });
-        html+=`<button class="btn btn-primary" onclick="document.getElementById('examResult').style.display='none';document.getElementById('examSetup').style.display='block';refreshExamChapterConfig();">Thi lại</button></div>`;
-        res.innerHTML=html;
+        html += `<button class="btn btn-primary" onclick="document.getElementById('examResult').style.display='none';document.getElementById('examSetup').style.display='block'">Thi lại</button></div>`;
+        document.getElementById('examResult').innerHTML = html;
+      }
+      function isQuestionCorrect(q, ans) {
+        if (q.type==='multiple-choice') return ans === q.correctAnswer;
+        if (q.type==='true-false') return q.statements.every((st,i)=>st.isTrue === ans[i]);
+        if (q.type==='short-answer') return q.correctAnswer?.toLowerCase() === ans?.toLowerCase();
       }
 
-      // INIT
       function init() {
         loadDB();
-        if (!db.subjects.length) {
-          const subj = { id: genId(), name: 'Chủ nghĩa xã hội khoa học', chapters: [] };
-          ['Chương 1: Nhập môn','Chương 2: Sứ mệnh GCCN','Chương 3: CNXH và quá độ','Chương 4: Dân chủ XHCN','Chương 5: Cơ cấu XH','Chương 6: Dân tộc, tôn giáo','Chương 7: Gia đình'].forEach(n => subj.chapters.push({id:genId(), name:n}));
-          db.subjects.push(subj);
-          saveDB();
-        }
+        if (!db.subjects.length) {}
         populateSidebarSubjectSelect();
-        buildOptionsUI(4);
+        renderDynamicForm();
         refreshAllDynamicSelects();
         refreshDashboard();
       }
